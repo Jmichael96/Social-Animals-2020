@@ -23,6 +23,10 @@ const normalizePort = (val) => {
 
 const port = normalizePort(PORT);
 
+if (process.env.NODE_ENV === "production") {
+    app.use(express.static("client/build"));
+}
+
 app.listen(PORT, () => {
     console.log(`Bears... Beets... Battle Star Galactica on Port ${port}`);
 });
