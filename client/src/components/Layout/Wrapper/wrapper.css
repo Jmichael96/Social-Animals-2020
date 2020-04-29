@@ -1,0 +1,8 @@
+/* wrapper for cards */
+.wrapper {
+    height: 100%;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    align-content: flex-start;
+  }

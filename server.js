@@ -4,6 +4,11 @@ const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 8080;
 const app = express();
 const path = require('path');
+const connectDB = require('./services/db');
+const routes = require('./routes/index');
+
+// connecting database
+connectDB();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -27,6 +32,8 @@ if (process.env.NODE_ENV === "production") {
     app.use(express.static("client/build"));
 }
 
+app.use(routes);
+
 app.listen(PORT, () => {
-    console.log(`Bears... Beets... Battle Star Galactica on Port ${port}`);
+    console.log(`Bears... Beets... Battlestar Galactica on Port ${port}`);
 });
