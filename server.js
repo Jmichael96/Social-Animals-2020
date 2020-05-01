@@ -11,7 +11,7 @@ const routes = require('./routes/index');
 connectDB();
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 const normalizePort = (val) => {

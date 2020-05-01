@@ -16,7 +16,9 @@ const storage = multer.diskStorage({
     cb(error, '/images/profilePicture');
   },
   filename: (req, file, cb) => {
+    //   console.log(req.body);
     const name = file.originalname.toLowerCase().split(' ').join('-');
+    // console.log(name + ' filename');
     const ext = MIME_TYPE_MAP[file.mimetype];
     cb(null, name + '-' + Date.now() + '.' + ext);
   }

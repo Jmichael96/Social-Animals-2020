@@ -1,16 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MDBBtn } from 'mdbreact';
 import './register.css';
 import Wrapper from '../../Layout/Wrapper/Wrapper';
 import { register } from '../../../store/actions/auth';
 import { setAlert } from '../../../store/actions/alert';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import PropTypes, { object } from 'prop-types';
+import { Redirect } from 'react-router-dom';
 
 const Register = ({ register, setAlert, isAuthenticated }) => {
 
     const [name, setName] = useState('');
     const [bio, setBio] = useState('');
+    // const [profilePicture, setProfilePicture] = useState()
+    // const [preview, setPreview] = useState()
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [password2, setPassword2] = useState('');
@@ -20,24 +23,54 @@ const Register = ({ register, setAlert, isAuthenticated }) => {
     const [passwordErr, setPasswordErr] = useState('');
     const [password2Err, setPassword2Err] = useState('');
 
+
+    // create a preview as a side effect, whenever selected file is changed
+    // useEffect(() => {
+    //     if (!profilePicture) {
+    //         setPreview(undefined)
+    //         return
+    //     }
+
+    //     const objectUrl = URL.createObjectURL(profilePicture)
+    //     setPreview(objectUrl)
+
+    //     // free memory when ever this component is unmounted
+    //     return () => URL.revokeObjectURL(objectUrl)
+    // }, [profilePicture])
+
+    // const onSelectFile = e => {
+    //     if (!e.target.files || e.target.files.length === 0) {
+    //         setProfilePicture(undefined)
+    //         return
+    //     }
+
+    //     // I've kept this example simple by using the first image instead of multiple
+    //     setProfilePicture(e.target.files[0])
+    // }
+
     const onSubmitForm = (e) => {
         e.preventDefault();
         validateForm();
+        // const formData = new FormData();
+
+        // formData.append('name', name);
+        // formData.append('bio', bio);
+        // formData.append('username', username);
+        // formData.append('profilePicture', profilePicture);
+        // formData.append('password', password);
         const formData = {
             name,
             bio,
             username,
-            password,
-            password2
+            password
         }
-       
+        register(formData);
         if (isValid) {
-            console.log('Its a valid submission');
-            console.log(formData);
-            register(formData);
+            
             // setAlert('Successfully created an account!', 'success');
         }
     }
+
     const validateForm = () => {
         let validated = true;
 
@@ -60,8 +93,9 @@ const Register = ({ register, setAlert, isAuthenticated }) => {
             setPassword2Err('Must enter a password');
             validated = false;
         }
-        
+
         if (password !== password2) {
+            validated = false;
             console.log('passwords do not match!');
         }
         if (validated) {
@@ -74,7 +108,7 @@ const Register = ({ register, setAlert, isAuthenticated }) => {
             <div id="registerFormWrap">
                 <h1>Register</h1>
 
-                <form onSubmit={(e) => onSubmitForm(e)}>
+                <form onSubmit={onSubmitForm}>
                     <p className="h4 text-center mb-4">Sign up</p>
                     <label htmlFor="name" className="grey-text">
                         {!isValid && nameErr ? <span style={{ color: 'red' }}>{nameErr}</span> : <span>Your name</span>}
@@ -137,7 +171,10 @@ const Register = ({ register, setAlert, isAuthenticated }) => {
                         value={password2}
                         placeholder="Retype Password"
                         onChange={(e) => setPassword2(e.target.value)} />
-
+                    {/* <div>
+                        <input type='file' onChange={onSelectFile} />
+                        {profilePicture && <img src={preview} />}
+                    </div> */}
                     <div className="text-center mt-4">
                         <MDBBtn color="unique" type="submit">
                             Register

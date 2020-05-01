@@ -10,17 +10,18 @@ export const loadUser = () => dispatch => {
     }
 
     axios.get('/api/auth/load_user')
-    .then((res) => {
-        dispatch({
-            type: types.USER_LOADED,
-            payload: res.data
+        .then((res) => {
+            console.log(res);
+            dispatch({
+                type: types.USER_LOADED,
+                payload: res.data
+            });
+        })
+        .catch((err) => {
+            dispatch({
+                type: types.AUTH_ERROR
+            });
         });
-    })
-    .catch((err) => {
-        dispatch({
-            type: types.AUTH_ERROR
-        });
-    });
 };
 
 // register
@@ -30,13 +31,30 @@ export const register = ({ ...formData }) => dispatch => {
             'Content-Type': 'application/json'
         }
     };
-    console.log(formData);
+    console.log(formData)
+    axios.post('/api/auth/register', formData, config)
+        .then((res) => {
+            dispatch({
+                type: types.REGISTER_SUCCESS,
+                payload: res.data
+            });
+            dispatch(setAlert('Successfully registered!', 'success'))
+            console.log(res.data + ' this is the data action!')
 
-    dispatch({
-        type: types.REGISTER_SUCCESS,
-        payload: formData
-    });
-    dispatch(setAlert('Successfully registered!', 'success'))
+        })
+        .catch((err) => {
+            const errors = err.response.data.errors;
+
+            if (errors) {
+                errors.forEach((err) => {
+                    dispatch(setAlert(err.msg, 'danger'));
+                })
+            }
+            console.log(err)
+            dispatch({
+                type: types.REGISTER_FAIL
+            });
+        });
 }
 
 // login
@@ -47,12 +65,22 @@ export const login = ({ ...formData }) => dispatch => {
         }
     };
 
-    console.log(formData);
-
-    dispatch({
-        type: types.LOGIN_SUCCESS,
-        payload: formData
-    });
-    dispatch(setAlert('Successfully logged in!', 'success'))
+    axios.post('/api/auth/login', formData, config)
+    .then((res) => {
+        dispatch({
+            type: types.LOGIN_SUCCESS,
+            payload: res.data
+        });
+        // dispatch(setAlert('Successfully logged in!', 'success'))
+    })
+    .catch((err) => {
+        const errors = err.response.data.errors;
+        if (errors) {
+            errors.forEach((error) => dispatch(setAlert(err.msg, 'danger')));
+        }
+        dispatch({
+            type: types.LOGIN_FAIL
+        });
+    })
 
 }

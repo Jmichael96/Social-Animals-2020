@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Wrapper from '../../Layout/Wrapper/Wrapper';
 import { login } from '../../../store/actions/auth';
-import { setAlert } from '../../../store/actions/alert';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
