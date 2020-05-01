@@ -9,9 +9,13 @@ const postSchema = new mongoose.Schema({
         required: true
     },
     authorId: {
-        type: mongoose.Schema.Types.ObjectId, 
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
+    },
+    date: {
+        type: Date,
+        default: Date.now
     }
 });
 module.exports = mongoose.model('Post', postSchema);

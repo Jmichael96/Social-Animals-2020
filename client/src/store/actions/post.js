@@ -34,7 +34,7 @@ export const createPost = ({ ...formData }) => dispatch => {
 }
 // fetch all posts
 export const fetchAllPosts = () => dispatch => {
-    axios.post('/api/posts/fetch_all')
+    axios.get('/api/posts/fetch_all')
         .then((res) => {
             dispatch({
                 type: types.FETCH_ALL_POSTS,

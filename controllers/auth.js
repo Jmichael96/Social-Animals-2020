@@ -84,7 +84,6 @@ exports.register = (req, res, next) => {
 exports.loadUser = (req, res, next) => {
     User.findById(req.user._id).select('-password')
         .then((user) => {
-            console.log(user);
             res.json(user);
         })
         .catch((err) => {

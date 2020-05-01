@@ -28,7 +28,14 @@ exports.createPost = (req, res, next) => {
 // @desc     Fetching all posts
 // @access   Public
 exports.fetchAll = (req, res,next) => {
-    Post.find().then((posts) => {
+
+    Post.find().sort({ date: -1 })
+    .then((posts) => {
+        if (!posts) {
+            res.status(500).json({
+                message: 'No posts available'
+            })
+        }
         res.status(201).json(posts);
     })
     .catch((err) => {
