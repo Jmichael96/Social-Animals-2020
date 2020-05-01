@@ -9,3 +9,9 @@ export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGIN_FAIL = 'LOGIN_FAIL';
 export const USER_LOADED = 'USER_LOADED';
 export const AUTH_ERROR = 'AUTH_ERROR';
+export const LOGOUT = 'LOGOUT';
+
+// POST TYPES
+export const CREATE_POST = 'CREATE_POST';
+export const POST_ERROR = 'POST_ERROR';
+export const FETCH_ALL_POSTS = 'FETCH_ALL_POSTS';

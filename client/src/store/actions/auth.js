@@ -11,7 +11,6 @@ export const loadUser = () => dispatch => {
 
     axios.get('/api/auth/load_user')
         .then((res) => {
-            console.log(res);
             dispatch({
                 type: types.USER_LOADED,
                 payload: res.data
@@ -25,32 +24,36 @@ export const loadUser = () => dispatch => {
 };
 
 // register
-export const register = ({ ...formData }) => dispatch => {
+export const register = ({ username, password }) => dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     };
+    
+    const formData = { username, password };
+    
     console.log(formData)
     axios.post('/api/auth/register', formData, config)
         .then((res) => {
+            console.log(res.data);
             dispatch({
                 type: types.REGISTER_SUCCESS,
                 payload: res.data
             });
+            dispatch(loadUser());
             dispatch(setAlert('Successfully registered!', 'success'))
-            console.log(res.data + ' this is the data action!')
 
         })
         .catch((err) => {
             const errors = err.response.data.errors;
-
+            console.log(errors);
             if (errors) {
                 errors.forEach((err) => {
                     dispatch(setAlert(err.msg, 'danger'));
                 })
             }
-            console.log(err)
+
             dispatch({
                 type: types.REGISTER_FAIL
             });
@@ -83,4 +86,10 @@ export const login = ({ ...formData }) => dispatch => {
         });
     })
 
+}
+
+// logout 
+export const logout = () => dispatch => {
+    dispatch({ type: types.LOGOUT });
+    dispatch(setAlert('You have successfully logged out!', 'success'));
 }

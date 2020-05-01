@@ -10,15 +10,15 @@ import { Redirect } from 'react-router-dom';
 
 const Register = ({ register, setAlert, isAuthenticated }) => {
 
-    const [name, setName] = useState('');
-    const [bio, setBio] = useState('');
+    // const [name, setName] = useState('');
+    // const [bio, setBio] = useState('');
     // const [profilePicture, setProfilePicture] = useState()
     // const [preview, setPreview] = useState()
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [password2, setPassword2] = useState('');
     const [isValid, setIsValid] = useState(false);
-    const [nameErr, setNameErr] = useState('');
+    // const [nameErr, setNameErr] = useState('');
     const [usernameErr, setUsernameErr] = useState('');
     const [passwordErr, setPasswordErr] = useState('');
     const [password2Err, setPassword2Err] = useState('');
@@ -50,67 +50,59 @@ const Register = ({ register, setAlert, isAuthenticated }) => {
 
     const onSubmitForm = (e) => {
         e.preventDefault();
-        validateForm();
-        // const formData = new FormData();
+        // validateForm();
 
-        // formData.append('name', name);
-        // formData.append('bio', bio);
-        // formData.append('username', username);
-        // formData.append('profilePicture', profilePicture);
-        // formData.append('password', password);
         const formData = {
-            name,
-            bio,
             username,
             password
         }
-        register(formData);
+        register({ username, password });
         if (isValid) {
             
             // setAlert('Successfully created an account!', 'success');
         }
     }
 
-    const validateForm = () => {
-        let validated = true;
+    // const validateForm = () => {
+    //     let validated = true;
 
-        if (!name) {
-            setNameErr('Must enter a name');
-            validated = false;
-        }
-        if (!username) {
-            setUsernameErr('Must enter a username');
-            validated = false;
-        }
-        if (!password) {
-            setPasswordErr('Must enter a password');
-            validated = false;
-        } else if (password.length < 6) {
-            setPasswordErr('Must have more than 6 characters');
-            validated = false;
-        }
-        if (!password2) {
-            setPassword2Err('Must enter a password');
-            validated = false;
-        }
+    //     if (!name) {
+    //         setNameErr('Must enter a name');
+    //         validated = false;
+    //     }
+    //     if (!username) {
+    //         setUsernameErr('Must enter a username');
+    //         validated = false;
+    //     }
+    //     if (!password) {
+    //         setPasswordErr('Must enter a password');
+    //         validated = false;
+    //     } else if (password.length < 6) {
+    //         setPasswordErr('Must have more than 6 characters');
+    //         validated = false;
+    //     }
+    //     if (!password2) {
+    //         setPassword2Err('Must enter a password');
+    //         validated = false;
+    //     }
 
-        if (password !== password2) {
-            validated = false;
-            console.log('passwords do not match!');
-        }
-        if (validated) {
-            setIsValid(true);
-        }
-    }
+    //     if (password !== password2) {
+    //         validated = false;
+    //         console.log('passwords do not match!');
+    //     }
+    //     if (validated) {
+    //         setIsValid(true);
+    //     }
+    // }
 
     return (
         <Wrapper>
             <div id="registerFormWrap">
                 <h1>Register</h1>
 
-                <form onSubmit={onSubmitForm}>
+                <form onSubmit={(e) => onSubmitForm(e)}>
                     <p className="h4 text-center mb-4">Sign up</p>
-                    <label htmlFor="name" className="grey-text">
+                    {/* <label htmlFor="name" className="grey-text">
                         {!isValid && nameErr ? <span style={{ color: 'red' }}>{nameErr}</span> : <span>Your name</span>}
                     </label>
                     <input
@@ -121,9 +113,9 @@ const Register = ({ register, setAlert, isAuthenticated }) => {
                         className="form-control"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                    />
-                    <br />
-                    <label htmlFor="bio" className="grey-text">
+                    /> */}
+                    {/* <br /> */}
+                    {/* <label htmlFor="bio" className="grey-text">
                         Bio
                 </label>
                     <textarea
@@ -134,8 +126,8 @@ const Register = ({ register, setAlert, isAuthenticated }) => {
                         className="form-control"
                         value={bio}
                         placeholder="About me"
-                        onChange={(e) => setBio(e.target.value)}></textarea>
-                    <br />
+                        onChange={(e) => setBio(e.target.value)}></textarea> */}
+                    {/* <br /> */}
                     <label htmlFor="username" className="grey-text">
                         {!isValid && usernameErr ? <span style={{ color: 'red' }}>{usernameErr}</span> : <span>Username</span>}
                     </label>

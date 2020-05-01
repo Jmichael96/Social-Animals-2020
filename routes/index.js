@@ -5,7 +5,7 @@ const posts = require('./posts');
 const profile = require('./profile');
 
 router.use('/api/auth', auth);
-// router.use('/api/posts', posts);
+router.use('/api/posts', posts);
 // router.use('/api/profile', profile);
 
 // router.use((req, res) => {

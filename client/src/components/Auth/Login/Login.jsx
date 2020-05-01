@@ -3,6 +3,7 @@ import Wrapper from '../../Layout/Wrapper/Wrapper';
 import { login } from '../../../store/actions/auth';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
 const Login = ({ login, isAuthenticated }) => {
     const [username, setUsername] = useState('');
@@ -20,7 +21,6 @@ const Login = ({ login, isAuthenticated }) => {
         }
         if (isValid) {
             console.log('Its a valid submission');
-            console.log(formData);
             login(formData);
         }
     }
@@ -40,6 +40,9 @@ const Login = ({ login, isAuthenticated }) => {
         }
     }
 
+    if (isAuthenticated) {
+        return <Redirect to='/' />
+    }
     return (
         <Wrapper>
             <div>

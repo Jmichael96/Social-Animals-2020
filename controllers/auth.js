@@ -43,68 +43,48 @@ const storage = multer.diskStorage({
         cb(null, name + "-" + Date.now() + "." + ext);
     }
 });
+
 // @route    POST api/auth/register
 // @desc     Register user
 // @access   Public
 exports.register = (req, res, next) => {
-    // const url = req.protocol + '://' + req.get('host');
-
-    let checkUser = User.findOne({ username: req.body.username });
-    if (checkUser) {
-        res.status(400).json({
-            message: 'Username already exists'
+    console.log('register api fired')
+    bcrypt.hash(req.body.password, 10).then((hash) => {
+        const user = new User({
+            username: req.body.username,
+            password: hash
         });
-    };
-
-
-    bcrypt.hash(req.body.password, 10)
-        .then((hash) => {
-
-
-            const user = new User({
-                name: req.body.name,
-                bio: req.body.bio,
-                username: req.body.username,
-                password: hash
-            });
-
-            console.log(user);
-
-            user.save()
-
-            const payload = {
-                user: {
-                    id: user.id
-                }
-            };
-
-            jwt.sign(
-                payload,
-                config.SECRET,
-                { expiresIn: 36000 },
-                (err, token) => {
-                    if (err) {
-                        throw err;
+        user.save()
+            .then((user) => {
+                const payload = {
+                    user: {
+                        _id: user._id
                     }
-                    res.json({ token });
                 }
-            );
-        })
-        .catch((err) => {
-            console.error(err);
-            res.status(401).json({
-                message: 'Register server error'
-            });
-        });
+                jwt.sign(payload, config.SECRET,
+                    { expiresIn: 3600 }, (err, token) => {
+                        if (err) {
+                            console.log(err);
+                            throw err;
+                        }
+                        res.json({ token });
+                    });
+            })
+            .catch((err) => {
+                res.status(500).json({
+                    message: 'Invalid authentication credentials!'
+                });
+            })
+    });
 }
 
 // @route    GET api/auth/load_user
 // @desc     Load user
 // @access   Public
 exports.loadUser = (req, res, next) => {
-    User.findById(req.user.id).select('-password')
+    User.findById(req.user._id).select('-password')
         .then((user) => {
-            console.log('user api loading ' + user);
+            console.log(user);
             res.json(user);
         })
         .catch((err) => {
@@ -123,34 +103,36 @@ exports.loadUser = (req, res, next) => {
 exports.login = (req, res, next) => {
     let fetchedUser;
     User.findOne({ username: req.body.username })
-    .then((user) => {
-        if (!user) {
-            return res.status(401).json({
-                message: 'Invalid username or password'
-            });
-        }
-        fetchedUser = user;
-        return bcrypt.compare(req.body.password, user.password);
-    })
-    .then((result) => {
-        if (!result) {
-            return res.status(401).json({
-                message: 'Invalid username or password'
-            });
-        }
-        const token  = jwt.sign(
-            { username: fetchedUser.username, userId: fetchedUser._id },
-            config.SECRET,
-            { expiresIn: '1h' }
-        );
-        console.log();
-        res.status(200).json({ 
-            token: token,
-            expiresIn:  3600,
-            user: {
-                _id: fetchedUser._id,
-                name: fetchedUser.name
+        .then((user) => {
+            if (!user) {
+                return res.status(401).json({
+                    message: 'Invalid username or password'
+                });
             }
+            fetchedUser = user;
+            return bcrypt.compare(req.body.password, user.password);
         })
-    })
+        .then((result) => {
+            if (!result) {
+                return res.status(401).json({
+                    message: 'Invalid username or password'
+                });
+            }
+
+            const payload = {
+                user: {
+                    _id: fetchedUser._id
+                }
+            }
+
+            jwt.sign(payload, config.SECRET,
+                { expiresIn: 3600 }, (err, token) => {
+                    if (err) {
+                        console.log(err);
+                        throw err;
+                    }
+                    res.json({ token });
+                });
+        });
+
 }

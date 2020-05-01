@@ -25,4 +25,15 @@ module.exports = async function(req, res, next) {
     console.error('something wrong with auth middleware')
     res.status(500).json({ msg: 'Server Error' });
   }
+// console.log(req.body);
+// try {
+//     const token = req.headers.authorization.split(" ")[1];
+//     const decodedToken = jwt.verify(token, process.env.SECRET || config.SECRET);
+//     console.log(decodedToken + ' decoded token');
+//     req.userData = { username: decodedToken.username, userId: decodedToken.userId };
+//     next();
+//   } catch (error) {
+//       console.log(error);
+//     res.status(401).json({ message: "You are not authenticated!" });
+//   }
 };
