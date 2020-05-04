@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken');
 const config = require('../services/keys');
 const { check, validationResult } = require('express-validator');
 const multer = require('multer');
-const path = require('path');
 
 // const storage = multer.diskStorage({
 //     destination: '../images/profilePicture/',
@@ -120,7 +119,8 @@ exports.login = (req, res, next) => {
 
             const payload = {
                 user: {
-                    _id: fetchedUser._id
+                    _id: fetchedUser._id,
+                    username: fetchedUser.username
                 }
             }
 

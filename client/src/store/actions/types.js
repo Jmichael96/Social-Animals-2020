@@ -11,7 +11,14 @@ export const USER_LOADED = 'USER_LOADED';
 export const AUTH_ERROR = 'AUTH_ERROR';
 export const LOGOUT = 'LOGOUT';
 
+// PROFILE TYPES
+export const FETCH_USER_PROFILE = 'FETCH_USER_PROFILE';
+export const CREATE_PROFILE = 'CREATE_PROFILE';
+export const PROFILE_ERROR = 'PROFILE_ERROR';
+export const CLEAR_PROFILE = 'CLEAR_PROFILE';
+
 // POST TYPES
 export const CREATE_POST = 'CREATE_POST';
 export const POST_ERROR = 'POST_ERROR';
 export const FETCH_ALL_POSTS = 'FETCH_ALL_POSTS';
+

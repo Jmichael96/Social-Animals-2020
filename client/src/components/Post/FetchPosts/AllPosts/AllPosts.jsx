@@ -14,12 +14,14 @@ const AllPosts = ({ fetchAllPosts, post: { posts, loading } }) => {
     const renderPosts = () => {
         const postList = posts;
         return Object.values(postList).map((post) => {
-            return <PostItem post={post} />
+            return <PostItem key={post._id} post={post} />
         })
     }
     return (
         <Fragment>
-            {renderPosts()}
+            <Wrapper>
+                {renderPosts()}
+            </Wrapper>
         </Fragment>
     )
 }

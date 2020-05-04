@@ -6,6 +6,8 @@ import Login from '../Auth/Login/Login';
 import Register from '../Auth/Register/Register';
 import PrivateRoute from './PrivateRoutes';
 import CreatePost from '../Post/CreatePost/CreatePost';
+import UpdateProfile from '../Profile/UpdateProfile/UpdateProfile';
+import ProfileLandingPage from '../Profile/PofileLandingPage/ProfileLandingPage';
 
 const Routes = () => {
     return (
@@ -14,6 +16,8 @@ const Routes = () => {
         <Route exact path="/login" component={Login} />
         <Route exact path="/register" component={Register} />
         <PrivateRoute exact path="/create_post" component={CreatePost} />
+        <PrivateRoute exact path="/create_profile" component={UpdateProfile} />
+        <PrivateRoute exact path="/profile" component={ProfileLandingPage} />
         <Route component={NotFound} />
     </Switch>
     )

@@ -4,11 +4,13 @@ const Post = require('../models/post');
 // @desc     Creating post
 // @access   Private
 exports.createPost = (req, res, next) => {
-
+    console.log(req.user._id + ' user id');
+    console.log(req.user.username + ' user username');
     const post = new Post({
         content: req.body.content,
         imagePath: req.body.imagePath,
-        authorId: req.user._id
+        authorId: req.user._id,
+        authorUsername: req.user.username
     });
 
     post.save()

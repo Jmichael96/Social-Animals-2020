@@ -13,6 +13,11 @@ const postSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
+    authorUsername: {
+        type: String,
+        ref: 'User',
+        // required: true
+    },
     likes: [
         {
             userId: {

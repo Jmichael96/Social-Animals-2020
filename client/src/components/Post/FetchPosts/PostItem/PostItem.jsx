@@ -1,13 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 const PostItem = ({
-    post: { _id, content, imagePath, date }
+    post: { _id, content, imagePath, date, authorId, authorUsername }
 }) => {
+    const url = ``;
+    
     return (
         <div>
             <div key={_id}>
-                <h5>{content}</h5>
+                <Link>
+                    <h4>Created by: {authorUsername}</h4>
+                </Link>
+                <p>{content}</p>
                 <p>{imagePath}</p>
                 <p>{date}</p>
             </div>
