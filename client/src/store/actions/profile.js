@@ -52,6 +52,7 @@ export const fetchProfileById = (id) => dispatch => {
     axios.get(`/api/profile/user_profile/${id}`)
     .then((res) => {
         console.log(res.data);
+        
         dispatch({
             type: types.FETCH_USER_PROFILE,
             payload: res.data
@@ -65,3 +66,4 @@ export const fetchProfileById = (id) => dispatch => {
         });
     })
 }
+

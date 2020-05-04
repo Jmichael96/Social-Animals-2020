@@ -10,6 +10,7 @@ import CreatePost from '../Post/CreatePost/CreatePost';
 import UpdateProfile from '../Profile/UpdateProfile/UpdateProfile';
 import ProfileLandingPage from '../Profile/PofileLandingPage/ProfileLandingPage';
 import UserProfile from '../Profile/UserProfile/UserProfile';
+import SearchUsernames from '../Search/SearchUsernames/SearchUsernames';
 
 const Routes = () => {
     return (
@@ -23,6 +24,7 @@ const Routes = () => {
                 <PrivateRoute exact path="/create_profile" component={UpdateProfile} />
                 <PrivateRoute exact path="/profile" component={ProfileLandingPage} />
                 <PrivateRoute exact path="/user_profile/:id" component={UserProfile} />
+                <PrivateRoute exact path="/usernames" component={SearchUsernames} />
                 <Route component={NotFound} />
             </Switch>
         </section>

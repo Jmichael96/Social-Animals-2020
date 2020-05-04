@@ -51,15 +51,6 @@ exports.createProfile = (req, res, next) => {
 // @desc     Get a profile by user Id
 // @access   Private
 exports.getProfile = (req, res, next) => {
-     // check if the id is a valid ObjectId
-    //  if (!mongoose.Types.ObjectId.isValid(id)) {
-    //      console.log('No user here!')
-    //      res.status(400).json({
-    //          message: 'Invalid user id'
-    //      });
-
-    //  }
-     console.log('fired get profile!')
     Profile.findOne({
         user: req.params.id
     }).populate('user', ['name'])
@@ -74,6 +65,9 @@ exports.getProfile = (req, res, next) => {
         });
     });
 }
+
+
+
 
 // TESTING THIS FIRST BEFORE USING!!!
 // @route    DELETE api/profile/remove_profile

@@ -33,7 +33,6 @@ export const register = ({ username, password }) => dispatch => {
     
     const formData = { username, password };
     
-    console.log(formData)
     axios.post('/api/auth/register', formData, config)
         .then((res) => {
             console.log(res.data);
@@ -70,11 +69,13 @@ export const login = ({ ...formData }) => dispatch => {
 
     axios.post('/api/auth/login', formData, config)
     .then((res) => {
+        
         dispatch({
             type: types.LOGIN_SUCCESS,
             payload: res.data
         });
-        // dispatch(setAlert('Successfully logged in!', 'success'))
+        dispatch(loadUser());
+        dispatch(setAlert('Successfully logged in!', 'success'))
     })
     .catch((err) => {
         const errors = err.response.data.errors;

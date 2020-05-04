@@ -40,6 +40,9 @@ export const fetchAllPosts = () => dispatch => {
                 type: types.FETCH_ALL_POSTS,
                 payload: res.data
             });
+            dispatch({
+                type: types.CLEAR_PROFILE
+            });
         })
         .catch((err) => {
             if (err) {

@@ -11,6 +11,10 @@ export const USER_LOADED = 'USER_LOADED';
 export const AUTH_ERROR = 'AUTH_ERROR';
 export const LOGOUT = 'LOGOUT';
 
+// USER TYPES 
+export const FETCH_USERNAMES = 'FETCH_USERNAMES';
+export const USER_ERROR = 'USER_ERROR';
+
 // PROFILE TYPES
 export const FETCH_USER_PROFILE = 'FETCH_USER_PROFILE';
 export const CREATE_PROFILE = 'CREATE_PROFILE';
