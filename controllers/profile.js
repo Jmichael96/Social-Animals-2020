@@ -47,9 +47,38 @@ exports.createProfile = (req, res, next) => {
 };
 
 
-// @route    GET api/profile/create_profile
+// @route    GET api/profile/user_profile/:id
 // @desc     Get a profile by user Id
 // @access   Private
 exports.getProfile = (req, res, next) => {
      // check if the id is a valid ObjectId
+    //  if (!mongoose.Types.ObjectId.isValid(id)) {
+    //      console.log('No user here!')
+    //      res.status(400).json({
+    //          message: 'Invalid user id'
+    //      });
+
+    //  }
+     console.log('fired get profile!')
+    Profile.findOne({
+        user: req.params.id
+    }).populate('user', ['name'])
+    .then((profile) => {
+        console.log('getProfile() ' + profile);
+        res.status(201).json(profile);
+    })
+    .catch((err) => {
+        console.log(err);
+        res.status(500).json({
+            message: 'Fetching profile has failed!'
+        });
+    });
 }
+
+// TESTING THIS FIRST BEFORE USING!!!
+// @route    DELETE api/profile/remove_profile
+// @desc     Remove current user profile
+// @access   Private
+// exports.removeProfile = (req, res, next) => {
+//     Post
+// }

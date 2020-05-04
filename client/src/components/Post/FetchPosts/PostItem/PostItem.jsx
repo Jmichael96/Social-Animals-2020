@@ -5,12 +5,11 @@ import { Link } from 'react-router-dom';
 const PostItem = ({
     post: { _id, content, imagePath, date, authorId, authorUsername }
 }) => {
-    const url = ``;
     
     return (
         <div>
             <div key={_id}>
-                <Link>
+                <Link to={`/user_profile/${authorId}`}>
                     <h4>Created by: {authorUsername}</h4>
                 </Link>
                 <p>{content}</p>

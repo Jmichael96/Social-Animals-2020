@@ -12,4 +12,10 @@ router.get('/me', isAuthenticated, ProfileController.getPersonalProfile);
 // @access   Private
 router.post('/create_profile', isAuthenticated, ProfileController.createProfile);
 
+
+// @route    GET api/profile/user_profile/:id
+// @desc     Get a profile by user Id
+// @access   Private
+router.get('/user_profile/:id', isAuthenticated, ProfileController.getProfile);
+
 module.exports = router;

@@ -46,4 +46,22 @@ export const createProfile = ({ ...formData }) => dispatch => {
         });
     })
 }
-//5eac947944a87577289d9eb7
+
+// fetching user profile by ID
+export const fetchProfileById = (id) => dispatch => {
+    axios.get(`/api/profile/user_profile/${id}`)
+    .then((res) => {
+        console.log(res.data);
+        dispatch({
+            type: types.FETCH_USER_PROFILE,
+            payload: res.data
+        })
+    })
+    .catch((err) => {
+        console.log(err);
+        dispatch({
+            type: types.PROFILE_ERROR,
+            payload: err
+        });
+    })
+}
