@@ -12,7 +12,6 @@ export const createPost = ({ ...formData }) => dispatch => {
 
     axios.post('/api/posts/create_post', formData, config)
         .then((res) => {
-            console.log(res.data);
             dispatch({
                 type: types.CREATE_POST,
                 payload: res.data
@@ -31,6 +30,36 @@ export const createPost = ({ ...formData }) => dispatch => {
                 payload: err
             });
         })
+}
+
+// update post
+export const updatePost = (id, formData) => dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+    axios.put(`/api/posts/update_post/${id}`, formData, config)
+    .then((res) => {
+        dispatch({
+            type: types.UPDATE_POST,
+            payload: res.data
+        });
+        dispatch(fetchAllPosts());
+        dispatch(setAlert('Updated post successfully', 'success'));
+    })
+    .catch((err) => {
+
+        if (err) {
+            console.log(err);
+            throw err;
+        }
+
+        dispatch({
+            type: types.POST_ERROR,
+            payload: err
+        });
+    })
 }
 // fetch all posts
 export const fetchAllPosts = () => dispatch => {
@@ -55,4 +84,26 @@ export const fetchAllPosts = () => dispatch => {
                 payload: err
             });
         })
+}
+
+// delete a post
+export const deletePost = (id) => dispatch => {
+    axios.delete(`/api/posts/delete_post/${id}`)
+    .then((res) => {
+        dispatch({
+            type: types.DELETE_POST,
+            payload: res.data
+        })
+    })
+    .catch((err) => {
+        if (err) {
+            console.log(err);
+            throw err;
+        }
+
+        dispatch({
+            type: types.POST_ERROR,
+            payload: err
+        });
+    })
 }

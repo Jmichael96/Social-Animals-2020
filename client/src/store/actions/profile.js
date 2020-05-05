@@ -50,9 +50,7 @@ export const createProfile = ({ ...formData }) => dispatch => {
 // fetching user profile by ID
 export const fetchProfileById = (id) => dispatch => {
     axios.get(`/api/profile/user_profile/${id}`)
-    .then((res) => {
-        console.log(res.data);
-        
+    .then((res) => {        
         dispatch({
             type: types.FETCH_USER_PROFILE,
             payload: res.data

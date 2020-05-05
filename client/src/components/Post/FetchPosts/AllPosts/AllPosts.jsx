@@ -19,9 +19,9 @@ const AllPosts = ({ fetchAllPosts, post: { posts, loading } }) => {
     }
     return (
         <Fragment>
-            <Wrapper>
+            {/* <Wrapper> */}
                 {renderPosts()}
-            </Wrapper>
+            {/* </Wrapper> */}
         </Fragment>
     )
 }

@@ -18,7 +18,7 @@ export const loadUser = () => dispatch => {
         })
         .catch((err) => {
             dispatch({
-                type: types.AUTH_ERROR
+                type: types.NOT_AUTHENTICATED
             });
         });
 };
@@ -69,7 +69,6 @@ export const login = ({ ...formData }) => dispatch => {
 
     axios.post('/api/auth/login', formData, config)
     .then((res) => {
-        
         dispatch({
             type: types.LOGIN_SUCCESS,
             payload: res.data

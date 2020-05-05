@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Alert from '../Layout/Alert/Alert';
+import Modal from '../Layout/Modal/Modal';
 import Home from '../../pages/Home';
 import NotFound from '../Layout/NotFound/NotFound';
 import Login from '../Auth/Login/Login';
@@ -16,6 +17,7 @@ const Routes = () => {
     return (
         <section>
             <Alert />
+            <Modal />
             <Switch>
                 <Route exact path="/" component={Home} />
                 <Route exact path="/login" component={Login} />

@@ -17,9 +17,16 @@ export default function (state = initialState, action) {
                 loading: false
             }
         case types.CREATE_POST:
+        case types.UPDATE_POST:
             return {
                 ...state,
                 posts: [payload, ...state.posts],
+                loading: false
+            }
+        case types.DELETE_POST:
+            return {
+                ...state,
+                posts: state.posts.filter((post) => post._id !== payload),
                 loading: false
             }
         case types.POST_ERROR:

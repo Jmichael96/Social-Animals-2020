@@ -5,6 +5,7 @@ const isAuthenticated = require('../middleware/check-auth');
 // @route    Post api/user/search_username
 // @desc     Find a user by username
 // @access   Private
+// CURRENTLY N/A
 router.post('/search_username', isAuthenticated, UserController.findUsername);
 
 // @route    GET api/user/usernames
