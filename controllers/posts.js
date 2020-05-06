@@ -144,3 +144,27 @@ exports.unlikePost = (req, res, next) => {
             });
         });
 }
+
+// @route    PUT api/posts/comment/:id
+// @desc     Comment on a post
+// @access   Private
+exports.comment = (req, res, next) => {
+    Post.findByIdAndUpdate({ _id: req.params.id })
+    .then((post) => {
+        const newComment = {
+            userId: req.user._id,
+            name: req.user.username,
+            text: req.body.text
+        }
+        post.comments.unshift(newComment);
+        post.save();
+        console.log(post);
+        res.json(post.comments);
+    })
+    .catch((err) => {
+        console.log(err);
+        res.status(500).json({
+            message: "Couldn't comment on post!"
+        });
+    });
+}

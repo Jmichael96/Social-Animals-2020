@@ -150,5 +150,33 @@ export const unlikePost = (id) => dispatch => {
                 type: types.POST_ERROR,
                 payload: err
             });
+        });
+}
+
+// add a comment
+export const addComment = (id, formData) => dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+    axios.post(`/api/posts/comment/${id}`, formData, config)
+        .then((res) => {
+            dispatch({
+                type: types.ADD_COMMENT,
+                payload: res.data
+            });
+            dispatch(setAlert('Added comment', 'success'));
         })
+        .catch((err) => {
+            if (err) {
+                console.log(err);
+                throw err;
+            }
+
+            dispatch({
+                type: types.POST_ERROR,
+                payload: err
+            });
+        });
 }

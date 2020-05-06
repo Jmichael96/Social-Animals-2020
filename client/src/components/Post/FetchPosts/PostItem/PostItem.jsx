@@ -13,6 +13,7 @@ import {
 import { connect } from 'react-redux';
 import { updatePost, deletePost, likePost, unlikePost } from '../../../../store/actions/post';
 import { setModal } from '../../../../store/actions/modal';
+import CommentIndex from '../../Comment/CommentIndex/CommentIndex';
 
 const PostItem = ({
     updatePost,
@@ -73,10 +74,6 @@ const PostItem = ({
         const id = _id;
         deletePost(id);
     }
-    // modal delete element
-    // const modalElement = () => {
-    //     return ( <button onClick={(e) => onDeleteSubmit(e)}>Confirm</button>)
-    // }
 
     // configure modal with setModal()
     const configureModal = () => {
@@ -111,19 +108,36 @@ const PostItem = ({
         }
     }
 
-    const checkIfLiked = () => {
-        if (isAuthenticated && user) {
-            likes.map((like) => {
-                if (like.userId === user._id) {
-                    console.log('matching id now')
-                }
-              
-                    console.log('like userId does not match!!!')
-                
-            })
+    const renderLikeNumber = () => {
+        if (likes.length <= 0 || likes.length === null) {
+            return null;
+        }
+        else if (likes.length === 1) {
+            return (
+                <p>{likes.length}{' '}Like</p>
+            )
+        }
+        else if (likes.length > 1) {
+            return (
+                <p>{likes.length}{' '}Likes</p>
+            )
         }
     }
-    // checkIfLiked();
+
+    const renderCommentNumber = () => {
+        if (comments.length <= 0 || comments.length === null) {
+            return null;
+        }
+        else if (comments.length === 1) {
+            return (
+                <p>{comments.length}{' '}Comment</p>
+            )
+        } else if (comments.length > 1) {
+            return (
+                <p>{comments.length}{' '}Comments</p>
+            )
+        }
+    }
     return (
         <Fragment>
             <MDBContainer>
@@ -145,9 +159,7 @@ const PostItem = ({
                                         onChange={(e) => setContentEdit(e.target.value)}
                                     />
                                 )}
-
                             <p>{imagePath}</p>
-                            <p>{date}</p>
                             {!checkUserValidation() ? (
                                 null
                             ) : (
@@ -155,24 +167,25 @@ const PostItem = ({
                                 )}
                             {isAuthenticated && user ? (
                                 <button type="button" onClick={() => {
-                                    // if (likes.length === 0) {
-
-                                    // }
                                         for (let i = 0; i < likes.length; i++) {
                                             if (likes[i].userId === user._id) {
-                                                console.log('You have already liked this post')
+                                                // if a post has already been liked by the logged in user...
+                                                // unlike it and return nothing;
                                                 unlikePost(_id);
                                                 return;
                                             }
                                         }
+                                        // if user has not liked post. like post with authenticated user's id
                                         likePost(_id);
                                 }}>
                                     <i className="fas fa-thumbs-up" />{' '}
-                                    <span>{likes.length > 0 && <span>{likes.length}</span>}</span>
                                 </button>
                             ) : (
                                 null
                             )}
+                            {renderLikeNumber()}
+                            {renderCommentNumber()}
+                            <CommentIndex postId={_id} />
                         </div>
                     </MDBCol>
                 </MDBRow>

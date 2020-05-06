@@ -34,4 +34,9 @@ router.put('/like/:id', [isAuthenticated, checkObjectId('id')], PostController.l
 // @access   Private
 router.put('/unlike/:id', [isAuthenticated, checkObjectId('id')], PostController.unlikePost);
 
+// @route    PUT api/posts/comment/:id
+// @desc     Comment on a post
+// @access   Private
+router.post('/comment/:id', [isAuthenticated, checkObjectId('id')], PostController.comment);
+
 module.exports = router;
