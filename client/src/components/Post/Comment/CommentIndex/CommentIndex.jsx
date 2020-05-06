@@ -3,27 +3,39 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import AddComment from '../AddComment/AddComment';
 
-const CommentIndex = ({ auth, postId }) => {
-    const [commentReady, setCommentReady] = useState(false);
+const CommentIndex = ({ auth, postId, comments }) => {
+    const [limit, setLimit] = useState(2);
+    const [reachedLimit, setReachedLimit] = useState(false);
 
-    // toggle between adding a comment or not
-    const commentSelection = () => {
-        setCommentReady(!commentReady);
-    }
+    const loadMoreComments = () => {
+        let commentLength = comments.length;
+        let currentLimit = limit;
 
-    // rendering add comment or closing comment section
-    const renderAddComment = () => {
-        if (!commentReady) {
-            return (
-                <Fragment>
-                    
-                </Fragment>
-            )
+        if (currentLimit < commentLength) {
+            setLimit(commentLength);
+            setReachedLimit(true);
+        } else if (currentLimit >= commentLength) {
+            setReachedLimit(true);
         }
     }
 
+    const renderComments = () => {
+        return Object.values(comments).slice(0, limit).map((comment) => {
+            return (
+                <div>
+                    <ul key={comment._id}>
+                        <li>{comment.name}</li>
+                        <li>{comment.text}</li>
+                    </ul>
+                </div>
+            )
+        })
+    }
     return (
         <Fragment>
+            {!reachedLimit ? (<button type="button" onClick={loadMoreComments}>Show more</button>) : (null)}
+            
+            {renderComments()}
             {!auth.isAuthenticated && !auth.loading ? (
                 null
             ) : (
@@ -35,7 +47,8 @@ const CommentIndex = ({ auth, postId }) => {
 
 CommentIndex.propTypes = {
     auth: PropTypes.object.isRequired,
-    postId: PropTypes.any.isRequired
+    postId: PropTypes.any.isRequired,
+    comments: PropTypes.any,
 };
 
 const mapStateToProps = (state) => ({

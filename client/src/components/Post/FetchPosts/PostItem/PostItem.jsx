@@ -79,6 +79,7 @@ const PostItem = ({
     const configureModal = () => {
         setModal('Are you sure you want to delete this post?', 'Yes', onDeleteSubmit)
     }
+
     // dropdown menu for a single post. 
     // it gives you all the actions you can do with your post
     const dropdownMenu = () => {
@@ -138,6 +139,7 @@ const PostItem = ({
             )
         }
     }
+
     return (
         <Fragment>
             <MDBContainer>
@@ -185,7 +187,7 @@ const PostItem = ({
                             )}
                             {renderLikeNumber()}
                             {renderCommentNumber()}
-                            <CommentIndex postId={_id} />
+                            <CommentIndex postId={_id} comments={comments} />
                         </div>
                     </MDBCol>
                 </MDBRow>
