@@ -7,6 +7,7 @@ const CommentIndex = ({ auth, postId, comments }) => {
     const [limit, setLimit] = useState(2);
     const [reachedLimit, setReachedLimit] = useState(false);
 
+    // once called, it will load the rest of the comments
     const loadMoreComments = () => {
         let commentLength = comments.length;
         let currentLimit = limit;
@@ -19,6 +20,7 @@ const CommentIndex = ({ auth, postId, comments }) => {
         }
     }
 
+    // renders comment data
     const renderComments = () => {
         return Object.values(comments).slice(0, limit).map((comment) => {
             return (
@@ -31,10 +33,10 @@ const CommentIndex = ({ auth, postId, comments }) => {
             )
         })
     }
+
     return (
         <Fragment>
             {!reachedLimit ? (<button type="button" onClick={loadMoreComments}>Show more</button>) : (null)}
-            
             {renderComments()}
             {!auth.isAuthenticated && !auth.loading ? (
                 null
