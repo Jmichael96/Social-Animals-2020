@@ -12,11 +12,12 @@ import {
 } from 'mdbreact';
 import { connect } from 'react-redux';
 import { updatePost, deletePost } from '../../../../store/actions/post';
-import Modal from '../../../Layout/Modal/Modal';
+import { setModal } from '../../../../store/actions/modal';
 
 const PostItem = ({
     updatePost,
     deletePost,
+    setModal,
     auth: { isAuthenticated, user, loading },
     post: { _id, content, imagePath, date, authorId, authorUsername }
 }) => {
@@ -66,14 +67,18 @@ const PostItem = ({
     }
 
     // delete post func
-    const onDeleteSubmit = (e) => {
-        e.preventDefault();
+    const onDeleteSubmit = () => {
         const id = _id;
         deletePost(id);
     }
     // modal delete element
-    const modalElement = () => {
-        return ( <button onClick={(e) => onDeleteSubmit(e)}>Confirm</button>)
+    // const modalElement = () => {
+    //     return ( <button onClick={(e) => onDeleteSubmit(e)}>Confirm</button>)
+    // }
+
+    // configure modal with setModal()
+    const configureModal = () => {
+        setModal('Are you sure you want to delete this post?', 'Yes', onDeleteSubmit)
     }
     // dropdown menu for a single post. 
     // it gives you all the actions you can do with your post
@@ -89,7 +94,7 @@ const PostItem = ({
                         <MDBDropdownItem>Something to beat</MDBDropdownItem>
                         <MDBDropdownItem>Something else here</MDBDropdownItem>
                         <MDBDropdownItem divider />
-                        <MDBDropdownItem><Modal buttonText={'Delete'} buttonAction={modalElement} modalContent={'Are you sure you want to delete this post?'}/></MDBDropdownItem>
+                        <MDBDropdownItem onClick={configureModal}>Delete</MDBDropdownItem>
                     </MDBDropdownMenu>
                 </MDBDropdown>
             )
@@ -146,10 +151,11 @@ PostItem.propTypes = {
     deletePost: PropTypes.func.isRequired,
     post: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
+    setModal: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = (state) => ({
     auth: state.auth
 });
 
-export default connect(mapStateToProps, { updatePost })(PostItem);
+export default connect(mapStateToProps, { updatePost, setModal, deletePost })(PostItem);

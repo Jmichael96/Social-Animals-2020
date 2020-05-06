@@ -93,7 +93,8 @@ export const deletePost = (id) => dispatch => {
         dispatch({
             type: types.DELETE_POST,
             payload: res.data
-        })
+        });
+        dispatch(fetchAllPosts());
     })
     .catch((err) => {
         if (err) {

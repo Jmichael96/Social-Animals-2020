@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { fetchUsernames } from '../../../store/actions/user';
@@ -9,22 +9,23 @@ const SearchUsernames = ({ fetchUsernames, user: { users, loading } }) => {
         fetchUsernames();
     }, [fetchUsernames]);
 
-    const renderUsers = () => {
-        const userList = users;
-        return Object.values(userList).map((user) => {
-            return (
-                <div>
-                    <Link to={`/user_profile/${user._id}`}>
-                        <p>{user.username}</p>
-                    </Link>
-                </div>
-            )
-        });
-    };
+    const [searchInput, setSearchInput] = useState('');
+
+    const filteredUsers = users.filter((user) => user.username.includes(searchInput));
+    const renderUsers = filteredUsers.map((item) => {
+        return (
+            <div key={item._id}>
+                <Link to={`/user_profile/${item._id}`}>
+                    <p>{item.username}</p>
+                </Link>
+            </div>
+        )
+    });
 
     return (
         <Fragment>
-            {renderUsers()}
+            <input type="text" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} />
+            {renderUsers}
         </Fragment>
     )
 }
