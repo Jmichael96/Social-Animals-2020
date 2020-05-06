@@ -80,16 +80,67 @@ exports.updatePost = (req, res, next) => {
 // @access   Private
 exports.deletePost = (req, res, next) => {
     Post.findByIdAndDelete({ _id: req.params.id, authorId: req.user._id })
-    .then((result) => {
-        res.status(200).json({
-            message: 'Successfully delete post',
-            result: result
+        .then((result) => {
+            res.status(200).json({
+                message: 'Successfully delete post',
+                result: result
+            });
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json({
+                message: "Couldn't delete post!"
+            });
         });
-    })
-    .catch((err) => {
-        console.log(err);
-        res.status(500).json({
-            message: "Couldn't delete post!"
+}
+
+// @route    PUT api/posts/like/:id
+// @desc     Like a post
+// @access   Private
+exports.likePost = (req, res, next) => {
+    Post.findByIdAndUpdate({ _id: req.params.id })
+        .then((post) => {
+            if (post.likes.some((like) => like.user.toString() === req.user._id)) {
+                res.status(400).json({
+                    message: 'Post has already been liked by this user'
+                });
+            };
+
+            post.likes.unshift({ userId: req.user._id });
+            console.log(post)
+            post.save()
+            return res.json(post.likes);
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json({
+                message: "Couldn't like post!"
+            });
         });
-    });
+}
+
+// @route    PUT api/posts/unlike/:id
+// @desc     Unlike a post
+// @access   Private
+exports.unlikePost = (req, res, next) => {
+    Post.findByIdAndUpdate({ _id: req.params.id })
+        .then((post) => {
+            if (!post.likes.some((like) => like.userId.toString() === req.user._id)) {
+                return res.status(400).json({ msg: 'Post has not yet been liked' });
+            }
+
+            // remove like
+            post.likes = post.likes.filter(
+                ({ userId }) => userId.toString() !== req.user._id
+            );
+            post.save();
+            console.log(post)
+            return res.json(post.likes);
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json({
+                message: "Couldn't unlike post!"
+            });
+        });
 }

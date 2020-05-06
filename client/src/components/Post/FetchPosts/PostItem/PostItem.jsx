@@ -11,15 +11,17 @@ import {
     MDBDropdownItem
 } from 'mdbreact';
 import { connect } from 'react-redux';
-import { updatePost, deletePost } from '../../../../store/actions/post';
+import { updatePost, deletePost, likePost, unlikePost } from '../../../../store/actions/post';
 import { setModal } from '../../../../store/actions/modal';
 
 const PostItem = ({
     updatePost,
     deletePost,
     setModal,
+    likePost,
+    unlikePost,
     auth: { isAuthenticated, user, loading },
-    post: { _id, content, imagePath, date, authorId, authorUsername }
+    post: { _id, content, imagePath, date, authorId, authorUsername, likes, comments }
 }) => {
 
     const [editing, setEditing] = useState(false);
@@ -108,6 +110,20 @@ const PostItem = ({
             )
         }
     }
+
+    const checkIfLiked = () => {
+        if (isAuthenticated && user) {
+            likes.map((like) => {
+                if (like.userId === user._id) {
+                    console.log('matching id now')
+                }
+              
+                    console.log('like userId does not match!!!')
+                
+            })
+        }
+    }
+    // checkIfLiked();
     return (
         <Fragment>
             <MDBContainer>
@@ -137,6 +153,26 @@ const PostItem = ({
                             ) : (
                                     dropdownMenu()
                                 )}
+                            {isAuthenticated && user ? (
+                                <button type="button" onClick={() => {
+                                    // if (likes.length === 0) {
+
+                                    // }
+                                        for (let i = 0; i < likes.length; i++) {
+                                            if (likes[i].userId === user._id) {
+                                                console.log('You have already liked this post')
+                                                unlikePost(_id);
+                                                return;
+                                            }
+                                        }
+                                        likePost(_id);
+                                }}>
+                                    <i className="fas fa-thumbs-up" />{' '}
+                                    <span>{likes.length > 0 && <span>{likes.length}</span>}</span>
+                                </button>
+                            ) : (
+                                null
+                            )}
                         </div>
                     </MDBCol>
                 </MDBRow>
@@ -152,10 +188,12 @@ PostItem.propTypes = {
     post: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
     setModal: PropTypes.func.isRequired,
+    likePost: PropTypes.func.isRequired,
+    unlikePost: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = (state) => ({
     auth: state.auth
 });
 
-export default connect(mapStateToProps, { updatePost, setModal, deletePost })(PostItem);
+export default connect(mapStateToProps, { updatePost, setModal, deletePost, likePost, unlikePost })(PostItem);

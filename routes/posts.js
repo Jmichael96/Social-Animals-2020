@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const PostController = require('../controllers/posts');
 const isAuthenticated = require('../middleware/check-auth');
-
+const checkObjectId = require('../middleware/checkObjectId');
 
 // @route    POST api/posts/create_post
 // @desc     Creating post
@@ -23,5 +23,15 @@ router.put('/update_post/:id', isAuthenticated, PostController.updatePost);
 // @desc     Delete post
 // @access   Private
 router.delete('/delete_post/:id', isAuthenticated, PostController.deletePost);
+
+// @route    PUT api/posts/like/:id
+// @desc     Like a post
+// @access   Private
+router.put('/like/:id', [isAuthenticated, checkObjectId('id')], PostController.likePost);
+
+// @route    PUT api/posts/unlike/:id
+// @desc     Unlike a post
+// @access   Private
+router.put('/unlike/:id', [isAuthenticated, checkObjectId('id')], PostController.unlikePost);
 
 module.exports = router;
