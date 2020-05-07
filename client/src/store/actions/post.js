@@ -179,4 +179,27 @@ export const addComment = (id, formData) => dispatch => {
                 payload: err
             });
         });
-}
+};
+
+// delete comment
+export const deleteComment = (postId, commentId) => dispatch => {
+    axios.delete(`/api/posts/delete_comment/${postId}/${commentId}`)
+    .then((res) => {
+        dispatch({
+            type: types.DELETE_COMMENT,
+            payload: commentId
+        });
+        dispatch(setAlert('Comment removed', 'success'));
+    })
+    .catch((err) => {
+        if (err) {
+            console.log(err);
+            throw err;
+        }
+
+        dispatch({
+            type: types.POST_ERROR,
+            payload: err
+        });
+    });
+};

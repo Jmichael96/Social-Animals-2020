@@ -187,7 +187,7 @@ const PostItem = ({
                             )}
                             {renderLikeNumber()}
                             {renderCommentNumber()}
-                            <CommentIndex postId={_id} comments={comments} />
+                            <CommentIndex postId={_id} comments={comments} postAuthorId={authorId} />
                         </div>
                     </MDBCol>
                 </MDBRow>

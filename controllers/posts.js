@@ -100,7 +100,7 @@ exports.deletePost = (req, res, next) => {
 exports.likePost = (req, res, next) => {
     Post.findByIdAndUpdate({ _id: req.params.id })
         .then((post) => {
-            if (post.likes.some((like) => like.user.toString() === req.user._id)) {
+            if (post.likes.some((like) => like.userId.toString() === req.user._id)) {
                 res.status(400).json({
                     message: 'Post has already been liked by this user'
                 });
@@ -165,6 +165,46 @@ exports.comment = (req, res, next) => {
         console.log(err);
         res.status(500).json({
             message: "Couldn't comment on post!"
+        });
+    });
+}
+
+// @route    DELETE api/posts/delete_comment/:postId/:comment_id
+// @desc     Delete a comment
+// @access   Private
+exports.deleteCommment = (req, res, next) => {
+    Post.findById({ _id: req.params.postId })
+    .then((post) => {
+        const comment = post.comments.find((comment) => 
+            comment.id === req.params.comment_id
+        )
+        if (!comment) {
+            return res.status(404).json({
+                message: 'Comment does not exist'
+            });
+        }
+
+        if (post.authorId.toString() === req.user._id) {
+            console.log('deleted by post author')
+            post.comments = post.comments.filter(
+                ({ id }) => id !== req.params.comment_id
+            );
+        }
+        else if (comment.userId.toString() === req.user._id) {
+            console.log('deleted by comment author')
+            post.comments = post.comments.filter(
+                ({ id }) => id !== req.params.comment_id
+            );
+        }
+
+        post.save();
+
+        res.json(post.comments);
+    })
+    .catch((err) => {
+        console.log(err);
+        res.status(500).json({
+            message: "Couldn't delete post!"
         });
     });
 }

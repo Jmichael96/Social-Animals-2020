@@ -2,8 +2,9 @@ import React, { Fragment, useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import AddComment from '../AddComment/AddComment';
+import DeleteComment from '../DeleteComment/DeleteComment';
 
-const CommentIndex = ({ auth, postId, comments }) => {
+const CommentIndex = ({ auth, postId, comments, postAuthorId }) => {
     const [limit, setLimit] = useState(2);
     const [reachedLimit, setReachedLimit] = useState(false);
 
@@ -20,6 +21,14 @@ const CommentIndex = ({ auth, postId, comments }) => {
         }
     }
 
+    const renderDelete = (comment) => {
+        if (!auth.loading && !auth.user) {
+            return null;
+        }
+        return (
+            <DeleteComment comment={comment} postId={postId} postAuthorId={postAuthorId} />
+        )
+    }
     // renders comment data
     const renderComments = () => {
         return Object.values(comments).slice(0, limit).map((comment) => {
@@ -28,6 +37,7 @@ const CommentIndex = ({ auth, postId, comments }) => {
                     <ul key={comment._id}>
                         <li>{comment.name}</li>
                         <li>{comment.text}</li>
+                        {renderDelete(comment)}
                     </ul>
                 </div>
             )
@@ -51,6 +61,7 @@ CommentIndex.propTypes = {
     auth: PropTypes.object.isRequired,
     postId: PropTypes.any.isRequired,
     comments: PropTypes.any,
+    postAuthorId: PropTypes.any,
 };
 
 const mapStateToProps = (state) => ({
