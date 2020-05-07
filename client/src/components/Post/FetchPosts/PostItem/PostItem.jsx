@@ -14,7 +14,6 @@ import { connect } from 'react-redux';
 import { updatePost, deletePost, likePost, unlikePost } from '../../../../store/actions/post';
 import { setModal } from '../../../../store/actions/modal';
 import CommentIndex from '../../Comment/CommentIndex/CommentIndex';
-import CommentBody from '../../Comment/CommentBody/CommentBody';
 import AddComment from '../../Comment/AddComment/AddComment';
 
 const PostItem = ({
@@ -49,7 +48,7 @@ const PostItem = ({
         }
         return confirmedUser;
     }
-    checkUserValidation()
+    // checkUserValidation()
 
     // setting the edit availability to true or false
     const onEditChange = () => {
@@ -164,7 +163,7 @@ const PostItem = ({
         }
         return Object.values(comments).slice(0, commentLimit).map((comment) => {
             return (
-                <CommentBody key={comment._id} comment={comment} postAuthorId={authorId} postId={_id} />
+                <CommentIndex key={comment._id} comment={comment} postAuthorId={authorId} postId={_id} />
             )
         })
     }
@@ -178,6 +177,14 @@ const PostItem = ({
         return (
             <AddComment postId={_id} />
         )
+    }
+
+    // checking if all comments are loaded first before adding the 'show more' comments button
+    const renderLoadMoreComments = () => {
+        if (comments.length <= commentLimit && !commentLimitReached) {
+            return null;
+        }
+        return (<button type="button" onClick={loadMoreComments}>Show more</button>)
     }
 
     return (
@@ -227,10 +234,7 @@ const PostItem = ({
                                 )}
                             {renderLikeNumber()}
                             {renderCommentNumber()}
-                            {/* {comments === undefined ? null : comments.map((comment) => (
-                                <CommentBody key={comment._id} comment={comment} postAuthorId={authorId} postId={_id} />
-                            ))} */}
-                            {!commentLimitReached ? (<button type="button" onClick={loadMoreComments}>Show more</button>) : (null)}
+                            {renderLoadMoreComments()}
                             {renderComments()}
                             {renderAddComment()}
                         </div>

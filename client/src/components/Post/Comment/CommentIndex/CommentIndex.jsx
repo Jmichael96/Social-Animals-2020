@@ -1,89 +1,117 @@
 import React, { Fragment, useState } from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import AddComment from '../AddComment/AddComment';
-import DeleteComment from '../DeleteComment/DeleteComment';
-// import { updateComment } from '../../../../store/actions/post';
+import { connect } from 'react-redux';
+// import DeleteComment from '../DeleteComment/DeleteComment';
 import UpdateComment from '../UpdateComment/UpdateComment';
+import {
+    MDBDropdown,
+    MDBDropdownToggle,
+    MDBDropdownMenu,
+    MDBDropdownItem
+} from 'mdbreact';
+import { deleteComment } from '../../../../store/actions/post';
+import { setModal } from '../../../../store/actions/modal';
 
-const CommentIndex = ({ auth, postId, comments, postAuthorId, updateComment }) => {
-    const [limit, setLimit] = useState(2);
-    const [reachedLimit, setReachedLimit] = useState(false);
+const CommentIndex = ({ auth, deleteComment, setModal, comment: { _id, name, text, userId }, postId, postAuthorId }) => {
     const [updating, setUpdating] = useState(false);
-    // const [text, setText] = useState('');
+
     // for when you are ready to update a comment
     const isUpdating = () => {
         setUpdating(!updating);
     }
 
-    // once called, it will load the rest of the comments
-    const loadMoreComments = () => {
-        let commentLength = comments.length;
-        let currentLimit = limit;
-
-        if (currentLimit < commentLength) {
-            setLimit(commentLength);
-            setReachedLimit(true);
-        } else if (currentLimit >= commentLength) {
-            setReachedLimit(true);
-        }
+    // render the update component
+    const renderUpdate = () => {
+        return (<UpdateComment textContent={text} postId={postId} commentId={_id} commentAuthorId={userId} auth={auth} />)
     }
 
-    const renderDelete = (comment) => {
-        if (!auth.loading && !auth.user) {
-            return null;
-        }
+    // render action button for comment
+    const renderActionButton = () => {
         return (
-            <DeleteComment comment={comment} postId={postId} postAuthorId={postAuthorId} />
+            <a href="#!">
+                <i className="fas fa-ellipsis-h"></i>
+            </a>
         )
     }
 
+    // render only if the user that created the comment is logged in
+    // used for editing purposes only
+    const renderDropDownEdit = () => {
+        if (!auth.loading && auth.user === null) {
+            return;
+        }
+        if (!auth.loading && userId === auth.user._id) {
+            return <MDBDropdownItem onClick={isUpdating}>Edit</MDBDropdownItem>
+        } else {
+            return null;
+        }
+    }
 
-    // renders comment data
-    const renderComments = () => {
-        return Object.values(comments).slice(0, limit).map((comment) => {
-            return (
-                <div key={comment._id}>
-                    <ul>
-                        <a href="#!" onClick={isUpdating}>
-                            <i className="fas fa-ellipsis-h"></i>
-                        </a>
-                        <li>{comment.name}</li>
-                        
-                        {!updating ? (
-                            <li>{comment.text}</li>
-                        ) : (
-                            <UpdateComment textContent={comment.text} />
-                        )}
-                        {renderDelete(comment)}
-                    </ul>
-                </div>
-            )
-        })
+    // dropdown menu for a single post. 
+    // it gives you all the actions you can do with your post
+    const dropdownMenu = () => {
+        if (!auth.isAuthenticated) {
+            return null;
+        }
+        return (
+            <MDBDropdown size="sm">
+                <MDBDropdownToggle>
+                    {renderActionButton()}
+                </MDBDropdownToggle>
+                <MDBDropdownMenu basic>
+                    {renderDropDownEdit()}
+                    <MDBDropdownItem divider />
+                    {!checkDeleteRender() ? (null) : (<MDBDropdownItem onClick={configureDeleteModal}>Delete</MDBDropdownItem>)}
+                </MDBDropdownMenu>
+            </MDBDropdown>
+        )
+    }
+
+    // function passed into setModal to confirm deleting;
+    const onDeleteSubmit = () => {
+        deleteComment(postId, _id)
+    }
+    // configure the modal for delete the comment
+    const configureDeleteModal = () => {
+        setModal('Are you sure you want to delete this comment?', 'Yes', onDeleteSubmit);
+    }
+    // rendering delete comment button in dropdown if user owns post 
+    // or if the user is author of the comment
+    const checkDeleteRender = () => {
+        if (auth.isAuthenticated && auth.user) {
+            let checked = false
+            if (!auth.loading && userId === auth.user._id) {
+                checked = true;
+            } else if (!auth.loading && postAuthorId === auth.user._id) {
+                checked = true;
+            }
+            return checked;
+        } else {
+            return;
+        }
     }
 
     return (
-        <Fragment>
-            {!reachedLimit ? (<button type="button" onClick={loadMoreComments}>Show more</button>) : (null)}
-            {renderComments()}
-            {!auth.isAuthenticated && !auth.loading ? (
-                null
-            ) : (
-                    <AddComment postId={postId} />
-                )}
+        <Fragment key={_id}>
+            {dropdownMenu()}
+            <ul>
+                <li>{name}</li>
+                {!updating ? (<li>{text}</li>) : (renderUpdate())}
+            </ul>
         </Fragment>
     )
 }
 
 CommentIndex.propTypes = {
-    auth: PropTypes.object.isRequired,
-    postId: PropTypes.any.isRequired,
-    comments: PropTypes.any,
+    deleteComment: PropTypes.func.isRequired,
+    setModal: PropTypes.func.isRequired,
+    comment: PropTypes.any,
+    postId: PropTypes.any,
     postAuthorId: PropTypes.any,
-};
+    auth: PropTypes.object.isRequired,
+}
 
 const mapStateToProps = (state) => ({
     auth: state.auth
-});
-
-export default connect(mapStateToProps)(CommentIndex);
+})
+export default connect(mapStateToProps, { deleteComment, setModal })(CommentIndex);
