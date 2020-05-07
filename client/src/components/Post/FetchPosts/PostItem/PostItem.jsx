@@ -26,7 +26,8 @@ const PostItem = ({
     auth: { isAuthenticated, user, loading },
     post: { _id, content, imagePath, date, authorId, authorUsername, likes, comments }
 }) => {
-
+    const [commentLimit, setCommentLimit] = useState(2);
+    const [commentLimitReached, setCommentLimitReached] = useState(false);
     const [editing, setEditing] = useState(false);
     const [contentEdit, setContentEdit] = useState(content);
 
@@ -142,6 +143,43 @@ const PostItem = ({
         }
     }
 
+    // once called, it will load the rest of the comments
+    const loadMoreComments = () => {
+        let commentLength = comments.length;
+        let currentLimit = commentLimit;
+
+        if (currentLimit < commentLength) {
+            setCommentLimit(commentLength);
+            setCommentLimitReached(true);
+        } else if (currentLimit >= commentLength) {
+            setCommentLimitReached(true);
+        }
+    }
+
+    //  rendering comments if there are comments available
+    // and then adding the slice method for cleaner rendering
+    const renderComments = () => {
+        if (comments === null || undefined) {
+            return null;
+        }
+        return Object.values(comments).slice(0, commentLimit).map((comment) => {
+            return (
+                <CommentBody key={comment._id} comment={comment} postAuthorId={authorId} postId={_id} />
+            )
+        })
+    }
+
+    // rendering add comment component if there is an authenticated user
+    // else returning null
+    const renderAddComment = () => {
+        if (!loading && !isAuthenticated) {
+            return null;
+        }
+        return (
+            <AddComment postId={_id} />
+        )
+    }
+
     return (
         <Fragment>
             <MDBContainer>
@@ -171,28 +209,30 @@ const PostItem = ({
                                 )}
                             {isAuthenticated && user ? (
                                 <button type="button" onClick={() => {
-                                        for (let i = 0; i < likes.length; i++) {
-                                            if (likes[i].userId === user._id) {
-                                                // if a post has already been liked by the logged in user...
-                                                // unlike it and return nothing;
-                                                unlikePost(_id);
-                                                return;
-                                            }
+                                    for (let i = 0; i < likes.length; i++) {
+                                        if (likes[i].userId === user._id) {
+                                            // if a post has already been liked by the logged in user...
+                                            // unlike it and return nothing;
+                                            unlikePost(_id);
+                                            return;
                                         }
-                                        // if user has not liked post. like post with authenticated user's id
-                                        likePost(_id);
+                                    }
+                                    // if user has not liked post. like post with authenticated user's id
+                                    likePost(_id);
                                 }}>
                                     <i className="fas fa-thumbs-up" />{' '}
                                 </button>
                             ) : (
-                                null
-                            )}
+                                    null
+                                )}
                             {renderLikeNumber()}
                             {renderCommentNumber()}
-                            {comments === undefined ? null : comments.map((comment) => (
+                            {/* {comments === undefined ? null : comments.map((comment) => (
                                 <CommentBody key={comment._id} comment={comment} postAuthorId={authorId} postId={_id} />
-                            ))}
-                            <AddComment postId={_id}  />
+                            ))} */}
+                            {!commentLimitReached ? (<button type="button" onClick={loadMoreComments}>Show more</button>) : (null)}
+                            {renderComments()}
+                            {renderAddComment()}
                         </div>
                     </MDBCol>
                 </MDBRow>

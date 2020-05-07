@@ -14,7 +14,8 @@ import {
 } from 'mdbreact';
 
 const CommentBody = ({ auth, comment: { _id, name, text, userId }, postId, postAuthorId }) => {
-
+    const [limit, setLimit] = useState(2);
+    const [reachedLimit, setReachedLimit] = useState(false);
     const [updating, setUpdating] = useState(false);
 
     // for when you are ready to update a comment
@@ -64,6 +65,9 @@ const CommentBody = ({ auth, comment: { _id, name, text, userId }, postId, postA
     // render only if the user that created the comment is logged in
     // used for editing purposes only
     const renderDropDownEdit = () => {
+        if (!auth.loading && auth.user === null) {
+            return;
+        }
         if (!auth.loading && userId === auth.user._id) {
             return <MDBDropdownItem onClick={isUpdating}>Edit</MDBDropdownItem>
         } else {
@@ -74,6 +78,9 @@ const CommentBody = ({ auth, comment: { _id, name, text, userId }, postId, postA
     // dropdown menu for a single post. 
     // it gives you all the actions you can do with your post
     const dropdownMenu = () => {
+        if (!auth.isAuthenticated) {
+            return null;
+        }
         return (
             <MDBDropdown size="sm">
                 <MDBDropdownToggle>
