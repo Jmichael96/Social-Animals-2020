@@ -14,6 +14,8 @@ import { connect } from 'react-redux';
 import { updatePost, deletePost, likePost, unlikePost } from '../../../../store/actions/post';
 import { setModal } from '../../../../store/actions/modal';
 import CommentIndex from '../../Comment/CommentIndex/CommentIndex';
+import CommentBody from '../../Comment/CommentBody/CommentBody';
+import AddComment from '../../Comment/AddComment/AddComment';
 
 const PostItem = ({
     updatePost,
@@ -187,7 +189,10 @@ const PostItem = ({
                             )}
                             {renderLikeNumber()}
                             {renderCommentNumber()}
-                            <CommentIndex postId={_id} comments={comments} postAuthorId={authorId} />
+                            {comments === undefined ? null : comments.map((comment) => (
+                                <CommentBody key={comment._id} comment={comment} postAuthorId={authorId} postId={_id} />
+                            ))}
+                            <AddComment postId={_id}  />
                         </div>
                     </MDBCol>
                 </MDBRow>

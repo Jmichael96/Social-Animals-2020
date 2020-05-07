@@ -27,7 +27,7 @@ const AddComment = ({ postId, addComment }) => {
     const resetInput = () => {
         setText('');
     }
-    
+
     return (
         <Fragment>
                 <input

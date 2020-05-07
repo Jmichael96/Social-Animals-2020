@@ -203,3 +203,14 @@ export const deleteComment = (postId, commentId) => dispatch => {
         });
     });
 };
+
+// update comment 
+export const updateComment = (postId, commentId, formData) => dispatch => {
+    axios.put(`/api/posts/update_comment/${postId}/${commentId}`)
+    .then((res) => {
+        dispatch({
+            type: types.UPDATE_COMMENT,
+            payload: { postId, comments: res.data }
+        })
+    })
+}

@@ -44,4 +44,9 @@ router.post('/comment/:id', [isAuthenticated, checkObjectId('id')], PostControll
 // @access   Private
 router.delete('/delete_comment/:postId/:comment_id', isAuthenticated, PostController.deleteCommment);
 
+// @route    PUT api/posts/update_comment/:postId/:comment_id
+// @desc     Update a comment
+// @access   Private
+router.put('/update_comment/:postId/comment_id', isAuthenticated, PostController.updateComment);
+
 module.exports = router;

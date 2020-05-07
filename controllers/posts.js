@@ -207,4 +207,38 @@ exports.deleteCommment = (req, res, next) => {
             message: "Couldn't delete post!"
         });
     });
-}
+};
+
+// @route    PUT api/posts/update_comment/:postId/:comment_id
+// @desc     Update a comment
+// @access   Private
+exports.updateComment = (req, res, next) => {
+    Post.findByIdAndUpdate({ _id: req.params.postId })
+    .then((post) => {
+        const comment = post.comments.find((comment) => 
+            comment.id === req.params.comment_id
+        );
+        if (!comment) {
+            return res.status(404).json({
+                message: 'Comment does not exist'
+            });
+        }
+        if (comment.userId.toString() !== req.user._id) {
+            return res.status(401).json({
+                message: 'You are not authorized'
+            });
+        }
+        const newComment = {
+            text: req.body.text
+        }
+        // post.comments.
+        
+
+    })
+    .catch((err) => {
+        console.log(err);
+        res.status(500).json({
+            message: "Couldn't update post!"
+        });
+    });
+};

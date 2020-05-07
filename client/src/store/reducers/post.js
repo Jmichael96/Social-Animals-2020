@@ -27,7 +27,7 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 posts: state.posts.map(post =>
-                  post._id === payload.id ? { ...post, likes: payload.likes } : post
+                    post._id === payload.id ? { ...post, likes: payload.likes } : post
                 ),
                 loading: false
             }
@@ -35,6 +35,14 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 post: { ...state.post, comments: payload },
+                loading: false
+            }
+        case types.UPDATE_COMMENT:
+            return {
+                ...state,
+                post: state.post.map(i =>
+                    i._id === payload.postId ? { ...i, comments: payload.comments } : i
+                ),
                 loading: false
             }
         case types.DELETE_POST:
