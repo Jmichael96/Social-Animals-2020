@@ -215,38 +215,25 @@ exports.deleteCommment = (req, res, next) => {
 // @desc     Update a comment
 // @access   Private
 exports.updateComment = (req, res, next) => {
-    console.log('updateComment() api')
-    console.log(req.body);
     Post.updateOne({ 'comments._id': req.params.id },
-    { $set: { 
-        'comments.$.userId': req.user._id ,
-        'comments.$.name': req.user.username,
-        'comments.$.text': req.body.text
-    }}, function(err, comment) {
-        if (err) {
+        {
+            $set: {
+                'comments.$.userId': req.user._id,
+                'comments.$.name': req.user.username,
+                'comments.$.text': req.body.text
+            }
+        })
+        .then((result) => {
+            if (result.n > 0) {
+                res.status(200).json({ message: 'Updated post successfully' });
+            } else {
+                res.status(401).json({ message: 'Not authorized' });
+            };
+        })
+        .catch((err) => {
             console.log(err);
-            throw err;
-        }
-        console.log(comment);
-    })
-    // Post.updateOne({ _id: req.params.id }, {
-    //     userId: req.user._id,
-    //     name: req.user.username,
-    //     text: req.body.text
-    // })
-    //     .then((result) => {
-    //         console.log(result);
-    //         if (result.n > 0) {
-    //             res.status(200).json({ message: 'Updated post successfully' });
-    //         } 
-    //         // else {
-    //         //     res.status(401).json({ message: 'Not authorized' });
-    //         // };
-    //     })
-    //     .catch((err) => {
-    //         console.log(err);
-    //         res.status(500).json({
-    //             message: "Couldn't update comment!"
-    //         });
-    //     });
+            res.status(500).json({
+                message: "Couldn't udpate post!"
+            });
+        });
 };

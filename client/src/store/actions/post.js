@@ -217,7 +217,8 @@ export const updateComment = (id, formData) => dispatch => {
         dispatch({
             type: types.UPDATE_COMMENT,
             payload: res.data
-        })
+        });
+        dispatch(setAlert('Comment updated successfully!', 'success'));
     })
     .catch((err) => {
         if (err) {
