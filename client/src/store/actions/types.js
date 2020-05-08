@@ -2,9 +2,13 @@
 export const SET_ALERT = 'SET_ALERT';
 export const REMOVE_ALERT = 'REMOVE_ALERT';
 
-// MODAL TYPES 
+// CONFIRM MODAL TYPES 
 export const SET_MODAL = 'SET_MODAL';
 export const REMOVE_MODAL = 'REMOVE_MODAL';
+
+// ITERATING MODAL TYPES
+export const SET_ITERATING_MODAL = 'SET_ITERATING_MODAL';
+export const REMOVE_ITERATING_MODAL = 'REMOVE_ITERATING_MODAL';
 
 // AUTH TYPES
 export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
@@ -42,3 +46,4 @@ export const UPDATE_COMMENT = 'UPDATE_COMMENT';
 // LIKE TYPES [just to see who all has liked your post]
 export const FETCH_LIKES = 'FETCH_LIKES';
 export const LIKE_ERROR = 'LIKE_ERROR';
+export const REMOVE_LIKES = 'REMOVE_LIKES';

@@ -12,12 +12,14 @@ import UpdateProfile from '../Profile/UpdateProfile/UpdateProfile';
 import ProfileLandingPage from '../Profile/PofileLandingPage/ProfileLandingPage';
 import UserProfile from '../Profile/UserProfile/UserProfile';
 import SearchUsernames from '../Search/SearchUsernames/SearchUsernames';
+import IteratingModal from '../Layout/IteratingModal/IteratingModal';
 
 const Routes = () => {
     return (
         <section>
             <Alert />
             <Modal />
+            <IteratingModal />
             <Switch>
                 <Route exact path="/" component={Home} />
                 <Route exact path="/login" component={Login} />

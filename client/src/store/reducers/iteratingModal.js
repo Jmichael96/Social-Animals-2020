@@ -2,10 +2,8 @@ import * as types from '../actions/types';
 
 const initialState = {
     isOpen: false,
-    modalData: {
-        modalContent: null,
-        modalActionText: null,
-        modalAction: () => { }
+    iteratingModalData: {
+        data: null
     }
 }
 
@@ -13,20 +11,18 @@ export default function (state = initialState, action) {
     const { type, payload } = action;
 
     switch (type) {
-        case types.SET_MODAL:
+        case types.SET_ITERATING_MODAL:
             return {
                 ...state,
-                modalData: payload,
+                iteratingModalData: payload,
                 isOpen: true
-            };
-        case types.REMOVE_MODAL:
+            }
+        case types.REMOVE_ITERATING_MODAL:
             return {
                 ...state,
                 isOpen: false,
-                modalData: {
-                    modalContent: null,
-                    modalActionText: null,
-                    modalAction: () => { }
+                iteratingModalData: {
+                    data: null
                 }
             }
         default:

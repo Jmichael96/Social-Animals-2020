@@ -16,7 +16,8 @@ import { fetchLikes } from '../../../../store/actions/like';
 import { setModal } from '../../../../store/actions/modal';
 import CommentIndex from '../../Comment/CommentIndex/CommentIndex';
 import AddComment from '../../Comment/AddComment/AddComment';
-import FetchLikes from '../../Like/FetchLikes/FetchLikes';
+import { setIteratingModal } from '../../../../store/actions/iteratingModal';
+import isEmpty from '../../../../utils/isEmpty';
 
 const PostItem = ({
     updatePost,
@@ -25,6 +26,7 @@ const PostItem = ({
     likePost,
     unlikePost,
     fetchLikes,
+    setIteratingModal,
     auth: { isAuthenticated, user, loading },
     post: { _id, content, imagePath, date, authorId, authorUsername, likes, comments },
     like
@@ -33,11 +35,14 @@ const PostItem = ({
     const [commentLimitReached, setCommentLimitReached] = useState(false);
     const [editing, setEditing] = useState(false);
     const [contentEdit, setContentEdit] = useState(content);
-    const [renderLikesModal, setRenderLikesModal] = useState(false);
 
+    const likeArr = like.likes;
     useEffect(() => {
         setContentEdit(content);
-    }, [content]);
+        if (!isEmpty(likeArr)) {
+            setIteratingModal(likeArr)
+        }
+    }, [content, likeArr, isEmpty]);
 
     // checking if user is authenticated and owns the post 
     // they want to update or delete
@@ -119,13 +124,16 @@ const PostItem = ({
     // func to call fetchLikes()
     const submitFetchLikes = () => {
         fetchLikes(_id);
-        setRenderLikesModal(true);
     }
+
+    // set the config iterating modal in the useEffect()
+    // const configIteratingModal = (modalProp) => {
+    //     setIteratingModal(modalProp)
+    // }
 
     // render the like amount on the post item
     const renderLikeNumber = () => {
         const like = likes.length;
-
         switch (like) {
             case null:
                 return null;
@@ -134,25 +142,17 @@ const PostItem = ({
             case 0:
                 return null;
             case 1:
-                return (<a href="#" onClick={submitFetchLikes}>{likes.length}{' '}Like</a>);
+                return (<a href="#" onClick={() => {
+                    submitFetchLikes();
+                }}>{likes.length}{' '}Like</a>);
             default:
-                return (<a href="#" onClick={submitFetchLikes}>{likes.length}{' '}Likes</a>);
+                return (<a href="#" onClick={() => {
+                    submitFetchLikes();
+                }}>{likes.length}{' '}Likes</a>);
         }
-        // if (!like || like === 0 || likes === null || likes === undefined) {
-        //     return null;
-        // }
-        // else if (like === 1) {
-        //     return (
-        //         <p>{like}{' '}Like</p>
-        //     )
-        // }
-        // else if (likes > 1) {
-        //     return (
-        //         <p>{like}{' '}Likes</p>
-        //     )
-        // }
     }
-
+   
+    // render the comment amount
     const renderCommentNumber = () => {
         if (comments.length <= 0 || comments.length === null) {
             return null;
@@ -215,7 +215,7 @@ const PostItem = ({
 
     return (
         <Fragment>
-            <FetchLikes openOrder={renderLikesModal} like={like}  />
+            {/* <FetchLikes openOrder={renderLikesModal} like={like}  /> */}
             <MDBContainer>
                 <MDBRow>
                     <MDBCol>
@@ -282,6 +282,7 @@ PostItem.propTypes = {
     setModal: PropTypes.func.isRequired,
     likePost: PropTypes.func.isRequired,
     unlikePost: PropTypes.func.isRequired,
+    setIteratingModal: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = (state) => ({
@@ -289,4 +290,4 @@ const mapStateToProps = (state) => ({
     like: state.like
 });
 
-export default connect(mapStateToProps, { updatePost, setModal, deletePost, likePost, unlikePost, fetchLikes })(PostItem);
+export default connect(mapStateToProps, { updatePost, setModal, deletePost, likePost, unlikePost, fetchLikes, setIteratingModal })(PostItem);

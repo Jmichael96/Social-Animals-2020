@@ -6,6 +6,7 @@ import profile from './profile';
 import user from './user';
 import modal from './modal';
 import like from './like';
+import iteratingModal from './iteratingModal';
 
 const rootReducer = combineReducers({
     alert,
@@ -14,7 +15,8 @@ const rootReducer = combineReducers({
     post,
     profile,
     user,
-    like
+    like,
+    iteratingModal
 });
 
 export default rootReducer;

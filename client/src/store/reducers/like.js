@@ -14,6 +14,12 @@ export default function (state = initialState, action) {
                 likes: payload,
                 loading: false
             }
+        case types.REMOVE_LIKES:
+            return {
+                ...state,
+                likes: [],
+                loading: false
+            }
         case types.LIKE_ERROR:
             return {
                 ...state,
