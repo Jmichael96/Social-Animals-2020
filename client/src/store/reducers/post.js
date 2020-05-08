@@ -40,9 +40,7 @@ export default function (state = initialState, action) {
         case types.UPDATE_COMMENT:
             return {
                 ...state,
-                post: state.post.map(i =>
-                    i._id === payload.postId ? { ...i, comments: payload.comments } : i
-                ),
+                post: { ...state.post, comments: payload },
                 loading: false
             }
         case types.DELETE_POST:

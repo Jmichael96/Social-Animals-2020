@@ -196,7 +196,6 @@ export const deleteComment = (postId, commentId) => dispatch => {
             console.log(err);
             throw err;
         }
-
         dispatch({
             type: types.POST_ERROR,
             payload: err
@@ -205,12 +204,29 @@ export const deleteComment = (postId, commentId) => dispatch => {
 };
 
 // update comment 
-export const updateComment = (postId, commentId, formData) => dispatch => {
-    axios.put(`/api/posts/update_comment/${postId}/${commentId}`)
+export const updateComment = (id, formData) => dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+    console.log(id, ' postid');
+    console.log(formData);
+    axios.put(`/api/posts/update_comment/${id}`, formData, config)
     .then((res) => {
         dispatch({
             type: types.UPDATE_COMMENT,
-            payload: { postId, comments: res.data }
+            payload: res.data
         })
     })
-}
+    .catch((err) => {
+        if (err) {
+            console.log(err);
+            throw err;
+        }
+        dispatch({
+            type: types.POST_ERROR,
+            payload: err
+        });
+    });
+};

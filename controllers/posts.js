@@ -149,24 +149,26 @@ exports.unlikePost = (req, res, next) => {
 // @desc     Comment on a post
 // @access   Private
 exports.comment = (req, res, next) => {
+    // console.log('comment() api')
     Post.findByIdAndUpdate({ _id: req.params.id })
-    .then((post) => {
-        const newComment = {
-            userId: req.user._id,
-            name: req.user.username,
-            text: req.body.text
-        }
-        post.comments.unshift(newComment);
-        post.save();
-        console.log(post);
-        res.json(post.comments);
-    })
-    .catch((err) => {
-        console.log(err);
-        res.status(500).json({
-            message: "Couldn't comment on post!"
+        .then((post) => {
+            const newComment = {
+                userId: req.user._id,
+                name: req.user.username,
+                text: req.body.text
+            }
+            post.comments.unshift(newComment);
+            post.save();
+            console.log(post);
+            res.json(post.comments);
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json({
+                message: "Couldn't comment on post!"
+            });
         });
-    });
+
 }
 
 // @route    DELETE api/posts/delete_comment/:postId/:comment_id
@@ -174,71 +176,77 @@ exports.comment = (req, res, next) => {
 // @access   Private
 exports.deleteCommment = (req, res, next) => {
     Post.findById({ _id: req.params.postId })
-    .then((post) => {
-        const comment = post.comments.find((comment) => 
-            comment.id === req.params.comment_id
-        )
-        if (!comment) {
-            return res.status(404).json({
-                message: 'Comment does not exist'
+        .then((post) => {
+            const comment = post.comments.find((comment) =>
+                comment.id === req.params.comment_id
+            )
+            if (!comment) {
+                return res.status(404).json({
+                    message: 'Comment does not exist'
+                });
+            }
+
+            if (post.authorId.toString() === req.user._id) {
+                console.log('deleted by post author')
+                post.comments = post.comments.filter(
+                    ({ id }) => id !== req.params.comment_id
+                );
+            }
+            else if (comment.userId.toString() === req.user._id) {
+                console.log('deleted by comment author')
+                post.comments = post.comments.filter(
+                    ({ id }) => id !== req.params.comment_id
+                );
+            }
+
+            post.save();
+
+            res.json(post.comments);
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json({
+                message: "Couldn't delete post!"
             });
-        }
-
-        if (post.authorId.toString() === req.user._id) {
-            console.log('deleted by post author')
-            post.comments = post.comments.filter(
-                ({ id }) => id !== req.params.comment_id
-            );
-        }
-        else if (comment.userId.toString() === req.user._id) {
-            console.log('deleted by comment author')
-            post.comments = post.comments.filter(
-                ({ id }) => id !== req.params.comment_id
-            );
-        }
-
-        post.save();
-
-        res.json(post.comments);
-    })
-    .catch((err) => {
-        console.log(err);
-        res.status(500).json({
-            message: "Couldn't delete post!"
         });
-    });
 };
 
-// @route    PUT api/posts/update_comment/:postId/:comment_id
+// @route    PUT api/posts/update_comment/:id
 // @desc     Update a comment
 // @access   Private
 exports.updateComment = (req, res, next) => {
-    Post.findByIdAndUpdate({ _id: req.params.postId })
-    .then((post) => {
-        const comment = post.comments.find((comment) => 
-            comment.id === req.params.comment_id
-        );
-        if (!comment) {
-            return res.status(404).json({
-                message: 'Comment does not exist'
-            });
+    console.log('updateComment() api')
+    console.log(req.body);
+    Post.updateOne({ 'comments._id': req.params.id },
+    { $set: { 
+        'comments.$.userId': req.user._id ,
+        'comments.$.name': req.user.username,
+        'comments.$.text': req.body.text
+    }}, function(err, comment) {
+        if (err) {
+            console.log(err);
+            throw err;
         }
-        if (comment.userId.toString() !== req.user._id) {
-            return res.status(401).json({
-                message: 'You are not authorized'
-            });
-        }
-        const newComment = {
-            text: req.body.text
-        }
-        // post.comments.
-        
-
+        console.log(comment);
     })
-    .catch((err) => {
-        console.log(err);
-        res.status(500).json({
-            message: "Couldn't update post!"
-        });
-    });
+    // Post.updateOne({ _id: req.params.id }, {
+    //     userId: req.user._id,
+    //     name: req.user.username,
+    //     text: req.body.text
+    // })
+    //     .then((result) => {
+    //         console.log(result);
+    //         if (result.n > 0) {
+    //             res.status(200).json({ message: 'Updated post successfully' });
+    //         } 
+    //         // else {
+    //         //     res.status(401).json({ message: 'Not authorized' });
+    //         // };
+    //     })
+    //     .catch((err) => {
+    //         console.log(err);
+    //         res.status(500).json({
+    //             message: "Couldn't update comment!"
+    //         });
+    //     });
 };

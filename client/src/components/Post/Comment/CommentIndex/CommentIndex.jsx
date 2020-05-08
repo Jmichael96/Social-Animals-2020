@@ -1,7 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-// import DeleteComment from '../DeleteComment/DeleteComment';
 import UpdateComment from '../UpdateComment/UpdateComment';
 import {
     MDBDropdown,

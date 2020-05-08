@@ -15,8 +15,10 @@ const UpdateComment = ({ updateComment, auth: { isAuthenticated, loading, user }
         if (isAuthenticated) {
             if (e.keyCode === 13 || e.code === 'Enter' || e.code === 'NumpadEnter') {
                 if (!loading && commentAuthorId === user._id) {
-                    console.log('Comment Updated!')
-                    // updateComment(postId, commentId);
+                    const formData = {
+                        text
+                    }
+                    updateComment(commentId, formData);
                 }
                 else {
                     console.log('You are not authorized to update this comment!');
