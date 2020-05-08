@@ -22,9 +22,12 @@ export default function (state = initialState, action) {
         case types.UNFOLLOW_PROFILE:
             return {
                 ...state,
-                profile: state.profile.map((item) => 
-                    item._id === payload.id ? { ...item, followers: payload.followers } : item
-                ),
+                profile: (profile) => {
+                    if (profile._id === payload.id) {
+                        return { ...profile, followers: payload.followers };
+                    }
+                    return profile;
+                },
                 loading: false
             }
         case types.PROFILE_ERROR:

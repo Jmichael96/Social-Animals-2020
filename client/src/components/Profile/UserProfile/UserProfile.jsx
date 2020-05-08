@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { fetchProfileById, followProfile, unfollowProfile } from '../../../store/actions/profile';
@@ -7,8 +7,6 @@ import Wrapper from '../../Layout/Wrapper/Wrapper';
 import isEmpty from '../../../utils/isEmpty';
 
 const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, profile: { profile, loading }, auth, match }) => {
-    const [hasFollowed, setHasFollowed] = useState(false);
-
     const nullProfile = !profile;
     useEffect(() => {
         if (nullProfile) {
@@ -29,56 +27,65 @@ const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, profile
 
     // func to check to see if user has already followed profile
     const checkIfFollowing = () => {
-        if (!isEmpty(profile)) {
+        if (!isEmpty(profile.followers)) {
             let followerArr = profile.followers;
             for (let i = 0; i < followerArr.length; i++) {
                 if (followerArr[i].userId === auth.user._id) {
                     return true;
-                } 
+                }
                 return false;
             }
-            
+
         }
         return false;
     }
 
     // if the user that is on the profile has followed this user render buttons accordingly
     const renderFollowBtns = () => {
-            if (checkIfFollowing()) {
-                return (<button type="button" onClick={submitUnfollowReq}>Unfollow</button>
-                )
+        if (checkIfFollowing()) {
+            return (<button type="button" onClick={submitUnfollowReq}>Unfollow</button>
+            )
 
-            } else if (!checkIfFollowing()) {
-                return (
-                    <button type="button" onClick={submitFollowReq}>Follow</button>
-                )
-            }
+        } else if (!checkIfFollowing()) {
+            return (
+                <button type="button" onClick={submitFollowReq}>Follow</button>
+            )
+        }
 
     }
 
+    // renders how many follwers a person has
     const renderFollowerAmount = () => {
-        if (!isEmpty(profile)) {
-            const followersArr = profile.followers;
-            console.log(followersArr.length);
-            switch (followersArr.length) {
-                case 0:
-                    return (
-                        <p>You have 0 followers</p>
-                    );
-                case 1:
-                    return (
-                        <p>You have {followersArr.length} follower</p>
-                    );
-                default:
-                    return (
-                        <p>You have {followersArr.length} followers</p>
-                    )
+        const followersArr = profile.followers;
+        if (!isEmpty(followersArr)) {
+            if (followersArr.length === 0) {
+                return (<p>You have 0 followers</p>);
+            }
+            else if (followersArr.length === 1) {
+                return (<p>You have {followersArr.length} follower</p>);
+            }
+            else if (followersArr.length > 1) {
+                return (<p>You have {followersArr.length} followers</p>);
+            }
+        }
+        return (<p>You have 0 followers</p>);
+    }
+
+    // check and see if the authenticated user is the owner of the profile 
+    // then render the buttons accordingly
+    const isUsersProfile = () => {
+        if (!isEmpty(profile) && !auth.loading) {
+            if (isEmpty(profile.user)) {
+                return false;
+            } else if (profile.user._id === auth.user._id) {
+                return true;
             }
         }
     }
+
     // decide what needs to be rendered if user does not have a profile
     const renderProfile = () => {
-        if (!profile || profile === null) {
+        if (isEmpty(profile)) {
             return (
                 <Fragment>
                     <p>You do not have a profile</p>
@@ -96,7 +103,7 @@ const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, profile
                     </div>
                 </Wrapper>
                 <Wrapper>
-                    {renderFollowBtns()}
+                    {!isUsersProfile() ? renderFollowBtns() : null}
                 </Wrapper>
                 <h1>{profile.name}</h1>
                 <h2>{profile.bio}</h2>

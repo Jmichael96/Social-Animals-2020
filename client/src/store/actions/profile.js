@@ -73,6 +73,7 @@ export const followProfile = (id) => dispatch => {
             type: types.FOLLOW_PROFILE,
             payload: { id, followers: res.data }
         });
+        dispatch(fetchProfileById(id));
         dispatch(setAlert('You have successfully followed this user', 'success'));
     })
     .catch((err) => {
@@ -92,6 +93,7 @@ export const unfollowProfile = (id) => dispatch => {
             type: types.FOLLOW_PROFILE,
             payload: { id, followers: res.data }
         });
+        dispatch(fetchProfileById(id));
         dispatch(setAlert('You have successfully unfollowed this user', 'success'));
     })
     .catch((err) => {
