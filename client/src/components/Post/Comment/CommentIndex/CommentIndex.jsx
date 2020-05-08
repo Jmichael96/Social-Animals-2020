@@ -49,8 +49,15 @@ const CommentIndex = ({ auth, deleteComment, setModal, comment: { _id, name, tex
     // dropdown menu for a single post. 
     // it gives you all the actions you can do with your post
     const dropdownMenu = () => {
-        if (!auth.isAuthenticated) {
-            return null;
+        // check if user is authenticated 
+        // check if user is null
+        // check if the authenticated user is equal to comment userId if not the dont return dropdown
+        if (!auth.loading && !auth.isAuthenticated) {
+            return;
+        } else if (auth.user === null) {
+            return;
+        } else if (auth.user._id !== userId) {
+            return;
         }
         return (
             <MDBDropdown size="sm">

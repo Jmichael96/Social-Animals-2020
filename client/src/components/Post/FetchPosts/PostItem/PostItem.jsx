@@ -112,19 +112,33 @@ const PostItem = ({
     }
 
     const renderLikeNumber = () => {
-        if (likes.length <= 0 || likes.length === null) {
-            return null;
+        const like = likes.length;
+
+        switch (like) {
+            case null:
+                return null;
+            case undefined:
+                return null;
+            case 0:
+                return null;
+            case 1:
+                return (<p>{likes.length}{' '}Like</p>);
+            default:
+                return (<p>{likes.length}{' '}Likes</p>);
         }
-        else if (likes.length === 1) {
-            return (
-                <p>{likes.length}{' '}Like</p>
-            )
-        }
-        else if (likes.length > 1) {
-            return (
-                <p>{likes.length}{' '}Likes</p>
-            )
-        }
+        // if (!like || like === 0 || likes === null || likes === undefined) {
+        //     return null;
+        // }
+        // else if (like === 1) {
+        //     return (
+        //         <p>{like}{' '}Like</p>
+        //     )
+        // }
+        // else if (likes > 1) {
+        //     return (
+        //         <p>{like}{' '}Likes</p>
+        //     )
+        // }
     }
 
     const renderCommentNumber = () => {
@@ -181,7 +195,7 @@ const PostItem = ({
 
     // checking if all comments are loaded first before adding the 'show more' comments button
     const renderLoadMoreComments = () => {
-        if (comments.length <= commentLimit && !commentLimitReached) {
+        if (comments.length <= commentLimit) {
             return null;
         }
         return (<button type="button" onClick={loadMoreComments}>Show more</button>)

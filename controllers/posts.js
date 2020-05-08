@@ -225,7 +225,7 @@ exports.updateComment = (req, res, next) => {
         })
         .then((result) => {
             if (result.n > 0) {
-                res.status(200).json({ message: 'Updated post successfully' });
+                res.status(200).json({ message: 'Updated comment successfully' });
             } else {
                 res.status(401).json({ message: 'Not authorized' });
             };
