@@ -12,9 +12,11 @@ import {
 } from 'mdbreact';
 import { connect } from 'react-redux';
 import { updatePost, deletePost, likePost, unlikePost } from '../../../../store/actions/post';
+import { fetchLikes } from '../../../../store/actions/like';
 import { setModal } from '../../../../store/actions/modal';
 import CommentIndex from '../../Comment/CommentIndex/CommentIndex';
 import AddComment from '../../Comment/AddComment/AddComment';
+import FetchLikes from '../../Like/FetchLikes/FetchLikes';
 
 const PostItem = ({
     updatePost,
@@ -22,13 +24,16 @@ const PostItem = ({
     setModal,
     likePost,
     unlikePost,
+    fetchLikes,
     auth: { isAuthenticated, user, loading },
-    post: { _id, content, imagePath, date, authorId, authorUsername, likes, comments }
+    post: { _id, content, imagePath, date, authorId, authorUsername, likes, comments },
+    like
 }) => {
     const [commentLimit, setCommentLimit] = useState(2);
     const [commentLimitReached, setCommentLimitReached] = useState(false);
     const [editing, setEditing] = useState(false);
     const [contentEdit, setContentEdit] = useState(content);
+    const [renderLikesModal, setRenderLikesModal] = useState(false);
 
     useEffect(() => {
         setContentEdit(content);
@@ -111,6 +116,13 @@ const PostItem = ({
         }
     }
 
+    // func to call fetchLikes()
+    const submitFetchLikes = () => {
+        fetchLikes(_id);
+        setRenderLikesModal(true);
+    }
+
+    // render the like amount on the post item
     const renderLikeNumber = () => {
         const like = likes.length;
 
@@ -122,9 +134,9 @@ const PostItem = ({
             case 0:
                 return null;
             case 1:
-                return (<p>{likes.length}{' '}Like</p>);
+                return (<a href="#" onClick={submitFetchLikes}>{likes.length}{' '}Like</a>);
             default:
-                return (<p>{likes.length}{' '}Likes</p>);
+                return (<a href="#" onClick={submitFetchLikes}>{likes.length}{' '}Likes</a>);
         }
         // if (!like || like === 0 || likes === null || likes === undefined) {
         //     return null;
@@ -203,6 +215,7 @@ const PostItem = ({
 
     return (
         <Fragment>
+            <FetchLikes openOrder={renderLikesModal} like={like}  />
             <MDBContainer>
                 <MDBRow>
                     <MDBCol>
@@ -265,13 +278,15 @@ PostItem.propTypes = {
     deletePost: PropTypes.func.isRequired,
     post: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
+    like: PropTypes.object.isRequired,
     setModal: PropTypes.func.isRequired,
     likePost: PropTypes.func.isRequired,
     unlikePost: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = (state) => ({
-    auth: state.auth
+    auth: state.auth,
+    like: state.like
 });
 
-export default connect(mapStateToProps, { updatePost, setModal, deletePost, likePost, unlikePost })(PostItem);
+export default connect(mapStateToProps, { updatePost, setModal, deletePost, likePost, unlikePost, fetchLikes })(PostItem);

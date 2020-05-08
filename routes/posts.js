@@ -46,7 +46,12 @@ router.delete('/delete_comment/:postId/:comment_id', isAuthenticated, PostContro
 
 // @route    PUT api/posts/update_comment/:id
 // @desc     Update a comment
-// @access   Private`1  a
+// @access   Private
 router.put('/update_comment/:id', [isAuthenticated, checkObjectId('id')], PostController.updateComment);
+
+// @route    GET api/posts/fetch_likes/:id
+// @desc     fetch the likes of a post
+// @access   Private
+router.get('/fetch_likes/:id', isAuthenticated, PostController.fetchLikes);
 
 module.exports = router;

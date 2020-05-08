@@ -83,14 +83,17 @@ exports.register = (req, res, next) => {
 exports.loadUser = (req, res, next) => {
     User.findById(req.user._id).select('-password')
         .then((user) => {
+            if (!user) {
+                console.log('No user to load')
+                return;
+            }
             res.json(user);
         })
         .catch((err) => {
+            console.log(err);
             res.status(500).json({
                 message: 'Load user server error'
             });
-            console.log(err);
-            throw err;
         })
 }
 

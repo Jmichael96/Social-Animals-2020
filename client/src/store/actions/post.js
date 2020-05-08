@@ -95,6 +95,7 @@ export const deletePost = (id) => dispatch => {
                 payload: res.data
             });
             dispatch(fetchAllPosts());
+            dispatch(setAlert('You have deleted your post', 'success'));
         })
         .catch((err) => {
             if (err) {

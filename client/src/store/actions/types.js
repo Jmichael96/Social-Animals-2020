@@ -36,3 +36,7 @@ export const UPDATE_LIKES = 'UPDATE_LIKES';
 export const ADD_COMMENT = 'ADD_COMMENT';
 export const DELETE_COMMENT = 'DELETE_COMMENT';
 export const UPDATE_COMMENT = 'UPDATE_COMMENT';
+
+// LIKE TYPES [just to see who all has liked your post]
+export const FETCH_LIKES = 'FETCH_LIKES';
+export const LIKE_ERROR = 'LIKE_ERROR';

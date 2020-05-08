@@ -5,6 +5,7 @@ import post from './post';
 import profile from './profile';
 import user from './user';
 import modal from './modal';
+import like from './like';
 
 const rootReducer = combineReducers({
     alert,
@@ -12,7 +13,8 @@ const rootReducer = combineReducers({
     auth,
     post,
     profile,
-    user
+    user,
+    like
 });
 
 export default rootReducer;

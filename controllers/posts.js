@@ -4,8 +4,6 @@ const Post = require('../models/post');
 // @desc     Creating post
 // @access   Private
 exports.createPost = (req, res, next) => {
-    console.log(req.user._id + ' user id');
-    console.log(req.user.username + ' user username');
     const post = new Post({
         content: req.body.content,
         imagePath: req.body.imagePath,
@@ -106,7 +104,7 @@ exports.likePost = (req, res, next) => {
                 });
             };
 
-            post.likes.unshift({ userId: req.user._id });
+            post.likes.unshift({ userId: req.user._id, username: req.user.username });
             console.log(post)
             post.save()
             return res.json(post.likes);
@@ -145,6 +143,23 @@ exports.unlikePost = (req, res, next) => {
         });
 }
 
+// @route    GET api/posts/fetch_likes/:id
+// @desc     fetch the likes of a post
+// @access   Private
+exports.fetchLikes = (req, res, next) => {
+    Post.findById({ _id: req.params.id })
+    .then((post) => {
+        console.log(post.likes);
+        res.status(200).json(post.likes);
+    })
+    .catch((err) => {
+        console.log(err);
+        res.status(500).json({
+            message: "Couldn't retrieve likes"
+        });
+    });
+}
+
 // @route    PUT api/posts/comment/:id
 // @desc     Comment on a post
 // @access   Private
@@ -168,7 +183,6 @@ exports.comment = (req, res, next) => {
                 message: "Couldn't comment on post!"
             });
         });
-
 }
 
 // @route    DELETE api/posts/delete_comment/:postId/:comment_id
