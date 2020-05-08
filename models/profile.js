@@ -17,6 +17,20 @@ const profileSchema = new mongoose.Schema({
     email: {
         type: String
     },
+    followers: [
+        {
+            userId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User',
+                required: true
+            },
+            username: {
+                type: String,
+                ref: 'User',
+                required: true
+            }
+        }
+    ],
     date: {
         type: Date,
         default: Date.now

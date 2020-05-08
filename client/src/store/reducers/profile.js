@@ -18,6 +18,15 @@ export default function (state = initialState, action) {
                 profile: payload,
                 loading: false
             };
+        case types.FOLLOW_PROFILE:
+        case types.UNFOLLOW_PROFILE:
+            return {
+                ...state,
+                profile: state.profile.map((item) => 
+                    item._id === payload.id ? { ...item, followers: payload.followers } : item
+                ),
+                loading: false
+            }
         case types.PROFILE_ERROR:
             return {
                 ...state,

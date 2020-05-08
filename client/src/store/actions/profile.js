@@ -62,6 +62,43 @@ export const fetchProfileById = (id) => dispatch => {
             type: types.PROFILE_ERROR,
             payload: err
         });
-    })
-}
+    });
+};
 
+// follow profile
+export const followProfile = (id) => dispatch => {
+    axios.put(`/api/profile/follow/${id}`) 
+    .then((res) => {
+        dispatch({
+            type: types.FOLLOW_PROFILE,
+            payload: { id, followers: res.data }
+        });
+        dispatch(setAlert('You have successfully followed this user', 'success'));
+    })
+    .catch((err) => {
+        console.log(err);
+        dispatch({
+            type: types.PROFILE_ERROR,
+            payload: err
+        });
+    });
+};
+
+// unfollow profile
+export const unfollowProfile = (id) => dispatch => {
+    axios.put(`/api/profile/unfollow/${id}`)
+    .then((res) => {
+        dispatch({
+            type: types.FOLLOW_PROFILE,
+            payload: { id, followers: res.data }
+        });
+        dispatch(setAlert('You have successfully unfollowed this user', 'success'));
+    })
+    .catch((err) => {
+        console.log(err);
+        dispatch({
+            type: types.PROFILE_ERROR,
+            payload: err
+        });
+    });
+};
