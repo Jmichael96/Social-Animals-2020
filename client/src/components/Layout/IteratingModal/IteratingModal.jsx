@@ -3,22 +3,32 @@ import { MDBContainer, MDBBtn, MDBModal, MDBModalBody, MDBModalFooter } from 'md
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { removeIteratingModal } from '../../../store/actions/iteratingModal';
+import { Link } from 'react-router-dom';
 
 const IteratingModal = ({ removeIteratingModal, iteratingModal: { iteratingModalData, isOpen } }) => {
 
     // iterate over data being received
-    // const renderIteratedData = () => {
-    //     return Object.values(modalData).map((item) => {
-
-    //     });
-    // };
-    console.log(iteratingModalData);
+    const renderIteratedData = () => {
+        let data = iteratingModalData.data;
+        if (!data) {
+            return null;
+        }
+        return Object.values(data).map((item) => {
+            return (
+                <li key={item._id}>
+                    <Link to={`/user_profile/${item.userId}`} onClick={removeIteratingModal}>{item.username}</Link>
+                </li>
+            )
+        });
+    };
 
     return (
         <MDBContainer>
             <MDBModal isOpen={isOpen}>
                 <MDBModalBody>
-                    Here we are!
+                    <ul>
+                        {renderIteratedData()}
+                    </ul>
                 </MDBModalBody>
                 <MDBModalFooter>
                     <MDBBtn color="secondary" onClick={removeIteratingModal}>Close</MDBBtn>
