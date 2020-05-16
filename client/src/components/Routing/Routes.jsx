@@ -13,6 +13,7 @@ import ProfileLandingPage from '../Profile/PofileLandingPage/ProfileLandingPage'
 import UserProfile from '../Profile/UserProfile/UserProfile';
 import SearchUsernames from '../Search/SearchUsernames/SearchUsernames';
 import IteratingModal from '../Layout/IteratingModal/IteratingModal';
+import Image from '../Image/Image';
 
 const Routes = () => {
     return (
@@ -24,9 +25,10 @@ const Routes = () => {
                 <Route exact path="/" component={Home} />
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/register" component={Register} />
+                <Route exact path="/image" component={Image} />
                 <PrivateRoute exact path="/create_post" component={CreatePost} />
                 <PrivateRoute exact path="/create_profile" component={UpdateProfile} />
-                <PrivateRoute exact path="/profile" component={ProfileLandingPage} />
+                {/* <PrivateRoute exact path="/profile" component={ProfileLandingPage} /> */}
                 <PrivateRoute exact path="/user_profile/:id" component={UserProfile} />
                 <PrivateRoute exact path="/usernames" component={SearchUsernames} />
                 <Route component={NotFound} />

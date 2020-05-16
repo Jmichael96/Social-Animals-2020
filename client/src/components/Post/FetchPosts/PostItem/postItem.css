@@ -1,0 +1,17 @@
+/* the card that holds all the post content */
+#postCard {
+    background-color: rgb(211, 204, 255);
+    padding: 5px;
+}
+
+/* author username of the post */
+#postAuthor {
+    color: black;
+    font-weight: 600;
+}
+
+/* content post description */
+#postContent {
+    color: black;
+    font-size: 18px;
+}

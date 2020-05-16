@@ -85,13 +85,13 @@ const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, profile
 
     // decide what needs to be rendered if user does not have a profile
     const renderProfile = () => {
-        if (isEmpty(profile)) {
+        if (!loading && isEmpty(profile)) {
             return (
                 <Fragment>
                     <p>You do not have a profile</p>
                     <Link to="/create_profile">
                         Update Profile Now!
-                </Link>
+                    </Link>
                 </Fragment>
             )
         }
@@ -105,6 +105,7 @@ const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, profile
                 <Wrapper>
                     {!isUsersProfile() ? renderFollowBtns() : null}
                 </Wrapper>
+                <img alt="profilePic" src={profile.profilePicture} style={{height: '200px'}} />
                 <h1>{profile.name}</h1>
                 <h2>{profile.bio}</h2>
                 <h3>{profile.location}</h3>

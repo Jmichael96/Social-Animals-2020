@@ -18,6 +18,7 @@ import CommentIndex from '../../Comment/CommentIndex/CommentIndex';
 import AddComment from '../../Comment/AddComment/AddComment';
 import { setIteratingModal } from '../../../../store/actions/iteratingModal';
 import isEmpty from '../../../../utils/isEmpty';
+import './postItem.css';
 
 const PostItem = ({
     updatePost,
@@ -29,12 +30,15 @@ const PostItem = ({
     setIteratingModal,
     auth: { isAuthenticated, user, loading },
     post: { _id, content, imagePath, date, authorId, authorUsername, likes, comments },
+    postLoading,
     like
 }) => {
     const [commentLimit, setCommentLimit] = useState(2);
     const [commentLimitReached, setCommentLimitReached] = useState(false);
     const [editing, setEditing] = useState(false);
     const [contentEdit, setContentEdit] = useState(content);
+    // checking to see if authenticated user has liked this post. if they have change the color of the like button
+    const [hasLiked, setHasLiked] = useState(false);
 
     const likeArr = like.likes;
     useEffect(() => {
@@ -42,7 +46,22 @@ const PostItem = ({
         if (!isEmpty(likeArr)) {
             setIteratingModal(likeArr)
         }
-    }, [content, likeArr, isEmpty]);
+
+        // checking if authenticated user has already liked post and changing button color accordingly
+        if (!loading && user) {
+            if (!postLoading && likes) {
+                let userId = user._id;
+                for (let i = 0; i < likes.length; i++) {
+                    if (userId === likes[i].userId) {
+                        setHasLiked(true);
+                        console.log('you have liked')
+                        return;
+                    }
+                }
+            }
+        }
+
+    }, [content, likeArr, isEmpty, user, likes]);
 
     // checking if user is authenticated and owns the post 
     // they want to update or delete
@@ -58,7 +77,14 @@ const PostItem = ({
         }
         return confirmedUser;
     }
-    // checkUserValidation()
+
+    // checking if authenticated user has already liked post and changing button color accordingly
+    // const checkIfLiked = () => {
+    //     if (!loading && user) {
+    //         let userId = user._id;
+
+    //     }
+    // }
 
     // setting the edit availability to true or false
     const onEditChange = () => {
@@ -98,8 +124,10 @@ const PostItem = ({
         if (!editing) {
             return (
                 <MDBDropdown>
-                    <MDBDropdownToggle caret color="primary">
-                        Special
+                    <MDBDropdownToggle>
+                        <a href="#!">
+                            <i className="fas fa-ellipsis-h"></i>
+                        </a>
                     </MDBDropdownToggle>
                     <MDBDropdownMenu basic>
                         <MDBDropdownItem onClick={onEditChange}>Edit</MDBDropdownItem>
@@ -126,42 +154,41 @@ const PostItem = ({
         fetchLikes(_id);
     }
 
-    // set the config iterating modal in the useEffect()
-    // const configIteratingModal = (modalProp) => {
-    //     setIteratingModal(modalProp)
-    // }
-
     // render the like amount on the post item
     const renderLikeNumber = () => {
-        const like = likes.length;
-        switch (like) {
-            case null:
-                return null;
-            case undefined:
-                return null;
-            case 0:
-                return null;
-            case 1:
-                return (<a href="#" onClick={() => {
-                    submitFetchLikes();
-                }}>{likes.length}{' '}Like</a>);
-            default:
-                return (<a href="#" onClick={() => {
-                    submitFetchLikes();
-                }}>{likes.length}{' '}Likes</a>);
+        if (!postLoading && !likes) {
+            return null;
+        }
+
+        if (likes.length <= 0 || likes.length == null) {
+            return null;
+        } 
+        else if (likes.length === 1) {
+            return (<a href="#" className="pl-2" onClick={() => {
+                submitFetchLikes();
+            }}>{likes.length}{' '}Like</a>);
+        } 
+        else if (likes.length > 1) {
+            return (<a href="#" className="pl-2" onClick={() => {
+                submitFetchLikes();
+            }}>{likes.length}{' '}Likes</a>);
         }
     }
-   
+
     // render the comment amount
     const renderCommentNumber = () => {
-        if (comments.length <= 0 || comments.length === null) {
+        if (!postLoading && !comments) {
+            return null;
+        }
+        else if (comments.length <= 0 || comments.length == null) {
             return null;
         }
         else if (comments.length === 1) {
             return (
                 <p>{comments.length}{' '}Comment</p>
             )
-        } else if (comments.length > 1) {
+        } 
+        else if (comments.length > 1) {
             return (
                 <p>{comments.length}{' '}Comments</p>
             )
@@ -184,7 +211,7 @@ const PostItem = ({
     //  rendering comments if there are comments available
     // and then adding the slice method for cleaner rendering
     const renderComments = () => {
-        if (comments === null || undefined) {
+        if (!postLoading && !comments) {
             return null;
         }
         return Object.values(comments).slice(0, commentLimit).map((comment) => {
@@ -207,6 +234,9 @@ const PostItem = ({
 
     // checking if all comments are loaded first before adding the 'show more' comments button
     const renderLoadMoreComments = () => {
+        if (!postLoading && !comments) {
+            return null
+        }
         if (comments.length <= commentLimit) {
             return null;
         }
@@ -215,16 +245,29 @@ const PostItem = ({
 
     return (
         <Fragment>
-            {/* <FetchLikes openOrder={renderLikesModal} like={like}  /> */}
             <MDBContainer>
                 <MDBRow>
                     <MDBCol>
-                        <div key={_id}>
-                            <Link to={`/user_profile/${authorId}`}>
-                                <h4>Created by: {authorUsername}</h4>
-                            </Link>
+                        <div id="postCard" key={_id}>
+                            <MDBRow>
+                                <MDBCol>
+                                    <Link to={`/user_profile/${authorId}`}>
+                                        <h4 id="postAuthor">{authorUsername}</h4>
+                                    </Link>
+                                </MDBCol>
+                                <MDBCol>
+                                    {!checkUserValidation() ? (
+                                        null
+                                    ) : (
+                                            dropdownMenu()
+                                        )}
+                                </MDBCol>
+                            </MDBRow>
+                            <div id="postImgWrap">
+                                <p id="postImg">{imagePath}</p>
+                            </div>
                             {!editing ? (
-                                <p>{content}</p>
+                                <p id="postContent">{content}</p>
                             ) : (
                                     <input
                                         type="text"
@@ -235,23 +278,21 @@ const PostItem = ({
                                         onChange={(e) => setContentEdit(e.target.value)}
                                     />
                                 )}
-                            <p>{imagePath}</p>
-                            {!checkUserValidation() ? (
-                                null
-                            ) : (
-                                    dropdownMenu()
-                                )}
+
+
                             {isAuthenticated && user ? (
-                                <button type="button" onClick={() => {
+                                <button type="button" style={{backgroundColor: !hasLiked ? 'white' : 'red'}} onClick={() => {
                                     for (let i = 0; i < likes.length; i++) {
                                         if (likes[i].userId === user._id) {
                                             // if a post has already been liked by the logged in user...
                                             // unlike it and return nothing;
+                                            setHasLiked(false);
                                             unlikePost(_id);
                                             return;
                                         }
                                     }
                                     // if user has not liked post. like post with authenticated user's id
+                                    setHasLiked(true);
                                     likePost(_id);
                                 }}>
                                     <i className="fas fa-thumbs-up" />{' '}
@@ -283,6 +324,7 @@ PostItem.propTypes = {
     likePost: PropTypes.func.isRequired,
     unlikePost: PropTypes.func.isRequired,
     setIteratingModal: PropTypes.func.isRequired,
+    postLoading: PropTypes.any,
 }
 
 const mapStateToProps = (state) => ({

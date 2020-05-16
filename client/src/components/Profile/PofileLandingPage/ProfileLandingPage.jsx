@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { fetchCurrentProfile } from '../../../store/actions/profile';
 import { Link } from 'react-router-dom';
+import Wrapper from '../../Layout/Wrapper/Wrapper';
 
 const ProfileLandingPage = ({ fetchCurrentProfile, auth: { user }, profile: { profile, loading } }) => {
 
@@ -17,7 +18,11 @@ const ProfileLandingPage = ({ fetchCurrentProfile, auth: { user }, profile: { pr
 
             {profile !== null ? (
                 <Fragment>
-                    <h1>Hello Profile...</h1>
+                    <img alt="profilePic" src={profile.profilePicture} style={{ height: '200px' }} />
+                    <h1>{profile.name}</h1>
+                    <h2>{profile.bio}</h2>
+                    <h3>{profile.location}</h3>
+                    <h4>{profile.email}</h4>
                 </Fragment>
             ) : (
                     <Fragment>

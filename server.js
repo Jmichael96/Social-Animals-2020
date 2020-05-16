@@ -6,12 +6,14 @@ const app = express();
 const path = require('path');
 const connectDB = require('./services/db');
 const routes = require('./routes/index');
+const cors = require('cors');
 
 // connecting database
 connectDB();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 const normalizePort = (val) => {

@@ -22,9 +22,12 @@ exports.getPersonalProfile = (req, res, next) => {
 // @desc     Creating a profile
 // @access   Private
 exports.createProfile = (req, res, next) => {
+    const url = req.protocol + '://' + req.get('host');
     const { name, bio, location, email } = req.body;
+
     const profileFields = {
         user: req.user._id,
+        profilePicture: url + '/images/profilePicture/' + req.file.filename,
         name,
         bio,
         location,
@@ -39,6 +42,7 @@ exports.createProfile = (req, res, next) => {
         res.status(201).json(createdProfile);
     })
         .catch((err) => {
+            console.log(err);
             res.status(500).json({
                 message: 'Creating profile has failed!'
             });

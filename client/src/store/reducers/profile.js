@@ -41,6 +41,7 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 profile: null,
+                loading: true
             }
         default:
             return state;
