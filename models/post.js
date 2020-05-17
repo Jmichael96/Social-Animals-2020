@@ -4,10 +4,14 @@ const postSchema = new mongoose.Schema({
     content: {
         type: String,
     },
-    imagePath: {
-        type: String,
-        required: true
-    },
+    imagePath: [
+        {
+            url: {
+                type: String,
+                required: true
+            }
+        }
+    ],
     authorId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',

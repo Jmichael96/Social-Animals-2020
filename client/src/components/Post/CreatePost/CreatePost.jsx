@@ -8,6 +8,7 @@ const CreatePost = ({ createPost }) => {
     const [content, setContent] = useState('');
     const [imagePath, setImagePath] = useState(null);
     const [isValid, setIsValid] = useState();
+    const [fileError, setFileError] = useState('');
 
     const onSubmitForm = (e) => {
         e.preventDefault();
@@ -18,10 +19,10 @@ const CreatePost = ({ createPost }) => {
         validateForm(formData.imagePath);
         if (isValid) {
             createPost(formData);
-            console.log(formData);
         }
     }
     const validateForm = (imagePath) => {
+        
         if (!imagePath) {
             setIsValid(false)
             return;
@@ -31,10 +32,20 @@ const CreatePost = ({ createPost }) => {
     }
 
     const onFileChange = (e) => {
-        console.log(e.target.files)
-        setImagePath(e.target.files[0]);
+        setImagePath(e.target.files);
     }
 
+    const maxSelectFile=(event)=> {
+        let files = event.target.files // create file object
+            if (files.length > 3) { 
+               const msg = 'Only 3 images can be uploaded at a time'
+               event.target.value = null // discard selected file
+               console.log(msg)
+              return false;
+     
+          }
+        return true;
+     }
     return (
         <Fragment>
             <Wrapper>
@@ -42,7 +53,7 @@ const CreatePost = ({ createPost }) => {
                     <label htmlFor="file" className="grey-text">
                         Select an image
                     </label>
-                    <input type="file" className="form-control" name="file" id="profilePic" multiple onChange={onFileChange} />
+                    <input type="file" multiple className="form-control" name="file" id="profilePic" onChange={onFileChange} />
                     <label htmlFor="content" className="grey-text">
                         Description
                     </label>
@@ -55,18 +66,6 @@ const CreatePost = ({ createPost }) => {
                         placeholder="Description"
                         onChange={(e) => setContent(e.target.value)}
                     />
-                    {/* <label htmlFor="imagePath" className="grey-text">
-                        Image
-                    </label>
-                    <input
-                        type="text"
-                        name="imagePath"
-                        id="imagePath"
-                        className="form-control"
-                        value={imagePath}
-                        placeholder="Description"
-                        onChange={(e) => setImagePath(e.target.value)}
-                    /> */}
                     <div className="text-center mt-4">
                         <button color="unique" type="submit">
                             Post

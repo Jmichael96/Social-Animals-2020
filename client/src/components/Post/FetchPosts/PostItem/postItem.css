@@ -18,11 +18,5 @@
 
 /* image container div that surrounds the img element */
 .postImgWrap {
-    height: 200px;
-    width: 200px;
-}
-
-/* the post image element */
-.postImg {
-    height: 200px;
+   
 }

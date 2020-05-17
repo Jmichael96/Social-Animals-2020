@@ -18,6 +18,7 @@ import CommentIndex from '../../Comment/CommentIndex/CommentIndex';
 import AddComment from '../../Comment/AddComment/AddComment';
 import { setIteratingModal } from '../../../../store/actions/iteratingModal';
 import isEmpty from '../../../../utils/isEmpty';
+import PostImages from './PostImages/PostImages';
 import './postItem.css';
 
 const PostItem = ({
@@ -264,7 +265,7 @@ const PostItem = ({
                                 </MDBCol>
                             </MDBRow>
                             <div className="postImgWrap">
-                                <img className="postImg" src={imagePath}/>
+                                <PostImages postImages={imagePath} />
                             </div>
                             {!editing ? (
                                 <p id="postContent">{content}</p>

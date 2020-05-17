@@ -5,16 +5,28 @@ const Post = require('../models/post');
 // @access   Private
 exports.createPost = (req, res, next) => {
     const url = req.protocol + '://' + req.get('host');
-    console.log(req.body);
-    console.log(req.file, ' this is the file')
     const post = new Post({
         content: req.body.content,
-        imagePath: url + '/images/postPicture/' + req.file.filename,
         authorId: req.user._id,
         authorUsername: req.user.username
     });
     post.save()
         .then((createdPost) => {
+            let fileArr = req.files;
+            if (fileArr.length === 1) {
+                console.log('JUST ONE FILE')
+                for (let i = 0; i < fileArr.length; i++) {
+                    createdPost.imagePath.push({ url: url + '/images/postPicture/' + fileArr[i].filename })
+                }
+            }
+            else if (fileArr.length > 1){
+                console.log('MORE THAN ONE FILE')
+                for (let i = 0; i < fileArr.length; i++) {
+                    createdPost.imagePath.push({ url: url + '/images/postPicture/' + fileArr[i].filename })
+                }
+            }
+            createdPost.save();
+            console.log(req.body);
             console.log(createdPost);
             res.status(201).json(createdPost)
         })
@@ -150,16 +162,16 @@ exports.unlikePost = (req, res, next) => {
 // @access   Private
 exports.fetchLikes = (req, res, next) => {
     Post.findById({ _id: req.params.id })
-    .then((post) => {
-        console.log(post.likes);
-        res.status(200).json(post.likes);
-    })
-    .catch((err) => {
-        console.log(err);
-        res.status(500).json({
-            message: "Couldn't retrieve likes"
+        .then((post) => {
+            console.log(post.likes);
+            res.status(200).json(post.likes);
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json({
+                message: "Couldn't retrieve likes"
+            });
         });
-    });
 }
 
 // @route    PUT api/posts/comment/:id

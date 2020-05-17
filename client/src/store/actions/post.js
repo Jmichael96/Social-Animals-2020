@@ -9,15 +9,13 @@ export const createPost = ({ ...formData }) => dispatch => {
             'Content-Type': 'application/json'
         }
     };
-    console.log(formData);
     const data = new FormData();
-    // for (let i = 0; i < formData.imagePath.length; i++) {
-    //     data.append('image', formData.imagePath[i]);
-    // }
-
-    data.append('image', formData.imagePath);
+    for (let i = 0; i < formData.imagePath.length; i++) {
+        data.append('image', formData.imagePath[i]);
+    }
     data.append('content', formData.content);
-
+    
+    console.log(formData.imagePath.length)
     axios.post('/api/posts/create_post', data, config)
         .then((res) => {
             dispatch({

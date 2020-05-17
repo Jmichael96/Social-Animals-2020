@@ -26,4 +26,4 @@ const MIME_TYPE_MAP = {
     }
   });
 
-module.exports = multer({ storage: storage }).single("image");
+module.exports = multer({ storage: storage }).array("image");
