@@ -14,8 +14,7 @@ export const createPost = ({ ...formData }) => dispatch => {
         data.append('image', formData.imagePath[i]);
     }
     data.append('content', formData.content);
-    
-    console.log(formData.imagePath.length)
+
     axios.post('/api/posts/create_post', data, config)
         .then((res) => {
             dispatch({

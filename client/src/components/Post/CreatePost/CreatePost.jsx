@@ -8,6 +8,7 @@ const CreatePost = ({ createPost }) => {
     const [content, setContent] = useState('');
     const [imagePath, setImagePath] = useState(null);
     const [isValid, setIsValid] = useState();
+    const [formError, setFormError] = useState('');
     const [fileError, setFileError] = useState('');
 
     const onSubmitForm = (e) => {
@@ -22,36 +23,41 @@ const CreatePost = ({ createPost }) => {
         }
     }
     const validateForm = (imagePath) => {
-        
         if (!imagePath) {
-            setIsValid(false)
+            setIsValid(false);
+            setFormError('Must select an image in order to post');
             return;
         }
+        setFormError('');
         setIsValid(true);
-        return 'Everything is good';
     }
 
     const onFileChange = (e) => {
-        setImagePath(e.target.files);
+        let files = e.target.files;
+
+        if (maxSelectFile(e)) {
+            setImagePath(files);
+        }
+       
     }
 
-    const maxSelectFile=(event)=> {
-        let files = event.target.files // create file object
+    const maxSelectFile=(e)=> {
+        let files = e.target.files // create file object
             if (files.length > 3) { 
-               const msg = 'Only 3 images can be uploaded at a time'
-               event.target.value = null // discard selected file
-               console.log(msg)
+                setFileError('You may have up to 3 images');
+               e.target.value = null 
               return false;
-     
           }
+        setFileError('');
         return true;
      }
+
     return (
         <Fragment>
             <Wrapper>
                 <form onSubmit={(e) => onSubmitForm(e)}>
                     <label htmlFor="file" className="grey-text">
-                        Select an image
+                        Select an image {fileError ? <p style={{color: 'red'}}>{fileError}</p> : null }
                     </label>
                     <input type="file" multiple className="form-control" name="file" id="profilePic" onChange={onFileChange} />
                     <label htmlFor="content" className="grey-text">
@@ -66,10 +72,11 @@ const CreatePost = ({ createPost }) => {
                         placeholder="Description"
                         onChange={(e) => setContent(e.target.value)}
                     />
+                    {formError ? <p style={{color: 'red'}}>{formError}</p> : null}
                     <div className="text-center mt-4">
                         <button color="unique" type="submit">
                             Post
-                    </button>
+                        </button>
                     </div>
                 </form>
             </Wrapper>
