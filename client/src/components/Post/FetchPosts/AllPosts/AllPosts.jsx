@@ -14,7 +14,9 @@ const AllPosts = ({ fetchAllPosts, post: { posts, loading } }) => {
     const renderPosts = () => {
         const postList = posts;
         return Object.values(postList).map((post) => {
-            return <PostItem key={post._id} postLoading={loading} post={post} />
+            return (
+                    <PostItem key={post._id} postLoading={loading} post={post} />
+            )
         })
     }
     return loading ? (<h4>Loading...</h4>) : (
@@ -22,6 +24,9 @@ const AllPosts = ({ fetchAllPosts, post: { posts, loading } }) => {
             {renderPosts()}
         </Fragment>
     )
+    // return loading ? (<h4>Loading...</h4>) : ( Object.values(posts).map((post) => {
+    //     return <PostItem key={post._id} postLoading={loading} post={post} />
+    // }))
 }
 AllPosts.propTypes = {
     fetchAllPosts: PropTypes.func.isRequired,

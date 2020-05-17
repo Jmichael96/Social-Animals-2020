@@ -5,6 +5,13 @@ const Post = require('../models/post');
 // @access   Private
 exports.createPost = (req, res, next) => {
     const url = req.protocol + '://' + req.get('host');
+
+    if (!req.files) {
+        res.status(400).json({
+            message: 'You must add a photo to create a post'
+        });
+    }
+
     const post = new Post({
         content: req.body.content,
         authorId: req.user._id,
@@ -14,13 +21,11 @@ exports.createPost = (req, res, next) => {
         .then((createdPost) => {
             let fileArr = req.files;
             if (fileArr.length === 1) {
-                console.log('JUST ONE FILE')
                 for (let i = 0; i < fileArr.length; i++) {
                     createdPost.imagePath.push({ url: url + '/images/postPicture/' + fileArr[i].filename })
                 }
             }
             else if (fileArr.length > 1){
-                console.log('MORE THAN ONE FILE')
                 for (let i = 0; i < fileArr.length; i++) {
                     createdPost.imagePath.push({ url: url + '/images/postPicture/' + fileArr[i].filename })
                 }

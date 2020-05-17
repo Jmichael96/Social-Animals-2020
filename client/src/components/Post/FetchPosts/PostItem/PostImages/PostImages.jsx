@@ -4,7 +4,7 @@ import './postImages.css';
 
 const PostImages = ({ postImages }) => {
 
-    return Object.values(postImages).map((image) => {
+    return !postImages ? null : Object.values(postImages).map((image) => {
         return (
             <img className="postImg" key={image._id} src={image.url} />
         )

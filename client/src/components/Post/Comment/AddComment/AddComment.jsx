@@ -46,7 +46,7 @@ const AddComment = ({ postId, addComment }) => {
 
 AddComment.propTypes = {
     addComment: PropTypes.func.isRequired,
-    postId: PropTypes.any.isRequired
+    postId: PropTypes.any
 }
 
 export default connect(null, { addComment })(AddComment);
