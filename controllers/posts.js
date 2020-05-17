@@ -4,13 +4,15 @@ const Post = require('../models/post');
 // @desc     Creating post
 // @access   Private
 exports.createPost = (req, res, next) => {
+    const url = req.protocol + '://' + req.get('host');
+    console.log(req.body);
+    console.log(req.file, ' this is the file')
     const post = new Post({
         content: req.body.content,
-        imagePath: req.body.imagePath,
+        imagePath: url + '/images/postPicture/' + req.file.filename,
         authorId: req.user._id,
         authorUsername: req.user.username
     });
-
     post.save()
         .then((createdPost) => {
             console.log(createdPost);

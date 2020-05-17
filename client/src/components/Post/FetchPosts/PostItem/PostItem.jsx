@@ -263,8 +263,8 @@ const PostItem = ({
                                         )}
                                 </MDBCol>
                             </MDBRow>
-                            <div id="postImgWrap">
-                                <p id="postImg">{imagePath}</p>
+                            <div className="postImgWrap">
+                                <img className="postImg" src={imagePath}/>
                             </div>
                             {!editing ? (
                                 <p id="postContent">{content}</p>

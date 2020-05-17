@@ -6,18 +6,19 @@ import Wrapper from '../../Layout/Wrapper/Wrapper';
 
 const CreatePost = ({ createPost }) => {
     const [content, setContent] = useState('');
-    const [imagePath, setImagePath] = useState('');
+    const [imagePath, setImagePath] = useState(null);
     const [isValid, setIsValid] = useState();
 
     const onSubmitForm = (e) => {
         e.preventDefault();
         const formData = {
-            content,
-            imagePath
+            content: content,
+            imagePath: imagePath
         }
         validateForm(formData.imagePath);
         if (isValid) {
             createPost(formData);
+            console.log(formData);
         }
     }
     const validateForm = (imagePath) => {
@@ -29,12 +30,21 @@ const CreatePost = ({ createPost }) => {
         return 'Everything is good';
     }
 
+    const onFileChange = (e) => {
+        console.log(e.target.files)
+        setImagePath(e.target.files[0]);
+    }
+
     return (
         <Fragment>
             <Wrapper>
                 <form onSubmit={(e) => onSubmitForm(e)}>
+                    <label htmlFor="file" className="grey-text">
+                        Select an image
+                    </label>
+                    <input type="file" className="form-control" name="file" id="profilePic" multiple onChange={onFileChange} />
                     <label htmlFor="content" className="grey-text">
-                        Post Description
+                        Description
                     </label>
                     <input
                         type="text"
@@ -45,8 +55,8 @@ const CreatePost = ({ createPost }) => {
                         placeholder="Description"
                         onChange={(e) => setContent(e.target.value)}
                     />
-                    <label htmlFor="imagePath" className="grey-text">
-                        Image 
+                    {/* <label htmlFor="imagePath" className="grey-text">
+                        Image
                     </label>
                     <input
                         type="text"
@@ -56,7 +66,7 @@ const CreatePost = ({ createPost }) => {
                         value={imagePath}
                         placeholder="Description"
                         onChange={(e) => setImagePath(e.target.value)}
-                    />
+                    /> */}
                     <div className="text-center mt-4">
                         <button color="unique" type="submit">
                             Post
