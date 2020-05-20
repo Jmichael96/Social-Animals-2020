@@ -44,6 +44,7 @@ const PostItem = ({
     const likeArr = like.likes;
     useEffect(() => {
         setContentEdit(content);
+
         if (!isEmpty(likeArr)) {
             setIteratingModal(likeArr)
         }
@@ -78,14 +79,6 @@ const PostItem = ({
         }
         return confirmedUser;
     }
-
-    // checking if authenticated user has already liked post and changing button color accordingly
-    // const checkIfLiked = () => {
-    //     if (!loading && user) {
-    //         let userId = user._id;
-
-    //     }
-    // }
 
     // setting the edit availability to true or false
     const onEditChange = () => {
@@ -163,16 +156,20 @@ const PostItem = ({
 
         if (likes.length <= 0 || likes.length == null) {
             return null;
-        } 
+        }
         else if (likes.length === 1) {
-            return (<a href="#" className="pl-2" onClick={() => {
-                submitFetchLikes();
-            }}>{likes.length}{' '}Like</a>);
-        } 
+            return (
+                <a href="#" className="pl-2" onClick={() => {
+                    submitFetchLikes();
+                }}>{likes.length}{' '}Like</a>
+            );
+        }
         else if (likes.length > 1) {
-            return (<a href="#" className="pl-2" onClick={() => {
-                submitFetchLikes();
-            }}>{likes.length}{' '}Likes</a>);
+            return (
+                <a href="#" className="pl-2" onClick={() => {
+                    submitFetchLikes();
+                }}>{likes.length}{' '}Likes</a>
+            );
         }
     }
 
@@ -188,7 +185,7 @@ const PostItem = ({
             return (
                 <p>{comments.length}{' '}Comment</p>
             )
-        } 
+        }
         else if (comments.length > 1) {
             return (
                 <p>{comments.length}{' '}Comments</p>
@@ -282,7 +279,7 @@ const PostItem = ({
 
 
                             {isAuthenticated && user ? (
-                                <button type="button" style={{backgroundColor: !hasLiked ? 'white' : 'red'}} onClick={() => {
+                                <button type="button" style={{ backgroundColor: !hasLiked ? 'white' : 'red' }} onClick={() => {
                                     for (let i = 0; i < likes.length; i++) {
                                         if (likes[i].userId === user._id) {
                                             // if a post has already been liked by the logged in user...

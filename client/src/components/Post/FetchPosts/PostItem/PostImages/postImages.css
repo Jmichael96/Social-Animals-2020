@@ -1,3 +1,8 @@
 .postImg {
-    height: 200px;
+    height: 300px;
+}
+
+/* inner wrap of images inside carousel */
+.postImgCarouselInner {
+    /* height: 300px; */
 }
