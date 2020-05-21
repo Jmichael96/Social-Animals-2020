@@ -16,10 +16,10 @@ import { fetchLikes } from '../../../../store/actions/like';
 import { setModal } from '../../../../store/actions/modal';
 import CommentIndex from '../../Comment/CommentIndex/CommentIndex';
 import AddComment from '../../Comment/AddComment/AddComment';
-import { setIteratingModal } from '../../../../store/actions/iteratingModal';
 import isEmpty from '../../../../utils/isEmpty';
 import PostImages from './PostImages/PostImages';
 import RenderPostLikes from './RenderPostLikes/RenderPostLikes';
+import RenderPostComments from './RenderPostComments/RenderPostComments';
 
 import './postItem.css';
 
@@ -136,26 +136,6 @@ const PostItem = ({
         }
     }
 
-    // render the comment amount
-    const renderCommentNumber = () => {
-        if (!postLoading && !comments) {
-            return null;
-        }
-        else if (comments.length <= 0 || comments.length == null) {
-            return null;
-        }
-        else if (comments.length === 1) {
-            return (
-                <p>{comments.length}{' '}Comment</p>
-            )
-        }
-        else if (comments.length > 1) {
-            return (
-                <p>{comments.length}{' '}Comments</p>
-            )
-        }
-    }
-
     // once called, it will load the rest of the comments
     const loadMoreComments = () => {
         let commentLength = comments.length;
@@ -262,7 +242,7 @@ const PostItem = ({
                                     null
                                 )}
                                 <RenderPostLikes postLoading={postLoading} isAuth={isAuthenticated} likes={likes} />
-                            {renderCommentNumber()}
+                                <RenderPostComments postLoading={postLoading} comments={comments} />
                             {renderLoadMoreComments()}
                             {renderComments()}
                             {renderAddComment()}
