@@ -56,21 +56,21 @@ const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, profile
     }
 
     // renders how many follwers a person has
-    const renderFollowerAmount = () => {
-        const followersArr = profile.followers;
-        if (!isEmpty(followersArr)) {
-            if (followersArr.length === 0) {
-                return (<p>You have 0 followers</p>);
-            }
-            else if (followersArr.length === 1) {
-                return (<p>You have {followersArr.length} follower</p>);
-            }
-            else if (followersArr.length > 1) {
-                return (<p>You have {followersArr.length} followers</p>);
-            }
-        }
-        return (<p>You have 0 followers</p>);
-    }
+    // const renderFollowerAmount = () => {
+    //     const followersArr = profile.followers;
+    //     if (!isEmpty(followersArr)) {
+    //         if (followersArr.length === 0) {
+    //             return (<p>You have 0 followers</p>);
+    //         }
+    //         else if (followersArr.length === 1) {
+    //             return (<p>You have {followersArr.length} follower</p>);
+    //         }
+    //         else if (followersArr.length > 1) {
+    //             return (<p>You have {followersArr.length} followers</p>);
+    //         }
+    //     }
+    //     return (<p>You have 0 followers</p>);
+    // }
 
     // check and see if the authenticated user is the owner of the profile 
     // then render the buttons accordingly

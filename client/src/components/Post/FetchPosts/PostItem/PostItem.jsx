@@ -19,6 +19,8 @@ import AddComment from '../../Comment/AddComment/AddComment';
 import { setIteratingModal } from '../../../../store/actions/iteratingModal';
 import isEmpty from '../../../../utils/isEmpty';
 import PostImages from './PostImages/PostImages';
+import RenderPostLikes from './RenderPostLikes/RenderPostLikes';
+
 import './postItem.css';
 
 const PostItem = ({
@@ -27,12 +29,9 @@ const PostItem = ({
     setModal,
     likePost,
     unlikePost,
-    fetchLikes,
-    setIteratingModal,
     auth: { isAuthenticated, user, loading },
     post: { _id, content, imagePath, date, authorId, authorUsername, likes, comments },
     postLoading,
-    like
 }) => {
     const [commentLimit, setCommentLimit] = useState(2);
     const [commentLimitReached, setCommentLimitReached] = useState(false);
@@ -41,13 +40,8 @@ const PostItem = ({
     // checking to see if authenticated user has liked this post. if they have change the color of the like button
     const [hasLiked, setHasLiked] = useState(false);
 
-    const likeArr = like.likes;
     useEffect(() => {
         setContentEdit(content);
-
-        if (!isEmpty(likeArr)) {
-            setIteratingModal(likeArr)
-        }
 
         // checking if authenticated user has already liked post and changing button color accordingly
         if (!loading && user) {
@@ -56,14 +50,13 @@ const PostItem = ({
                 for (let i = 0; i < likes.length; i++) {
                     if (userId === likes[i].userId) {
                         setHasLiked(true);
-                        console.log('you have liked')
                         return;
                     }
                 }
             }
         }
 
-    }, [content, likeArr, isEmpty, user, likes]);
+    }, [content, isEmpty, user, likes]);
 
     // checking if user is authenticated and owns the post 
     // they want to update or delete
@@ -143,36 +136,6 @@ const PostItem = ({
         }
     }
 
-    // func to call fetchLikes()
-    const submitFetchLikes = () => {
-        fetchLikes(_id);
-    }
-
-    // render the like amount on the post item
-    const renderLikeNumber = () => {
-        if (!postLoading && !likes) {
-            return null;
-        }
-
-        if (likes.length <= 0 || likes.length == null) {
-            return null;
-        }
-        else if (likes.length === 1) {
-            return (
-                <a href="#" className="pl-2" onClick={() => {
-                    submitFetchLikes();
-                }}>{likes.length}{' '}Like</a>
-            );
-        }
-        else if (likes.length > 1) {
-            return (
-                <a href="#" className="pl-2" onClick={() => {
-                    submitFetchLikes();
-                }}>{likes.length}{' '}Likes</a>
-            );
-        }
-    }
-
     // render the comment amount
     const renderCommentNumber = () => {
         if (!postLoading && !comments) {
@@ -214,7 +177,7 @@ const PostItem = ({
         }
         return Object.values(comments).slice(0, commentLimit).map((comment) => {
             return (
-                <CommentIndex key={comment._id} comment={comment} postAuthorId={authorId} postId={_id} />
+                <CommentIndex key={comment._id} comment={comment} userLoading={loading} postAuthorId={authorId} postId={_id} />
             )
         })
     }
@@ -298,7 +261,7 @@ const PostItem = ({
                             ) : (
                                     null
                                 )}
-                            {renderLikeNumber()}
+                                <RenderPostLikes postLoading={postLoading} isAuth={isAuthenticated} likes={likes} />
                             {renderCommentNumber()}
                             {renderLoadMoreComments()}
                             {renderComments()}
@@ -317,17 +280,14 @@ PostItem.propTypes = {
     deletePost: PropTypes.func.isRequired,
     post: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
-    like: PropTypes.object.isRequired,
     setModal: PropTypes.func.isRequired,
     likePost: PropTypes.func.isRequired,
     unlikePost: PropTypes.func.isRequired,
-    setIteratingModal: PropTypes.func.isRequired,
     postLoading: PropTypes.any,
 }
 
 const mapStateToProps = (state) => ({
     auth: state.auth,
-    like: state.like
 });
 
-export default connect(mapStateToProps, { updatePost, setModal, deletePost, likePost, unlikePost, fetchLikes, setIteratingModal })(PostItem);
+export default connect(mapStateToProps, { updatePost, setModal, deletePost, likePost, unlikePost, fetchLikes })(PostItem);
