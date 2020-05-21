@@ -5,6 +5,7 @@ import { fetchProfileById, followProfile, unfollowProfile } from '../../../store
 import { Link } from 'react-router-dom';
 import Wrapper from '../../Layout/Wrapper/Wrapper';
 import isEmpty from '../../../utils/isEmpty';
+import RenderFollowers from './RenderFollowers/RenderFollowers';
 
 const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, profile: { profile, loading }, auth, match }) => {
     const nullProfile = !profile;
@@ -99,7 +100,7 @@ const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, profile
             <Fragment>
                 <Wrapper>
                     <div>
-                        {renderFollowerAmount()}
+                        <RenderFollowers profile={profile} profileLoading={loading} />
                     </div>
                 </Wrapper>
                 <Wrapper>
