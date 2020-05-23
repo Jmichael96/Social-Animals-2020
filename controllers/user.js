@@ -76,7 +76,7 @@ exports.updateProfile = (req, res, next) => {
         .catch((err) => {
             console.log(err);
             res.status(500).json({
-                message: 'Creating profile has failed!'
+                serverMsg: 'Creating profile has failed!'
             });
         });
 }
@@ -101,16 +101,23 @@ exports.getUserProfile = (req, res, next) => {
 // @access   Private
 exports.followUser = (req, res, next) => {
     User.findByIdAndUpdate({ _id: req.params.id })
-        .then((profile) => {
-            if (profile.followers.some((follower) => follower.userId.toString() === req.user._id)) {
+        .then((user) => {
+            if (user.followers.some((follower) => follower.userId.toString() === req.user._id)) {
                 res.status(400).json({
                     message: 'Profile has already been followed by this user'
                 });
             };
 
-            profile.followers.unshift({ userId: req.user._id, username: req.user.username });
-            profile.save();
-            res.status(201).json(profile.followers)
+            // adding to followers array
+            user.followers.unshift({ userId: req.user._id, username: req.user.username });
+            // adding to following array
+            user.following.unshift({ userId: req.user._id, username: req.user.username });
+
+            user.save();
+            res.status(201).json({
+                serverMsg: 'You have followed this user',
+                user
+            });
         })
         .catch((err) => {
             console.log(err);
@@ -125,17 +132,25 @@ exports.followUser = (req, res, next) => {
 // @access   Private
 exports.unfollowUser = (req, res, next) => {
     User.findByIdAndUpdate({ _id: req.params.id })
-        .then((profile) => {
-            if (!profile.followers.some((follower) => follower.userId.toString() === req.user._id)) {
+        .then((user) => {
+            if (!user.followers.some((follower) => follower.userId.toString() === req.user._id)) {
                 return res.status(400).json({ msg: 'You have not followed this account yet' });
             }
 
             // remove follower
-            profile.followers = profile.followers.filter(
+            user.followers = user.followers.filter(
                 ({ userId }) => userId.toString() !== req.user._id
             );
-            profile.save();
-            res.status(201).json(profile.followers)
+            // remove following
+            user.following = user.following.filter(
+                ({ userId }) => userId.toString() !== req.user._id
+            );
+
+            user.save();
+            res.status(201).json({
+                serverMsg: 'You have unfollowed this user',
+                user
+            })
         })
         .catch((err) => {
             console.log(err);

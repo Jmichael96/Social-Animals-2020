@@ -40,6 +40,20 @@ const userSchema = new mongoose.Schema({
             }
         }
     ],
+    following: [
+        {
+            userId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User',
+                required: true
+            },
+            username: {
+                type: String,
+                ref: 'User',
+                required: true
+            }
+        }
+    ],
     date: {
         type: Date,
         default: Date.now
