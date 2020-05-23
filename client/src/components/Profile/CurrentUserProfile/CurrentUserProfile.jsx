@@ -4,10 +4,11 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Wrapper from '../../Layout/Wrapper/Wrapper';
 import ProfileSettings from '../ProfileSettings/ProfileSettings';
+import Spinner from '../../Layout/Spinner/Spinner';
 
 const CurrentUserProfile = ({ auth: { user, loading } }) => {
 
-    return loading ? null : (
+    return loading ? <Spinner /> : (
         <Fragment>
             <h1>Hello {user.username}</h1>
             <img src={user.profilePicture} />

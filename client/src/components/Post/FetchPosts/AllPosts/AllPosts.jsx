@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { fetchAllPosts } from '../../../../store/actions/post';
 import Wrapper from '../../../Layout/Wrapper/Wrapper';
 import PostItem from '../PostItem/PostItem';
+import Spinner from '../../../Layout/Spinner/Spinner';
 
 const AllPosts = ({ fetchAllPosts, post: { posts, loading } }) => {
 
@@ -14,12 +15,12 @@ const AllPosts = ({ fetchAllPosts, post: { posts, loading } }) => {
     const renderPosts = () => {
         const postList = posts;
         return Object.values(postList).map((post) => {
-            return (
+            return loading ? (<Spinner />) : (
                     <PostItem key={post._id} postLoading={loading} post={post} />
             )
         })
     }
-    return loading ? (<h4>Loading...</h4>) : (
+    return (
         <Fragment>
             {renderPosts()}
         </Fragment>

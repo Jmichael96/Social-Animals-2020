@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import Wrapper from '../../Layout/Wrapper/Wrapper';
 import isEmpty from '../../../utils/isEmpty';
 import RenderFollowers from './RenderFollowers/RenderFollowers';
+import Spinner from '../../Layout/Spinner/Spinner';
 
 const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, user: { user, loading }, auth, match }) => {
     // for when a user wants to change the profile photo render the file input
@@ -107,7 +108,7 @@ const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, user: {
         )
     }
 
-    return loading ? (<h1>Loading!</h1>) : (
+    return loading ? (<Spinner />) : (
         <Fragment>
             {renderProfile()}
         </Fragment>
