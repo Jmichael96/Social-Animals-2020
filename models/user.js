@@ -10,6 +10,39 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    profilePicture: {
+        type: String,
+    },
+    name: {
+        type: String
+    },
+    bio: {
+        type: String
+    },
+    location: {
+        type: String
+    },
+    email: {
+        type: String
+    },
+    followers: [
+        {
+            userId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User',
+                required: true
+            },
+            username: {
+                type: String,
+                ref: 'User',
+                required: true
+            }
+        }
+    ],
+    date: {
+        type: Date,
+        default: Date.now
     }
 });
 

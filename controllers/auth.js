@@ -5,59 +5,32 @@ const config = require('../services/keys');
 const { check, validationResult } = require('express-validator');
 const multer = require('multer');
 
-// const storage = multer.diskStorage({
-//     destination: '../images/profilePicture/',
-//     filename: function (req, res, cb) {
-//         cb(null, "IMAGE-" + Date.now() + path.extname(file.originalname));
-//     }
-// });
-
-// const upload = multer({
-//     storage: storage,
-//     limits: {
-//         fileSize: 1000000
-//     },
-// }).single('myImage');
-const MIME_TYPE_MAP = {
-    "image/png": "png",
-    "image/jpeg": "jpg",
-    "image/jpg": "jpg"
-};
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        const isValid = MIME_TYPE_MAP[file.mimetype];
-        let error = new Error("Invalid mime type");
-        if (isValid) {
-            error = null;
-        }
-        cb(error, "backend/images");
-    },
-    filename: (req, file, cb) => {
-        const name = file.originalname
-            .toLowerCase()
-            .split(" ")
-            .join("-");
-        const ext = MIME_TYPE_MAP[file.mimetype];
-        cb(null, name + "-" + Date.now() + "." + ext);
-    }
-});
-
 // @route    POST api/auth/register
 // @desc     Register user
 // @access   Public
 exports.register = (req, res, next) => {
-    console.log('register api fired')
+    const url = req.protocol + '://' + req.get('host');
     bcrypt.hash(req.body.password, 10).then((hash) => {
         const user = new User({
             username: req.body.username,
-            password: hash
+            password: hash,
+            profilePicture: url + '/images/profilePicture/default.jpeg',
+            name: req.body.name,
+            bio: req.body.bio,
+            location: req.body.location,
+            email: req.body.email
         });
         user.save()
             .then((user) => {
                 const payload = {
                     user: {
-                        _id: user._id
+                        _id: user._id,
+                        username: user.username,
+                        profilePicture: user.profilePicture,
+                        name: user.name,
+                        bio: user.bio,
+                        location: user.bio,
+                        email: user.email
                     }
                 }
                 jwt.sign(payload, config.SECRET,
@@ -70,6 +43,7 @@ exports.register = (req, res, next) => {
                     });
             })
             .catch((err) => {
+                console.log(err)
                 res.status(500).json({
                     message: 'Invalid authentication credentials!'
                 });
@@ -123,7 +97,12 @@ exports.login = (req, res, next) => {
             const payload = {
                 user: {
                     _id: fetchedUser._id,
-                    username: fetchedUser.username
+                    username: fetchedUser.username,
+                    profilePicture: fetchedUser.profilePicture,
+                    name: fetchedUser.name,
+                    bio: fetchedUser.bio,
+                    location: fetchedUser.bio,
+                    email: fetchedUser.email
                 }
             }
 

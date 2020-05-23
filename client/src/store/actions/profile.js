@@ -28,14 +28,14 @@ export const createProfile = ({ ...formData }) => dispatch => {
         }
     };
 
-    const data = new FormData();
-    data.append('image', formData.profilePicture);
-    data.append('name', formData.name);
-    data.append('bio', formData.bio);
-    data.append('location', formData.location);
-    data.append('email', formData.email);
+    // const data = new FormData();
+    // data.append('image', formData.profilePicture);
+    // data.append('name', formData.name);
+    // data.append('bio', formData.bio);
+    // data.append('location', formData.location);
+    // data.append('email', formData.email);
 
-    axios.post('/api/profile/create_profile', data, config)
+    axios.post('/api/profile/create_profile', formData, config)
     .then((res) => {
         dispatch({
             type: types.CREATE_PROFILE,

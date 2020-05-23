@@ -184,6 +184,21 @@ const PostItem = ({
         return (<button type="button" onClick={loadMoreComments}>Show more</button>)
     }
 
+    // check to see if current user is author of post and change url accordingly
+    const isAuthor = () => {
+        if (!loading && !postLoading) {
+            if (!user) {
+                return;
+            }
+            if (user._id === authorId) {
+                return true
+            }
+            else if (user._id !== authorId) {
+                return false
+            }
+        }
+    }
+    
     return (
         <Fragment>
             <MDBContainer>
@@ -192,7 +207,7 @@ const PostItem = ({
                         <div id="postCard" key={_id}>
                             <MDBRow>
                                 <MDBCol>
-                                    <Link to={`/user_profile/${authorId}`}>
+                                    <Link to={!isAuthor() ? `/user_profile/${authorId}` : '/my_profile'}>
                                         <h4 id="postAuthor">{authorUsername}</h4>
                                     </Link>
                                 </MDBCol>

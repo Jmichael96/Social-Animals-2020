@@ -26,6 +26,12 @@ export default function (state = initialState, action) {
                 isAuthenticated: true,
                 loading: false
             }
+        case types.UPDATE_PROFILE:
+            return {
+                ...state,
+                user: payload,
+                loading: false
+            }
         case types.REGISTER_FAIL:
         case types.LOGIN_FAIL:
         case types.AUTH_ERROR:

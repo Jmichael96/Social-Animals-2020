@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-const WelcomeMessage = ({ auth, profile }) => {
+const WelcomeMessage = ({ auth }) => {
 
     if (!auth.loading && !auth.isAuthenticated) {
         return null;
@@ -17,13 +17,11 @@ const WelcomeMessage = ({ auth, profile }) => {
 }
 
 WelcomeMessage.propTypes = {
-    auth: PropTypes.object.isRequired,
-    profile: PropTypes.object.isRequired,
+    auth: PropTypes.object,
 }
 
 const mapStateToProps = (state) => ({
     auth: state.auth,
-    profile: state.profile
 });
 
 export default connect(mapStateToProps)(WelcomeMessage);

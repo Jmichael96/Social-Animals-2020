@@ -8,20 +8,28 @@ import { connect } from 'react-redux';
 import PropTypes, { object } from 'prop-types';
 import { Redirect } from 'react-router-dom';
 
+const initialState = {
+    username: '',
+    password: '',
+    name: '',
+    bio: '',
+    location: '',
+    email: '',
+}
 const Register = ({ register, setAlert, isAuthenticated }) => {
-
+    const [formData, setFormData] = useState(initialState);
     // const [name, setName] = useState('');
     // const [bio, setBio] = useState('');
     // const [profilePicture, setProfilePicture] = useState()
     // const [preview, setPreview] = useState()
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [password2, setPassword2] = useState('');
-    const [isValid, setIsValid] = useState(false);
+    // const [username, setUsername] = useState('');
+    // const [password, setPassword] = useState('');
+    // const [password2, setPassword2] = useState('');
+    // const [isValid, setIsValid] = useState(false);
     // const [nameErr, setNameErr] = useState('');
-    const [usernameErr, setUsernameErr] = useState('');
-    const [passwordErr, setPasswordErr] = useState('');
-    const [password2Err, setPassword2Err] = useState('');
+    // const [usernameErr, setUsernameErr] = useState('');
+    // const [passwordErr, setPasswordErr] = useState('');
+    // const [password2Err, setPassword2Err] = useState('');
 
 
     // create a preview as a side effect, whenever selected file is changed
@@ -47,21 +55,15 @@ const Register = ({ register, setAlert, isAuthenticated }) => {
     //     // I've kept this example simple by using the first image instead of multiple
     //     setProfilePicture(e.target.files[0])
     // }
-
+    const { username, password, name, bio, location, email } = formData;
     const onSubmitForm = (e) => {
         e.preventDefault();
-        // validateForm();
-
-        const formData = {
-            username,
-            password
-        }
-        register({ username, password });
-        if (isValid) {
-            
-            // setAlert('Successfully created an account!', 'success');
-        }
+        
+        register({ username, password, name, bio, location, email });
+       
     }
+    const onChange = (e) =>
+        setFormData({ ...formData, [e.target.name]: e.target.value });
 
     // const validateForm = () => {
     //     let validated = true;
@@ -102,34 +104,9 @@ const Register = ({ register, setAlert, isAuthenticated }) => {
 
                 <form onSubmit={(e) => onSubmitForm(e)}>
                     <p className="h4 text-center mb-4">Sign up</p>
-                    {/* <label htmlFor="name" className="grey-text">
-                        {!isValid && nameErr ? <span style={{ color: 'red' }}>{nameErr}</span> : <span>Your name</span>}
-                    </label>
-                    <input
-                        type="text"
-                        name="name"
-                        placeholder="Full Name"
-                        id="name"
-                        className="form-control"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                    /> */}
-                    {/* <br /> */}
-                    {/* <label htmlFor="bio" className="grey-text">
-                        Bio
-                </label>
-                    <textarea
-                        type="text"
-                        name="bio"
-                        rows="5"
-                        id="bio"
-                        className="form-control"
-                        value={bio}
-                        placeholder="About me"
-                        onChange={(e) => setBio(e.target.value)}></textarea> */}
-                    {/* <br /> */}
                     <label htmlFor="username" className="grey-text">
-                        {!isValid && usernameErr ? <span style={{ color: 'red' }}>{usernameErr}</span> : <span>Username</span>}
+                        Username
+                        {/* {!isValid && usernameErr ? <span style={{ color: 'red' }}>{usernameErr}</span> : <span>Username</span>} */}
                     </label>
                     <input
                         type="text"
@@ -138,22 +115,24 @@ const Register = ({ register, setAlert, isAuthenticated }) => {
                         className="form-control"
                         value={username}
                         placeholder="Username"
-                        onChange={(e) => setUsername(e.target.value)}
+                        onChange={onChange}
                     />
                     <br />
                     <label htmlFor="password" className="grey-text">
-                        {!isValid && passwordErr ? <span style={{ color: 'red' }}>{passwordErr}</span> : <span>Passord</span>}
+                        Password
+                        {/* {!isValid && passwordErr ? <span style={{ color: 'red' }}>{passwordErr}</span> : <span>Password</span>} */}
                     </label>
                     <input
                         type="password"
                         id="password"
                         className="form-control"
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        name="password"
+                        onChange={onChange}
                         placeholder="password"
                     />
                     <br />
-                    <label htmlFor="password2" className="grey-text">
+                    {/* <label htmlFor="password2" className="grey-text">
                         {!isValid && password2Err ? <span style={{ color: 'red' }}>{password2Err}</span> : <span>Retype Password</span>}
                     </label>
                     <input
@@ -163,10 +142,54 @@ const Register = ({ register, setAlert, isAuthenticated }) => {
                         value={password2}
                         placeholder="Retype Password"
                         onChange={(e) => setPassword2(e.target.value)} />
-                    {/* <div>
-                        <input type='file' onChange={onSelectFile} />
-                        {profilePicture && <img src={preview} />}
-                    </div> */}
+                    <label htmlFor="name" className="grey-text">
+                        Full Name
+                    </label> */}
+                    <input
+                        type="text"
+                        name="name"
+                        id="name"
+                        className="form-control"
+                        value={name}
+                        placeholder="Full name"
+                        onChange={onChange}
+                    />
+                    <label htmlFor="bio" className="grey-text">
+                        About You
+                </label>
+                    <input
+                        type="text"
+                        name="bio"
+                        id="bio"
+                        className="form-control"
+                        value={bio}
+                        placeholder="About you"
+                        onChange={onChange}
+                    />
+                    <label htmlFor="location" className="grey-text">
+                        Where You Are Located
+                </label>
+                    <input
+                        type="text"
+                        name="location"
+                        id="location"
+                        className="form-control"
+                        value={location}
+                        placeholder="Location"
+                        onChange={onChange}
+                    />
+                    <label htmlFor="email" className="grey-text">
+                        E-Mail
+                </label>
+                    <input
+                        type="email"
+                        name="email"
+                        id="email"
+                        className="form-control"
+                        value={email}
+                        placeholder="Email@yahoo.com"
+                        onChange={onChange}
+                    />
                     <div className="text-center mt-4">
                         <MDBBtn color="unique" type="submit">
                             Register
@@ -177,6 +200,7 @@ const Register = ({ register, setAlert, isAuthenticated }) => {
         </Wrapper>
     )
 }
+
 Register.propTypes = {
     register: PropTypes.func.isRequired,
     isAuthenticated: PropTypes.bool,

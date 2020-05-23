@@ -31,8 +31,7 @@ exports.createPost = (req, res, next) => {
                 }
             }
             createdPost.save();
-            console.log(req.body);
-            console.log(createdPost);
+    
             res.status(201).json(createdPost)
         })
         .catch((err) => {
@@ -193,7 +192,6 @@ exports.comment = (req, res, next) => {
             }
             post.comments.unshift(newComment);
             post.save();
-            console.log(post);
             res.json(post.comments);
         })
         .catch((err) => {

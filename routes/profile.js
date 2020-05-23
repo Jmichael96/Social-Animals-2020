@@ -11,7 +11,7 @@ router.get('/me', isAuthenticated, ProfileController.getPersonalProfile);
 // @route    POST api/profile/create_profile
 // @desc     Creating a profile
 // @access   Private
-router.post('/create_profile', isAuthenticated, extractProfileImgFile, ProfileController.createProfile);
+router.post('/create_profile', isAuthenticated, ProfileController.createProfile);
 
 
 // @route    GET api/profile/user_profile/:id

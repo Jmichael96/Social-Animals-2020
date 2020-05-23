@@ -13,7 +13,7 @@ const rootReducer = combineReducers({
     modal,
     auth,
     post,
-    profile,
+    // profile,
     user,
     like,
     iteratingModal

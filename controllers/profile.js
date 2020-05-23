@@ -22,31 +22,46 @@ exports.getPersonalProfile = (req, res, next) => {
 // @desc     Creating a profile
 // @access   Private
 exports.createProfile = (req, res, next) => {
-    const url = req.protocol + '://' + req.get('host');
-    const { name, bio, location, email } = req.body;
-
-    const profileFields = {
+    const profile = new Profile({
         user: req.user._id,
-        profilePicture: url + '/images/profilePicture/' + req.file.filename,
-        name,
-        bio,
-        location,
-        email
-    }
-    Profile.findOneAndUpdate(
-        { user: req.user._id },
-        { $set: profileFields },
-        { new: true, upsert: true }
-    ).then((createdProfile) => {
-        console.log(createdProfile);
-        res.status(201).json(createdProfile);
-    })
-        .catch((err) => {
-            console.log(err);
-            res.status(500).json({
-                message: 'Creating profile has failed!'
-            });
+        profilePicture: req.user.profilePicture,
+        name: req.body.name,
+        bio: req.body.bio,
+        location: req.body.location,
+        email: req.body.email
+    });
+    profile.save().then((createdProfile) => {
+        res.status(201).json({
+            serverMsg: 'Created profile successfully',
         });
+    }).catch((err) => {
+        console.log(err);
+    });
+    // const url = req.protocol + '://' + req.get('host');
+    // const { name, bio, location, email } = req.body;
+
+    // const profileFields = {
+    //     user: req.user._id,
+    //     profilePicture: req.user.profilePicture,
+    //     name,
+    //     bio,
+    //     location,
+    //     email
+    // }
+    // Profile.findOneAndUpdate(
+    //     { user: req.user._id },
+    //     { $set: profileFields },
+    //     { new: true, upsert: true }
+    // ).then((createdProfile) => {
+    //     console.log(createdProfile);
+    //     res.status(201).json(createdProfile);
+    // })
+    //     .catch((err) => {
+    //         console.log(err);
+    //         res.status(500).json({
+    //             message: 'Creating profile has failed!'
+    //         });
+    //     });
 };
 
 
@@ -83,7 +98,6 @@ exports.follow = (req, res, next) => {
 
             profile.followers.unshift({ userId: req.user._id, username: req.user.username });
             profile.save();
-            console.log(profile.followers);
             res.status(201).json(profile.followers)
         })
         .catch((err) => {
@@ -109,7 +123,6 @@ exports.unfollow = (req, res, next) => {
                 ({ userId }) => userId.toString() !== req.user._id
             );
             profile.save();
-            console.log(profile);
             res.status(201).json(profile.followers)
         })
         .catch((err) => {

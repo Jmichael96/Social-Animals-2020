@@ -1,9 +1,9 @@
 import React, { Fragment, useState, useEffect } from 'react';
+// import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { updateProfile } from '../../../store/actions/user';
+import { createProfile, fetchCurrentProfile } from '../../../store/actions/profile';
 import Wrapper from '../../Layout/Wrapper/Wrapper';
-import { Link } from 'react-router-dom';
 
 const initialState = {
     name: '',
@@ -11,64 +11,54 @@ const initialState = {
     location: '',
     email: ''
 }
-const UpdateProfile = ({ auth: { isAuthenticated, user, loading }, updateProfile }) => {
+const CreateProfile = ({ profile: { profile, loading }, createProfile, fetchCurrentProfile }) => {
     const [formData, setFormData] = useState(initialState);
     const [profilePicture, setProfilePicture] = useState(null);
-    // check to see if form has been submitted for update
-    // then redirect if true
-    const [isUpdated, setIsUpdated] = useState(false);
 
-    // set whether or not the user wants to change their profile picture
-    const [changeProfilePic, setChangeProfilePic] = useState(false);
+    // useEffect(() => {
+    //     if (!profile) {
+    //         fetchCurrentProfile();
+    //     }
+    //     if (!loading && profile) {
+    //         const profileData = { ...initialState };
+    //         for (const key in profile) {
+    //             if (key in profileData) {
+    //                 profileData[key] = profile[key];
+    //             }
+    //         }
+    //         setFormData(profileData);
+    //     }
 
-    useEffect(() => {
-        if (!loading && user) {
-            const profileData = { ...initialState };
-            for (const key in user) {
-                if (key in profileData) {
-                    profileData[key] = user[key];
-                }
-            }
-            setFormData(profileData);
-        }
-
-    }, [loading, user]);
+    // }, [loading, fetchCurrentProfile, profile]);
     const { name, bio, location, email } = formData;
 
     const onChange = (e) =>
         setFormData({ ...formData, [e.target.name]: e.target.value });
 
+    // const onfilechange = (e) => {
+    //     console.log(e.target.files[0]);
+    //     setProfilePicture(e.target.files[0]);
+    // }
     const onSubmitForm = (e) => {
         e.preventDefault();
-        const id = user._id;
-        setIsUpdated(true);
-        if (!profilePicture) {
-            setProfilePicture(user.profilePicture);
+
+        const newFormData = {
+            name: name,
+            bio: bio,
+            location: location,
+            email: email
         }
-        updateProfile({ id, profilePicture, name, bio, location, email });
+        createProfile(newFormData);
     }
 
-    // func to render new file attachment if user wants to change profile picture
-    const configUpdatePic = () => {
-        setChangeProfilePic(!changeProfilePic);
-    }
-
-    const onfilechange = (e) => {
-        console.log(e.target.files[0]);
-        setProfilePicture(e.target.files[0]);
-    }
-
-    return loading ? null : (
+    return (
         <Fragment>
-            <img src={user.profilePicture} />
-            <button onClick={configUpdatePic}>Change Picture</button>
             <Wrapper>
-
-                <form onSubmit={(e) => {
-                    onSubmitForm(e)
-                    setIsUpdated(true)
-                }}>
-                    {!changeProfilePic ? null : (<input type="file" name="profilePicture" onChange={onfilechange} />)}
+                <form onSubmit={(e) => onSubmitForm(e)}>/
+                    {/* <label htmlFor="file" className="grey-text">
+                        Profile Picture
+                    </label>
+                    <input type="file" className="form-control" name="file" id="profilePic" onChange={onfilechange} /> */}
                     <label htmlFor="name" className="grey-text">
                         Full Name
                     </label>
@@ -107,7 +97,7 @@ const UpdateProfile = ({ auth: { isAuthenticated, user, loading }, updateProfile
                     />
                     <label htmlFor="email" className="grey-text">
                         E-Mail
-                    </label>
+                </label>
                     <input
                         type="email"
                         name="email"
@@ -118,7 +108,6 @@ const UpdateProfile = ({ auth: { isAuthenticated, user, loading }, updateProfile
                         onChange={onChange}
                     />
                     <div className="text-center mt-4">
-                        <Link to="/my_profile"><button type="button">Cancel</button></Link>
                         <button color="unique" type="submit">
                             Update Profile
                     </button>
@@ -130,13 +119,14 @@ const UpdateProfile = ({ auth: { isAuthenticated, user, loading }, updateProfile
 
 }
 
-UpdateProfile.propTypes = {
-    updateProfile: PropTypes.func.isRequired,
-    auth: PropTypes.object.isRequired,
+CreateProfile.propTypes = {
+    createProfile: PropTypes.func.isRequired,
+    fetchCurrentProfile: PropTypes.func.isRequired,
+    profile: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = (state) => ({
-    auth: state.auth
+    profile: state.profile
 });
 
-export default connect(mapStateToProps, { updateProfile })(UpdateProfile);
+export default connect(mapStateToProps, { createProfile, fetchCurrentProfile })(CreateProfile);

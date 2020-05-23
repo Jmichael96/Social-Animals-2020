@@ -24,14 +24,14 @@ export const loadUser = () => dispatch => {
 };
 
 // register
-export const register = ({ username, password }) => dispatch => {
+export const register = ({ username, password, name, bio, location, email }) => dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     };
     
-    const formData = { username, password };
+    const formData = { username, password, name, bio, location, email };
     
     axios.post('/api/auth/register', formData, config)
         .then((res) => {
@@ -46,7 +46,7 @@ export const register = ({ username, password }) => dispatch => {
         })
         .catch((err) => {
             const errors = err.response.data.errors;
-            console.log(errors);
+            console.log(err);
             if (errors) {
                 errors.forEach((err) => {
                     dispatch(setAlert(err.msg, 'danger'));

@@ -8,7 +8,7 @@ const user = require('./user');
 
 router.use('/api/auth', auth);
 router.use('/api/posts', posts);
-router.use('/api/profile', profile);
+// router.use('/api/profile', profile);
 router.use('/api/user', user);
 // router.use('/api/image', image);
 

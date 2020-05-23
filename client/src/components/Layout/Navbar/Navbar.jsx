@@ -36,7 +36,7 @@ const Navbar = ({ auth: { isAuthenticated, loading, user }, logout }) => {
                     <Link className="nav-link" to="/create_post">Create Post</Link>
                 </li>
                 <li className="nav-item">
-                    <Link className="nav-link" to={`/user_profile/${user._id}`}>Profile</Link>
+                    <Link className="nav-link" to="/my_profile">Profile</Link>
                 </li>
                 <li className="nav-item">
                     <Link className="nav-link" to="/usernames">Usernames</Link>
