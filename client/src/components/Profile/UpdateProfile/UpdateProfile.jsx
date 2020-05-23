@@ -60,7 +60,7 @@ const UpdateProfile = ({ auth: { isAuthenticated, user, loading }, updateProfile
 
     return loading ? null : (
         <Fragment>
-            <img src={user.profilePicture} />
+            <img style={{ height: '200px' }} src={user.profilePicture} />
             <button onClick={configUpdatePic}>Change Picture</button>
             <Wrapper>
 

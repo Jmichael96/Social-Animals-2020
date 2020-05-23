@@ -21,24 +21,6 @@ exports.fetchUsernames = (req, res, next) => {
         })
 }
 
-// @route    PUT api/user/update_profile_pic/:id
-// @desc     Update a profile picture
-// @access   Private
-exports.updateProfilePicture = (req, res, next) => {
-    const url = req.protocol + '://' + req.get('host');
-    User.findByIdAndUpdate({ _id: req.params.id }, {
-        profilePicture: url + '/images/profilePicture' + req.file.filename
-    }).then((user) => {
-        res.status(201).json(user);
-    })
-        .catch((err) => {
-            console.log(err);
-            res.status(500).json({
-                serverMsg: 'Error updating user!'
-            });
-        })
-}
-
 // @route    PUT api/user/update_profile/:id
 // @desc     Update a profile
 // @access   Private
@@ -46,13 +28,14 @@ exports.updateProfile = (req, res, next) => {
     console.log('firing update profile api')
     const url = req.protocol + '://' + req.get('host');
     let path;
+    //  setting the profile picture image accordingly if there is or isnt a file submitted
     if (req.file) {
         path = url + '/images/profilePicture/' + req.file.filename
     } else if (!req.file) {
         path = req.user.profilePicture
     }
 
-     const profileFields = {
+    const profileFields = {
         profilePicture: path,
         name: req.body.name,
         bio: req.body.bio,
@@ -64,7 +47,7 @@ exports.updateProfile = (req, res, next) => {
         { $set: profileFields },
         { new: true, upsert: true }
     ).then((user) => {
-        console.log(user);
+        // setting the jwt to assign the new values to the user in server
         const payload = {
             user: {
                 _id: user._id,
@@ -85,7 +68,10 @@ exports.updateProfile = (req, res, next) => {
                 }
                 res.json({ token });
             });
-        res.status(201).json(user);
+        res.status(201).json({
+            serverMsg: 'Successfully updated your profile',
+            user
+        });
     })
         .catch((err) => {
             console.log(err);
@@ -93,40 +79,10 @@ exports.updateProfile = (req, res, next) => {
                 message: 'Creating profile has failed!'
             });
         });
-    // const updatedProfile = {}
-    // if (!req.file) {
-    //     updatedProfile = {
-    //         profilePicture: req.user.profilePicture,
-    //         name: req.body.name,
-    //         bio: req.body.bio,
-    //         location: req.body.location,
-    //         email: req.body.email
-    //     }
-    // }
-    // updatedProfile = {
-    //     profilePicture: url + '/images/profilePicture' + req.file.filename,
-    //     name: req.body.name,
-    //     bio: req.body.bio,
-    //     location: req.body.location,
-    //     email: req.body.email
-    // }
-
-    // User.findByIdAndUpdate({ _id: req.params.id }, {
-    //    updatedProfile
-    // }).then((result) => {
-    //     console.log(result)
-    //     // res.status(201).json(user);
-    // })
-    //     .catch((err) => {
-    //         console.log(err);
-    //         res.status(500).json({
-    //             serverMsg: 'Error updating user!'
-    //         });
-    //     })
 }
 
 // @route    GET api/user/user_profile/:id
-// @desc     Get a use's profile by user Id
+// @desc     Get a user's profile by user Id
 // @access   Private
 exports.getUserProfile = (req, res, next) => {
     console.log('fetching user profile')
@@ -138,19 +94,6 @@ exports.getUserProfile = (req, res, next) => {
                 serverMsg: 'Error fetching user profile!'
             });
         })
-    // User.findOne({
-    //     user: req.params.id
-    // }).populate('user', ['name'])
-    //     .then((user) => {
-    //         console.log(user);
-    //         res.status(201).json(user);
-    //     })
-    //     .catch((err) => {
-    //         console.log(err);
-    //         res.status(500).json({
-    //             serverMsg: 'Fetching profile has failed!'
-    //         });
-    //     });
 }
 
 // @route    PUT api/user/follow/:id
