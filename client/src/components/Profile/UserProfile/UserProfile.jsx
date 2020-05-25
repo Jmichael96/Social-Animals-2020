@@ -1,14 +1,14 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { fetchProfileById, followProfile, unfollowProfile } from '../../../store/actions/user';
+import { fetchProfileById, followProfile, unfollowProfile, setFollowing, unsetFollowing } from '../../../store/actions/user';
 import { Link } from 'react-router-dom';
 import Wrapper from '../../Layout/Wrapper/Wrapper';
 import isEmpty from '../../../utils/isEmpty';
 import RenderFollowers from './RenderFollowers/RenderFollowers';
 import Spinner from '../../Layout/Spinner/Spinner';
 
-const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, user: { user, loading }, auth, match }) => {
+const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, setFollowing, unsetFollowing, user: { user, loading }, auth, match }) => {
     // for when a user wants to change the profile photo render the file input
     // const [isUpdatingPic, setIsUpdatingPic] = useState(false);
 
@@ -23,11 +23,13 @@ const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, user: {
     // follow the profile func
     const submitFollowReq = () => {
         followProfile(user._id);
+        setFollowing(user._id, user.username);
     }
 
     // unfollow the profile func
     const submitUnfollowReq = () => {
-        unfollowProfile(user._id)
+        unfollowProfile(user._id);
+        unsetFollowing(user._id);
     }
 
     // func to check to see if user has already followed profile
@@ -91,7 +93,7 @@ const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, user: {
             <Fragment>
                 <Wrapper>
                     <div>
-                        <RenderFollowers profile={user} profileLoading={loading} />
+                        <RenderFollowers user={user} userLoading={loading} />
                     </div>
                 </Wrapper>
                 <Wrapper>
@@ -119,6 +121,8 @@ UserProfile.propTypes = {
     fetchProfileById: PropTypes.func.isRequired,
     followProfile: PropTypes.func.isRequired,
     unfollowProfile: PropTypes.func.isRequired,
+    setFollowing: PropTypes.func.isRequired,
+    unsetFollowing: PropTypes.func.isRequired,
     user: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
 };
@@ -128,4 +132,4 @@ const mapStateToProps = (state) => ({
     auth: state.auth
 });
 
-export default connect(mapStateToProps, { fetchProfileById, followProfile, unfollowProfile })(UserProfile);
+export default connect(mapStateToProps, { fetchProfileById, followProfile, unfollowProfile, setFollowing, unsetFollowing })(UserProfile);

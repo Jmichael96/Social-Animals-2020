@@ -8,6 +8,9 @@ const AddComment = ({ postId, addComment }) => {
 
     const onCommentSubmit = (e) => {
         e.preventDefault();
+        if (!text || text === '') {
+            return;
+        }
         const id = postId;
         const formData = {
             text

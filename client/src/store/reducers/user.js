@@ -4,6 +4,7 @@ const initialState = {
     user: null,
     users: [],
     loading: true,
+    serverMsg: null,
     error: {}
 };
 

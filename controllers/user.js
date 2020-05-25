@@ -85,7 +85,6 @@ exports.updateProfile = (req, res, next) => {
 // @desc     Get a user's profile by user Id
 // @access   Private
 exports.getUserProfile = (req, res, next) => {
-    console.log('fetching user profile')
     User.findById({ _id: req.params.id })
         .then((user) => {
             res.status(201).json(user);
@@ -110,8 +109,6 @@ exports.followUser = (req, res, next) => {
 
             // adding to followers array
             user.followers.unshift({ userId: req.user._id, username: req.user.username });
-            // adding to following array
-            user.following.unshift({ userId: req.user._id, username: req.user.username });
 
             user.save();
             res.status(201).json({
@@ -140,11 +137,7 @@ exports.unfollowUser = (req, res, next) => {
             // remove follower
             user.followers = user.followers.filter(
                 ({ userId }) => userId.toString() !== req.user._id
-            );
-            // remove following
-            user.following = user.following.filter(
-                ({ userId }) => userId.toString() !== req.user._id
-            );
+            );        
 
             user.save();
             res.status(201).json({
@@ -159,3 +152,59 @@ exports.unfollowUser = (req, res, next) => {
             });
         });
 };
+
+// @route    PUT api/user/set_following/:userId/:username
+// @desc     Set the following array of the authenticated user
+// @access   Private
+exports.setFollowing = (req, res, next) => {
+    User.findByIdAndUpdate({ _id: req.user._id })
+        .then((user) => {
+            if (user.following.some((follower) => follower.userId.toString() === req.params.userId)) {
+                res.status(400).json({
+                    serverMsg: 'Profile has already been following this user'
+                });
+            };
+            // adding to followers array
+            user.following.unshift({ userId: req.params.userId, username: req.params.username });
+            user.save();
+            res.status(201).json({
+                serverMsg: 'You are following this user',
+                user
+            });
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json({
+                message: 'Setting following profile has failed!'
+            });
+        });
+}
+
+// @route    PUT api/user/unset_following/:userId
+// @desc     Unset the following array of the authenticated user
+// @access   Private
+exports.unsetFollowing = (req, res, next) => {
+    User.findByIdAndUpdate({ _id: req.user._id })
+        .then((user) => {
+            if (!user.following.some((follower) => follower.userId.toString() === req.params.userId)) {
+                return res.status(400).json({ serverMsg: 'You haven\'t been following this account yet' });
+            }
+
+            // remove follower
+            user.following = user.following.filter(
+                ({ userId }) => userId.toString() !== req.params.userId
+            );   
+
+            user.save();
+            res.status(201).json({
+                serverMsg: 'You are no longer following this user',
+                user
+            });
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json({
+                message: 'Unsetting following profile has failed!'
+            });
+        });
+}

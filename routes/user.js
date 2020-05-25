@@ -28,4 +28,14 @@ router.put('/unfollow/:id', isAuthenticated, UserController.unfollowUser);
 // @access   Private
 router.put('/update_profile/:id', isAuthenticated, extractProfilePic, UserController.updateProfile);
 
+// @route    PUT api/user/set_following/:userId/:username
+// @desc     Set the following array of the authenticated user
+// @access   Private
+router.put('/set_following/:userId/:username', isAuthenticated, UserController.setFollowing);
+
+// @route    PUT api/user/unset_following/:userId
+// @desc     Unset the following array of the authenticated user
+// @access   Private
+router.put('/unset_following/:userId', isAuthenticated, UserController.unsetFollowing);
+
 module.exports = router;

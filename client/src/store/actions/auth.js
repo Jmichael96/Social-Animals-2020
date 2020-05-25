@@ -35,7 +35,6 @@ export const register = ({ username, password, name, bio, location, email }) => 
     
     axios.post('/api/auth/register', formData, config)
         .then((res) => {
-            console.log(res.data);
             dispatch({
                 type: types.REGISTER_SUCCESS,
                 payload: res.data
@@ -45,14 +44,14 @@ export const register = ({ username, password, name, bio, location, email }) => 
 
         })
         .catch((err) => {
-            const errors = err.response.data.errors;
+            const errors = err.response.data.errors; 
             console.log(err);
             if (errors) {
                 errors.forEach((err) => {
                     dispatch(setAlert(err.msg, 'danger'));
                 })
             }
-
+            dispatch(setAlert('Username already exists', 'danger'));
             dispatch({
                 type: types.REGISTER_FAIL
             });
@@ -74,12 +73,12 @@ export const login = ({ ...formData }) => dispatch => {
             payload: res.data
         });
         dispatch(loadUser());
-        dispatch(setAlert('Successfully logged in!', 'success'))
+        dispatch(setAlert('Logged in successfully', 'success'))
     })
     .catch((err) => {
-        const errors = err.response.data.errors;
-        if (errors) {
-            errors.forEach((error) => dispatch(setAlert(err.msg, 'danger')));
+        const error = err.response.data.serverMsg;
+        if (error) {
+            dispatch(setAlert(error, 'danger'));
         }
         dispatch({
             type: types.LOGIN_FAIL

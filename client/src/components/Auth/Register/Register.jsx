@@ -18,19 +18,6 @@ const initialState = {
 }
 const Register = ({ register, setAlert, isAuthenticated }) => {
     const [formData, setFormData] = useState(initialState);
-    // const [name, setName] = useState('');
-    // const [bio, setBio] = useState('');
-    // const [profilePicture, setProfilePicture] = useState()
-    // const [preview, setPreview] = useState()
-    // const [username, setUsername] = useState('');
-    // const [password, setPassword] = useState('');
-    // const [password2, setPassword2] = useState('');
-    // const [isValid, setIsValid] = useState(false);
-    // const [nameErr, setNameErr] = useState('');
-    // const [usernameErr, setUsernameErr] = useState('');
-    // const [passwordErr, setPasswordErr] = useState('');
-    // const [password2Err, setPassword2Err] = useState('');
-
 
     // create a preview as a side effect, whenever selected file is changed
     // useEffect(() => {
@@ -46,15 +33,6 @@ const Register = ({ register, setAlert, isAuthenticated }) => {
     //     return () => URL.revokeObjectURL(objectUrl)
     // }, [profilePicture])
 
-    // const onSelectFile = e => {
-    //     if (!e.target.files || e.target.files.length === 0) {
-    //         setProfilePicture(undefined)
-    //         return
-    //     }
-
-    //     // I've kept this example simple by using the first image instead of multiple
-    //     setProfilePicture(e.target.files[0])
-    // }
     const { username, password, name, bio, location, email } = formData;
     const onSubmitForm = (e) => {
         e.preventDefault();
@@ -64,38 +42,6 @@ const Register = ({ register, setAlert, isAuthenticated }) => {
     }
     const onChange = (e) =>
         setFormData({ ...formData, [e.target.name]: e.target.value });
-
-    // const validateForm = () => {
-    //     let validated = true;
-
-    //     if (!name) {
-    //         setNameErr('Must enter a name');
-    //         validated = false;
-    //     }
-    //     if (!username) {
-    //         setUsernameErr('Must enter a username');
-    //         validated = false;
-    //     }
-    //     if (!password) {
-    //         setPasswordErr('Must enter a password');
-    //         validated = false;
-    //     } else if (password.length < 6) {
-    //         setPasswordErr('Must have more than 6 characters');
-    //         validated = false;
-    //     }
-    //     if (!password2) {
-    //         setPassword2Err('Must enter a password');
-    //         validated = false;
-    //     }
-
-    //     if (password !== password2) {
-    //         validated = false;
-    //         console.log('passwords do not match!');
-    //     }
-    //     if (validated) {
-    //         setIsValid(true);
-    //     }
-    // }
 
     return (
         <Wrapper>

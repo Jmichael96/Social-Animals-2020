@@ -3,6 +3,7 @@ const initialState = {
     posts: [],
     post: [],
     loading: true,
+    serverMsg: null,
     error: {}
 }
 

@@ -32,7 +32,10 @@ exports.createPost = (req, res, next) => {
             }
             createdPost.save();
     
-            res.status(201).json(createdPost)
+            res.status(201).json({
+                createdPost,
+                serverMsg: 'Created post successfully'
+            })
         })
         .catch((err) => {
             console.log(err);
@@ -77,15 +80,15 @@ exports.updatePost = (req, res, next) => {
     })
         .then((result) => {
             if (result.n > 0) {
-                res.status(200).json({ message: 'Updated post successfully' });
+                res.status(200).json({ serverMsg: 'Updated post successfully' });
             } else {
-                res.status(401).json({ message: 'Not authorized' });
+                res.status(401).json({ serverMsg: 'You are not authorized' });
             };
         })
         .catch((err) => {
             console.log(err);
             res.status(500).json({
-                message: "Couldn't udpate post!"
+                serverMsg: 'Could not update post at this time. Please try again later.'
             });
         });
 };
@@ -97,15 +100,15 @@ exports.updatePost = (req, res, next) => {
 exports.deletePost = (req, res, next) => {
     Post.findByIdAndDelete({ _id: req.params.id, authorId: req.user._id })
         .then((result) => {
+            
             res.status(200).json({
-                message: 'Successfully delete post',
-                result: result
+                serverMsg: 'Successfully delete post',
             });
         })
         .catch((err) => {
             console.log(err);
             res.status(500).json({
-                message: "Couldn't delete post!"
+                serverMsg: "Couldn't delete post! Please try again later"
             });
         });
 }
@@ -182,7 +185,6 @@ exports.fetchLikes = (req, res, next) => {
 // @desc     Comment on a post
 // @access   Private
 exports.comment = (req, res, next) => {
-    // console.log('comment() api')
     Post.findByIdAndUpdate({ _id: req.params.id })
         .then((post) => {
             const newComment = {
@@ -192,12 +194,15 @@ exports.comment = (req, res, next) => {
             }
             post.comments.unshift(newComment);
             post.save();
-            res.json(post.comments);
+            res.json({
+                comments: post.comments,
+                serverMsg: 'Successfully made a comment'
+            });
         })
         .catch((err) => {
             console.log(err);
             res.status(500).json({
-                message: "Couldn't comment on post!"
+                serverMsg: "Couldn't comment on post. Please try again later"
             });
         });
 }
@@ -213,7 +218,7 @@ exports.deleteCommment = (req, res, next) => {
             )
             if (!comment) {
                 return res.status(404).json({
-                    message: 'Comment does not exist'
+                    serverMsg: 'Comment does not exist'
                 });
             }
 
@@ -232,12 +237,15 @@ exports.deleteCommment = (req, res, next) => {
 
             post.save();
 
-            res.json(post.comments);
+            res.json({
+                comments: post.comments,
+                serverMsg: 'Successfully deleted comment'
+            });
         })
         .catch((err) => {
             console.log(err);
             res.status(500).json({
-                message: "Couldn't delete post!"
+                serverMsg: "Couldn't delete post. Please try again later."
             });
         });
 };
@@ -256,15 +264,15 @@ exports.updateComment = (req, res, next) => {
         })
         .then((result) => {
             if (result.n > 0) {
-                res.status(200).json({ message: 'Updated comment successfully' });
+                res.status(200).json({ serverMsg: 'Updated comment successfully' });
             } else {
-                res.status(401).json({ message: 'Not authorized' });
+                res.status(401).json({ serverMsg: 'Not authorized' });
             };
         })
         .catch((err) => {
             console.log(err);
             res.status(500).json({
-                message: "Couldn't udpate post!"
+                serverMsg: "Couldn't update post. Please try again later"
             });
         });
 };

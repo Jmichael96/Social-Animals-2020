@@ -45,7 +45,7 @@ exports.register = (req, res, next) => {
             .catch((err) => {
                 console.log(err)
                 res.status(500).json({
-                    message: 'Invalid authentication credentials!'
+                    serverMsg: 'Invalid authentication credentials'
                 });
             })
     });
@@ -80,8 +80,9 @@ exports.login = (req, res, next) => {
     User.findOne({ username: req.body.username })
         .then((user) => {
             if (!user) {
+                console.log('User does not exist')
                 return res.status(401).json({
-                    message: 'Invalid username or password'
+                    serverMsg: 'Invalid username or password'
                 });
             }
             fetchedUser = user;
@@ -90,7 +91,7 @@ exports.login = (req, res, next) => {
         .then((result) => {
             if (!result) {
                 return res.status(401).json({
-                    message: 'Invalid username or password'
+                    serverMsg: 'Invalid username or password'
                 });
             }
 
@@ -114,6 +115,12 @@ exports.login = (req, res, next) => {
                     }
                     res.json({ token });
                 });
-        });
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json({
+                serverMsg: 'Incorrect username or password'
+            });
+        })
 
 }

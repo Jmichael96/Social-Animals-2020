@@ -3,25 +3,25 @@ import * as types from './types';
 import { setAlert } from './alert';
 
 // create post
-export const createPost = ({ ...formData }) => dispatch => {
+export const createPost = ({ content, imagePath }) => dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     };
     const data = new FormData();
-    for (let i = 0; i < formData.imagePath.length; i++) {
-        data.append('image', formData.imagePath[i]);
+    for (let i = 0; i < imagePath.length; i++) {
+        data.append('image', imagePath[i]);
     }
-    data.append('content', formData.content);
+    data.append('content', content);
 
     axios.post('/api/posts/create_post', data, config)
         .then((res) => {
             dispatch({
                 type: types.CREATE_POST,
-                payload: res.data
+                payload: res.data.createdPost
             });
-            dispatch(setAlert('Your post has been created!', 'success'))
+            dispatch(setAlert(res.data.serverMsg, 'success'))
         })
         .catch((err) => {
 
@@ -51,13 +51,12 @@ export const updatePost = (id, formData) => dispatch => {
                 payload: res.data
             });
             dispatch(fetchAllPosts());
-            dispatch(setAlert('Updated post successfully', 'success'));
+            dispatch(setAlert(res.data.serverMsg, 'success'));
         })
         .catch((err) => {
-
-            if (err) {
-                console.log(err);
-                throw err;
+            const error = err.response.data.serverMsg;
+            if (error) {
+                dispatch(setAlert(error, 'danger'));
             }
 
             dispatch({
@@ -88,7 +87,7 @@ export const fetchAllPosts = () => dispatch => {
                 type: types.POST_ERROR,
                 payload: err
             });
-        })
+        });
 }
 
 // delete a post
@@ -100,19 +99,19 @@ export const deletePost = (id) => dispatch => {
                 payload: res.data
             });
             dispatch(fetchAllPosts());
-            dispatch(setAlert('You have deleted your post', 'success'));
+            dispatch(setAlert(res.data.serverMsg, 'success'));
         })
         .catch((err) => {
-            if (err) {
-                console.log(err);
-                throw err;
+            const error = err.response.data.serverMsg;
+            if (error) {
+                dispatch(setAlert(error, 'danger'));
             }
 
             dispatch({
                 type: types.POST_ERROR,
                 payload: err
             });
-        })
+        });
 }
 
 // like a post
@@ -125,9 +124,9 @@ export const likePost = (id) => dispatch => {
             });
         })
         .catch((err) => {
-            if (err) {
-                console.log(err);
-                throw err;
+            const error = err.response.data.serverMsg;
+            if (error) {
+                dispatch(setAlert(error, 'danger'));
             }
 
             dispatch({
@@ -147,9 +146,9 @@ export const unlikePost = (id) => dispatch => {
             });
         })
         .catch((err) => {
-            if (err) {
-                console.log(err);
-                throw err;
+            const error = err.response.data.serverMsg;
+            if (error) {
+                dispatch(setAlert(error, 'danger'));
             }
 
             dispatch({
@@ -170,14 +169,14 @@ export const addComment = (id, formData) => dispatch => {
         .then((res) => {
             dispatch({
                 type: types.ADD_COMMENT,
-                payload: res.data
+                payload: res.data.comments
             });
-            dispatch(setAlert('Added comment', 'success'));
+            dispatch(setAlert(res.data.serverMsg, 'success'));
         })
         .catch((err) => {
-            if (err) {
-                console.log(err);
-                throw err;
+            const error = err.response.data.serverMsg;
+            if (error) {
+                dispatch(setAlert(error, 'danger'));
             }
 
             dispatch({
@@ -190,23 +189,23 @@ export const addComment = (id, formData) => dispatch => {
 // delete comment
 export const deleteComment = (postId, commentId) => dispatch => {
     axios.delete(`/api/posts/delete_comment/${postId}/${commentId}`)
-    .then((res) => {
-        dispatch({
-            type: types.DELETE_COMMENT,
-            payload: commentId
+        .then((res) => {
+            dispatch({
+                type: types.DELETE_COMMENT,
+                payload: commentId
+            });
+            dispatch(setAlert(res.data.serverMsg, 'success'));
+        })
+        .catch((err) => {
+            const error = err.response.data.serverMsg;
+            if (error) {
+                dispatch(setAlert(error, 'danger'));
+            }
+            dispatch({
+                type: types.POST_ERROR,
+                payload: err
+            });
         });
-        dispatch(setAlert('Comment removed', 'success'));
-    })
-    .catch((err) => {
-        if (err) {
-            console.log(err);
-            throw err;
-        }
-        dispatch({
-            type: types.POST_ERROR,
-            payload: err
-        });
-    });
 };
 
 // update comment 
@@ -216,24 +215,23 @@ export const updateComment = (id, formData) => dispatch => {
             'Content-Type': 'application/json'
         }
     };
-    console.log(id, ' postid');
-    console.log(formData);
+
     axios.put(`/api/posts/update_comment/${id}`, formData, config)
-    .then((res) => {
-        dispatch({
-            type: types.UPDATE_COMMENT,
-            payload: res.data
+        .then((res) => {
+            dispatch({
+                type: types.UPDATE_COMMENT,
+                payload: res.data.comments
+            });
+            dispatch(setAlert(res.data.serverMsg, 'success'));
+        })
+        .catch((err) => {
+            const error = err.response.data.serverMsg;
+            if (error) {
+                dispatch(setAlert(error, 'danger'));
+            }
+            dispatch({
+                type: types.POST_ERROR,
+                payload: err
+            });
         });
-        dispatch(setAlert('Comment updated successfully!', 'success'));
-    })
-    .catch((err) => {
-        if (err) {
-            console.log(err);
-            throw err;
-        }
-        dispatch({
-            type: types.POST_ERROR,
-            payload: err
-        });
-    });
 };

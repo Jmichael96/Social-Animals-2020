@@ -3,7 +3,8 @@ const initialState = {
     token: localStorage.getItem('token'),
     isAuthenticated: null,
     loading: true,
-    user: null
+    user: null,
+    serverMsg: null
 }
 
 export default function (state = initialState, action) {
@@ -23,6 +24,15 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 ...payload,
+                isAuthenticated: true,
+                loading: false
+            }
+        case types.SET_FOLLOWING:
+        case types.UNSET_FOLLOWING:
+            return {
+                ...state,
+                user: payload.user,
+                serverMsg: payload.serverMsg,
                 isAuthenticated: true,
                 loading: false
             }

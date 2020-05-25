@@ -4,15 +4,15 @@ import { connect } from 'react-redux';
 import isEmpty from '../../../../utils/isEmpty';
 import { setIteratingModal } from '../../../../store/actions/iteratingModal';
 
-const RenderFollowers = ({ profileLoading, profile, setIteratingModal }) => {
+const RenderFollowers = ({ userLoading, user, setIteratingModal }) => {
 
     
     const renderFollowers = () => {
-        let followerArr = profile.followers;
-        if (!profileLoading && isEmpty(followerArr)) {
+        let followerArr = user.followers;
+        if (!userLoading && isEmpty(followerArr)) {
             return null;
         }
-        if (!profileLoading && !isEmpty(followerArr)) {
+        if (!userLoading && !isEmpty(followerArr)) {
             if (followerArr.length === 0) {
                 return (<button>0 followers</button>);
             }
@@ -26,7 +26,7 @@ const RenderFollowers = ({ profileLoading, profile, setIteratingModal }) => {
     }
 
     const callModal = () => {
-        setIteratingModal(profile.followers)
+        setIteratingModal(user.followers)
     }
 
     return (
@@ -38,8 +38,8 @@ const RenderFollowers = ({ profileLoading, profile, setIteratingModal }) => {
 
 RenderFollowers.propTypes = {
     setIteratingModal: PropTypes.func.isRequired,
-    profileLoading: PropTypes.bool,
-    profile: PropTypes.object,
+    userLoading: PropTypes.bool,
+    user: PropTypes.any,
 }
 
 export default connect(null, { setIteratingModal })(RenderFollowers);

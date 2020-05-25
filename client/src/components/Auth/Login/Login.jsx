@@ -1,47 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Wrapper from '../../Layout/Wrapper/Wrapper';
 import { login } from '../../../store/actions/auth';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
 
 const Login = ({ login, isAuthenticated }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [usernameErr, setUsernameErr] = useState('');
-    const [passwordErr, setPasswordErr] = useState('');
     const [isValid, setIsValid] = useState(false);
+    const [usernameErr, setUsernameErr] = useState('');
+    const [passErr, setPassErr] = useState('');
+    // setting disable for the form if it is not valid
+    const [disable, setDisable] = useState(true);
+
+
+    useEffect(() => {
+        setDisable(validateUsername())
+        setDisable(validatePassword())
+    }, [username, password]);
 
     const onSubmitForm = (e) => {
         e.preventDefault();
-        validateForm();
-        const formData = {
+        let formData = {
             username,
-            password,
+            password
         }
-        if (isValid) {
-            console.log('Its a valid submission');
-            login(formData);
-        }
-    }
-    const validateForm = () => {
-        let validated = true;
-
-        if (!username) {
-            setUsernameErr('Must enter a username');
-            validated = false;
-        }
-        if (!password) {
-            setPasswordErr('Must enter a password');
-            validated = false;
-        }
-        if (validated) {
-            setIsValid(true);
-        }
+        login(formData);
+        resetForm();
     }
 
-    if (isAuthenticated) {
-        return <Redirect to='/' />
+    const validateUsername = () => {
+        if (username === '') {
+            return true;
+        } else {
+            setUsernameErr(null);
+            return false;
+        }
+
+    }
+    const validatePassword = () => {
+        if (password === '') {
+            return true
+        } else {
+            setPassErr(null);
+            return false;
+        }
+    }
+
+    const resetForm = () => {
+        setUsername('');
+        setPassword('');
     }
     return (
         <Wrapper>
@@ -62,7 +70,7 @@ const Login = ({ login, isAuthenticated }) => {
                     />
                     <br />
                     <label htmlFor="password" className="grey-text">
-                        {!isValid && passwordErr ? <span style={{ color: 'red' }}>{passwordErr}</span> : <span>Passord</span>}
+                        {!isValid && passErr ? <span style={{ color: 'red' }}>{passErr}</span> : <span>Password</span>}
                     </label>
                     <input
                         type="password"
@@ -74,7 +82,7 @@ const Login = ({ login, isAuthenticated }) => {
                     />
                     <br />
                     <div className="text-center mt-4">
-                        <button color="unique" type="submit">
+                        <button type="submit" disabled={disable} >
                             Login
         </button>
                     </div>

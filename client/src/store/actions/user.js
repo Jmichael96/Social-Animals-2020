@@ -73,11 +73,6 @@ export const updateProfile = ({ id, profilePicture, name, bio, location, email }
         data.append('email', email);
     }
 
-    // data.append('image', profilePicture);
-    // data.append('name', name);
-    // data.append('bio', bio);
-    // data.append('location', location);
-    // data.append('email', email);
     axios.put(`/api/user/update_profile/${id}`, data, config)
         .then((res) => {
             dispatch({
@@ -101,7 +96,6 @@ export const fetchProfileById = (id) => dispatch => {
     console.log('fetching user profile in actions')
     axios.get(`/api/user/user_profile/${id}`)
         .then((res) => {
-            console.log(res.data);
             dispatch({
                 type: types.FETCH_USER_PROFILE,
                 payload: res.data
@@ -156,3 +150,39 @@ export const unfollowProfile = (id) => dispatch => {
             });
         });
 };
+
+// set following array for current authenticated user
+export const setFollowing = (userId, username) => dispatch => {
+    axios.put(`/api/user/set_following/${userId}/${username}`)
+    .then((res) => {
+        dispatch({
+            type: types.SET_FOLLOWING,
+            payload: { user: res.data.user, serverMsg: res.data.serverMsg }
+        });
+    })
+    .catch((err) => {
+        console.log(err);
+        dispatch({
+            type: types.PROFILE_ERROR,
+            payload: err
+        });
+    });
+}
+
+// unset following array for current authenticated user
+export const unsetFollowing = (userId) => dispatch => {
+    axios.put(`/api/user/unset_Following/${userId}`)
+    .then((res) => {
+        dispatch({
+            type: types.SET_FOLLOWING,
+            payload: { user: res.data.user, serverMsg: res.data.serverMsg }
+        });
+    })
+    .catch((err) => {
+        console.log(err);
+        dispatch({
+            type: types.PROFILE_ERROR,
+            payload: err
+        });
+    });
+}
