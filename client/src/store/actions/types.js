@@ -47,6 +47,8 @@ export const ADD_COMMENT = 'ADD_COMMENT';
 export const DELETE_COMMENT = 'DELETE_COMMENT';
 export const UPDATE_COMMENT = 'UPDATE_COMMENT';
 export const FETCH_FOLLOWING_POSTS = 'FETCH_FOLLOWING_POSTS';
+export const FETCH_MY_POSTS = 'FETCH_MY_POSTS';
+export const FETCH_USER_PROFILE_POSTS = 'FETCH_USER_PROFILE_POSTS';
 
 // LIKE TYPES [just to see who all has liked your post]
 export const FETCH_LIKES = 'FETCH_LIKES';

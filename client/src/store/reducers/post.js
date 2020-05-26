@@ -2,6 +2,8 @@ import * as types from '../actions/types';
 const initialState = {
     posts: [],
     post: [],
+    myPosts: [],
+    userProfilePosts: [],
     loading: true,
     serverMsg: null,
     error: {}
@@ -16,6 +18,18 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 posts: payload,
+                loading: false
+            }
+        case types.FETCH_MY_POSTS:
+            return {
+                ...state,
+                myPosts: payload,
+                loading: false
+            }
+        case types.FETCH_USER_PROFILE_POSTS:
+            return {
+                ...state,
+                userProfilePosts: payload,
                 loading: false
             }
         case types.CREATE_POST:

@@ -5,13 +5,14 @@ import Wrapper from '../../Layout/Wrapper/Wrapper';
 import ProfileSettings from '../ProfileSettings/ProfileSettings';
 import Spinner from '../../Layout/Spinner/Spinner';
 import './currentUserProfile.css';
+import ProfilePosts from '../../Post/FetchPosts/CurrentUserProfilePosts/CurrentUserProfilePosts';
 
 const CurrentUserProfile = ({ auth: { user, loading } }) => {
 
     const renderFollowers = () => {
 
     }
-    
+
     const renderFollowing = () => {
 
     }
@@ -26,6 +27,8 @@ const CurrentUserProfile = ({ auth: { user, loading } }) => {
             <p>{user.location}</p>
             <p>{user.email}</p>
             <ProfileSettings />
+
+            <ProfilePosts />
         </Fragment>
     )
 }

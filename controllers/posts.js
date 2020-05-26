@@ -289,15 +289,47 @@ exports.fetchFollowingPosts = (req, res, next) => {
 
     // making sure to add authenticated users id to render their posts as well
     req.query.userIdArr.push(req.user._id.toString());
-    
+
     Post.find({ authorId: { $in: req.query.userIdArr } }).sort({ _id: -1 })
         .then((posts) => {
             res.status(201).json(posts);
         })
         .catch((err) => {
-            console.log(err);
             res.status(500).json({
                 serverMsg: 'Couldn\'t fetch posts at this time.'
             });
         });
+}
+
+// @route    GET api/posts/fetch_my_posts
+// @desc     Fetch posts that were created by the current authenticated user
+// @access   Private
+exports.fetchMyPosts = (req, res, next) => {
+    Post.find({ authorId: req.user._id }).sort({ _id: -1 })
+    .then((posts) => {
+        if (!posts) {
+            return;
+        }
+        res.status(201).json(posts);
+    })
+    .catch((err) => {
+        res.status(500).json({
+            serverMsg: 'Couldn\'t fetch your posts at this time.'
+        });
+    })
+}
+
+// @route    GET api/posts/fetch_user_profile_posts
+// @desc     Fetch posts that belong to the users profile you are viewing
+// @access   Private
+exports.fetchUsersProfilePosts = (req, res, next) => {
+    Post.find({ authorId: req.query.userId }).sort({ _id: -1 })
+    .then((posts) => {
+        res.status(201).json(posts);
+    })
+    .catch((err) => {
+        res.status(500).json({
+            serverMsg: 'Couldn\'t fetch user\'s profile posts at this time.'
+        });
+    })
 }

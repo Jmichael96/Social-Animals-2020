@@ -266,3 +266,49 @@ export const fetchFollowingPosts = (followingArr) => dispatch => {
             });
         });
 }
+
+// fetching posts that were created by the current authenticated user to render in their profile
+export const fetchMyPosts = () => dispatch => {
+    axios.get('/api/posts/fetch_my_posts')
+    .then((res) => {
+        dispatch({
+            type: types.FETCH_MY_POSTS,
+            payload: res.data
+        });
+    })
+    .catch((err) => {
+        const error = err.response.data.serverMsg;
+        if (error) {
+            dispatch(setAlert(error, 'danger'));
+        }
+        dispatch({
+            type: types.POST_ERROR,
+            payload: err
+        });
+    });
+}
+
+// fetching user profile posts to render in another users profile when viewing it
+export const fetchUserProfilePosts = (userId) => dispatch => {
+    axios.get('/api/posts/fetch_user_profile_posts', {
+        params: {
+            userId: userId
+        }
+    })
+    .then((res) => {
+        dispatch({
+            type: types.FETCH_USER_PROFILE_POSTS,
+            payload: res.data
+        })
+    })
+    .catch((err) => {
+        const error = err.response.data.serverMsg;
+        if (error) {
+            dispatch(setAlert(error, 'danger'));
+        }
+        dispatch({
+            type: types.POST_ERROR,
+            payload: err
+        });
+    });
+}

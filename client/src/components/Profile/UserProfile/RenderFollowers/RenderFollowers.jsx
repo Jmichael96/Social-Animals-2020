@@ -10,13 +10,10 @@ const RenderFollowers = ({ userLoading, user, setIteratingModal }) => {
     const renderFollowers = () => {
         let followerArr = user.followers;
         if (!userLoading && isEmpty(followerArr)) {
-            return null;
+            return (<button>0 followers</button>);
         }
         if (!userLoading && !isEmpty(followerArr)) {
-            if (followerArr.length === 0) {
-                return (<button>0 followers</button>);
-            }
-            else if (followerArr.length === 1) {
+            if (followerArr.length === 1) {
                 return (<button onClick={callModal}>{followerArr.length} follower</button>)
             } 
             else if (followerArr.length > 1) {

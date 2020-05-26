@@ -59,4 +59,15 @@ router.get('/fetch_likes/:id', isAuthenticated, PostController.fetchLikes);
 // @desc     Fetch only the posts from the users you are following
 // @access   Private
 router.get('/fetch_following_posts', isAuthenticated, PostController.fetchFollowingPosts);
+
+// @route    GET api/posts/fetch_my_posts
+// @desc     Fetch posts that were created by the current authenticated user
+// @access   Private
+router.get('/fetch_my_posts', isAuthenticated, PostController.fetchMyPosts);
+
+// @route    GET api/posts/fetch_user_profile_posts
+// @desc     Fetch posts that belong to the users profile you are viewing
+// @access   Private
+router.get('/fetch_user_profile_posts', isAuthenticated, PostController.fetchUsersProfilePosts);
+
 module.exports = router;

@@ -8,6 +8,7 @@ import isEmpty from '../../../utils/isEmpty';
 import RenderFollowers from './RenderFollowers/RenderFollowers';
 import Spinner from '../../Layout/Spinner/Spinner';
 import RenderFollowing from './RenderFollowing/RenderFollowing';
+import UserProfilePosts from '../../Post/FetchPosts/UserProfilePosts/UserProfilePosts';
 
 const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, setFollowing, unsetFollowing, user: { user, loading }, auth, match }) => {
     // for when a user wants to change the profile photo render the file input
@@ -110,6 +111,7 @@ const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, setFoll
                 <h2>{user.bio}</h2>
                 <h3>{user.location}</h3>
                 <h4>{user.email}</h4>
+                <UserProfilePosts userId={user._id} />
             </Fragment>
         )
     }
