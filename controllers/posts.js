@@ -287,6 +287,9 @@ exports.fetchFollowingPosts = (req, res, next) => {
         });
     }
 
+    // making sure to add authenticated users id to render their posts as well
+    req.query.userIdArr.push(req.user._id.toString());
+    
     Post.find({ authorId: { $in: req.query.userIdArr } }).sort({ _id: -1 })
         .then((posts) => {
             res.status(201).json(posts);
