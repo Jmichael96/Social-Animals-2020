@@ -4,8 +4,9 @@ import { createPost } from '../../../store/actions/post';
 import PropTypes from 'prop-types';
 import Wrapper from '../../Layout/Wrapper/Wrapper';
 import { setModal } from '../../../store/actions/modal';
+import { withRouter } from 'react-router-dom';
 
-const CreatePost = ({ createPost, setModal }) => {
+const CreatePost = ({ createPost, setModal, history }) => {
     const [content, setContent] = useState('');
     const [imagePath, setImagePath] = useState(null);
     const [formError, setFormError] = useState('');
@@ -19,6 +20,7 @@ const CreatePost = ({ createPost, setModal }) => {
         }
 
         createPost({ content, imagePath });
+        history.push('/');
     }
 
     const onFileChange = (e) => {
@@ -80,6 +82,9 @@ const CreatePost = ({ createPost, setModal }) => {
 CreatePost.propTypes = {
     createPost: PropTypes.func.isRequired,
     setModal: PropTypes.func.isRequired,
+    history: PropTypes.any,
 };
 
-export default connect(null, { createPost, setModal })(CreatePost);
+const exportCreatePost = withRouter(CreatePost);
+
+export default connect(null, { createPost, setModal })(exportCreatePost);

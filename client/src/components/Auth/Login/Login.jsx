@@ -3,8 +3,9 @@ import Wrapper from '../../Layout/Wrapper/Wrapper';
 import { login } from '../../../store/actions/auth';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
-const Login = ({ login, isAuthenticated }) => {
+const Login = ({ login, isAuthenticated, history }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isValid, setIsValid] = useState(false);
@@ -27,6 +28,7 @@ const Login = ({ login, isAuthenticated }) => {
         }
         login(formData);
         resetForm();
+        history.push('/');
     }
 
     const validateUsername = () => {
@@ -96,9 +98,11 @@ const Login = ({ login, isAuthenticated }) => {
 Login.propTypes = {
     login: PropTypes.func.isRequired,
     isAuthenticated: PropTypes.bool,
+    history: PropTypes.any,
 }
 
 const mapStateToProps = (state) => ({
     isAuthenticated: state.auth.isAuthenticated
 })
-export default connect(mapStateToProps, { login })(Login);
+const exportLogin = withRouter(Login);
+export default connect(mapStateToProps, { login })(exportLogin);

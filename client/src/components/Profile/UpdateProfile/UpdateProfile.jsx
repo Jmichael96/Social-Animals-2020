@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { updateProfile } from '../../../store/actions/user';
 import Wrapper from '../../Layout/Wrapper/Wrapper';
 import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 const initialState = {
     name: '',
@@ -11,7 +12,7 @@ const initialState = {
     location: '',
     email: ''
 }
-const UpdateProfile = ({ auth: { isAuthenticated, user, loading }, updateProfile }) => {
+const UpdateProfile = ({ auth: { isAuthenticated, user, loading }, updateProfile, history }) => {
     const [formData, setFormData] = useState(initialState);
     const [profilePicture, setProfilePicture] = useState(null);
     // check to see if form has been submitted for update
@@ -46,6 +47,7 @@ const UpdateProfile = ({ auth: { isAuthenticated, user, loading }, updateProfile
             setProfilePicture(user.profilePicture);
         }
         updateProfile({ id, profilePicture, name, bio, location, email });
+        history.push('/my_profile')
     }
 
     // func to render new file attachment if user wants to change profile picture
@@ -133,10 +135,13 @@ const UpdateProfile = ({ auth: { isAuthenticated, user, loading }, updateProfile
 UpdateProfile.propTypes = {
     updateProfile: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
+    history: PropTypes.any,
 }
 
 const mapStateToProps = (state) => ({
     auth: state.auth
 });
 
-export default connect(mapStateToProps, { updateProfile })(UpdateProfile);
+const exportUpdateProfile = withRouter(UpdateProfile);
+
+export default connect(mapStateToProps, { updateProfile })(exportUpdateProfile);

@@ -59,7 +59,7 @@ export const register = ({ username, password, name, bio, location, email }) => 
 }
 
 // login
-export const login = ({ ...formData }) => dispatch => {
+export const login = ({ ...formData }, history) => dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
@@ -73,7 +73,8 @@ export const login = ({ ...formData }) => dispatch => {
             payload: res.data
         });
         dispatch(loadUser());
-        dispatch(setAlert('Logged in successfully', 'success'))
+        dispatch(setAlert('Logged in successfully', 'success'));
+
     })
     .catch((err) => {
         const error = err.response.data.serverMsg;

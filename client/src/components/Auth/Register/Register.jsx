@@ -5,8 +5,8 @@ import Wrapper from '../../Layout/Wrapper/Wrapper';
 import { register } from '../../../store/actions/auth';
 import { setAlert } from '../../../store/actions/alert';
 import { connect } from 'react-redux';
-import PropTypes, { object } from 'prop-types';
-import { Redirect } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 
 const initialState = {
     username: '',
@@ -16,29 +16,15 @@ const initialState = {
     location: '',
     email: '',
 }
-const Register = ({ register, setAlert, isAuthenticated }) => {
+const Register = ({ register, setAlert, isAuthenticated, history }) => {
     const [formData, setFormData] = useState(initialState);
-
-    // create a preview as a side effect, whenever selected file is changed
-    // useEffect(() => {
-    //     if (!profilePicture) {
-    //         setPreview(undefined)
-    //         return
-    //     }
-
-    //     const objectUrl = URL.createObjectURL(profilePicture)
-    //     setPreview(objectUrl)
-
-    //     // free memory when ever this component is unmounted
-    //     return () => URL.revokeObjectURL(objectUrl)
-    // }, [profilePicture])
 
     const { username, password, name, bio, location, email } = formData;
     const onSubmitForm = (e) => {
         e.preventDefault();
         
         register({ username, password, name, bio, location, email });
-       
+        history.push('/');
     }
     const onChange = (e) =>
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -151,10 +137,13 @@ Register.propTypes = {
     register: PropTypes.func.isRequired,
     isAuthenticated: PropTypes.bool,
     setAlert: PropTypes.func.isRequired,
+    history: PropTypes.any,
 }
 
 const mapStateToProps = (state) => ({
     isAuthenticated: state.auth.isAuthenticated
 });
 
-export default connect(mapStateToProps, { register, setAlert })(Register);
+const exportRegister = withRouter(Register);
+
+export default connect(mapStateToProps, { register, setAlert })(exportRegister);

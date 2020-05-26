@@ -296,5 +296,5 @@ exports.fetchFollowingPosts = (req, res, next) => {
             res.status(500).json({
                 serverMsg: 'Couldn\'t fetch posts at this time.'
             });
-        })
+        });
 }
