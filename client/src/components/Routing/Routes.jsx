@@ -14,6 +14,7 @@ import SearchUsernames from '../Search/SearchUsernames/SearchUsernames';
 import IteratingModal from '../Layout/IteratingModal/IteratingModal';
 import Image from '../Image/Image';
 import CurrentUserProfile from '../Profile/CurrentUserProfile/CurrentUserProfile';
+import AllPostsPage from '../../pages/AllPostsPage';
 
 const Routes = () => {
     return (
@@ -23,6 +24,8 @@ const Routes = () => {
             <IteratingModal />
             <Switch>
                 <Route exact path="/" component={Home} />
+                {/* Path Below Is Temporary!!  */}
+                <Route exact path="/all" component={AllPostsPage} />
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/register" component={Register} />
                 <Route exact path="/image" component={Image} />

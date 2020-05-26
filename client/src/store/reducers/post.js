@@ -12,6 +12,7 @@ export default function (state = initialState, action) {
 
     switch (type) {
         case types.FETCH_ALL_POSTS:
+        case types.FETCH_FOLLOWING_POSTS:
             return {
                 ...state,
                 posts: payload,

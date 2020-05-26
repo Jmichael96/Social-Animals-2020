@@ -55,4 +55,8 @@ router.put('/update_comment/:id', [isAuthenticated, checkObjectId('id')], PostCo
 // @access   Private
 router.get('/fetch_likes/:id', isAuthenticated, PostController.fetchLikes);
 
+// @route    PUT api/posts/fetch_following_posts
+// @desc     Fetch only the posts from the users you are following
+// @access   Private
+router.get('/fetch_following_posts', isAuthenticated, PostController.fetchFollowingPosts);
 module.exports = router;

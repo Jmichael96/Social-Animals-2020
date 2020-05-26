@@ -25,13 +25,13 @@ exports.createPost = (req, res, next) => {
                     createdPost.imagePath.push({ url: url + '/images/postPicture/' + fileArr[i].filename })
                 }
             }
-            else if (fileArr.length > 1){
+            else if (fileArr.length > 1) {
                 for (let i = 0; i < fileArr.length; i++) {
                     createdPost.imagePath.push({ url: url + '/images/postPicture/' + fileArr[i].filename })
                 }
             }
             createdPost.save();
-    
+
             res.status(201).json({
                 createdPost,
                 serverMsg: 'Created post successfully'
@@ -40,7 +40,7 @@ exports.createPost = (req, res, next) => {
         .catch((err) => {
             console.log(err);
             res.status(500).json({
-                message: 'Creating post has failed!'
+                serverMsg: 'Creating post has failed. Please try again later'
             })
         })
 }
@@ -54,7 +54,7 @@ exports.fetchAll = (req, res, next) => {
         .then((posts) => {
             if (!posts) {
                 res.status(500).json({
-                    message: 'No posts available'
+                    serverMsg: 'No posts available'
                 })
             }
             res.status(201).json(posts);
@@ -62,7 +62,7 @@ exports.fetchAll = (req, res, next) => {
         .catch((err) => {
             console.log(err);
             res.status(500).json({
-                message: 'Could not receive posts!'
+                serverMsg: 'Could not receive posts'
             })
         })
 }
@@ -100,15 +100,14 @@ exports.updatePost = (req, res, next) => {
 exports.deletePost = (req, res, next) => {
     Post.findByIdAndDelete({ _id: req.params.id, authorId: req.user._id })
         .then((result) => {
-            
-            res.status(200).json({
+
+            return res.status(200).json({
                 serverMsg: 'Successfully delete post',
             });
         })
         .catch((err) => {
-            console.log(err);
-            res.status(500).json({
-                serverMsg: "Couldn't delete post! Please try again later"
+            return res.status(500).json({
+                serverMsg: 'Couldn\'t delete post. Please try again later.'
             });
         });
 }
@@ -120,8 +119,8 @@ exports.likePost = (req, res, next) => {
     Post.findByIdAndUpdate({ _id: req.params.id })
         .then((post) => {
             if (post.likes.some((like) => like.userId.toString() === req.user._id)) {
-                res.status(400).json({
-                    message: 'Post has already been liked by this user'
+                return res.status(400).json({
+                    serverMsg: 'Post has already been liked by this user'
                 });
             };
 
@@ -133,7 +132,7 @@ exports.likePost = (req, res, next) => {
         .catch((err) => {
             console.log(err);
             res.status(500).json({
-                message: "Couldn't like post!"
+                serverMsg: "Couldn't like post. Please try again later."
             });
         });
 }
@@ -145,7 +144,7 @@ exports.unlikePost = (req, res, next) => {
     Post.findByIdAndUpdate({ _id: req.params.id })
         .then((post) => {
             if (!post.likes.some((like) => like.userId.toString() === req.user._id)) {
-                return res.status(400).json({ msg: 'Post has not yet been liked' });
+                return res.status(400).json({ serverMsg: 'Post has not yet been liked' });
             }
 
             // remove like
@@ -153,13 +152,12 @@ exports.unlikePost = (req, res, next) => {
                 ({ userId }) => userId.toString() !== req.user._id
             );
             post.save();
-            console.log(post)
             return res.json(post.likes);
         })
         .catch((err) => {
             console.log(err);
             res.status(500).json({
-                message: "Couldn't unlike post!"
+                serverMsg: "Couldn't unlike post. Please try again later"
             });
         });
 }
@@ -170,13 +168,12 @@ exports.unlikePost = (req, res, next) => {
 exports.fetchLikes = (req, res, next) => {
     Post.findById({ _id: req.params.id })
         .then((post) => {
-            console.log(post.likes);
-            res.status(200).json(post.likes);
+            return res.status(200).json(post.likes);
         })
         .catch((err) => {
             console.log(err);
             res.status(500).json({
-                message: "Couldn't retrieve likes"
+                serverMsg: "Couldn't retrieve likes. Please try again later"
             });
         });
 }
@@ -237,15 +234,15 @@ exports.deleteCommment = (req, res, next) => {
 
             post.save();
 
-            res.json({
+            return res.json({
                 comments: post.comments,
                 serverMsg: 'Successfully deleted comment'
             });
         })
         .catch((err) => {
             console.log(err);
-            res.status(500).json({
-                serverMsg: "Couldn't delete post. Please try again later."
+            return res.status(500).json({
+                serverMsg: 'Couldn\'t delete post. Please try again later.'
             });
         });
 };
@@ -264,15 +261,40 @@ exports.updateComment = (req, res, next) => {
         })
         .then((result) => {
             if (result.n > 0) {
-                res.status(200).json({ serverMsg: 'Updated comment successfully' });
+                return res.status(200).json({ serverMsg: 'Updated comment successfully' });
             } else {
-                res.status(401).json({ serverMsg: 'Not authorized' });
+                return res.status(401).json({ serverMsg: 'Not authorized' });
             };
         })
         .catch((err) => {
             console.log(err);
-            res.status(500).json({
-                serverMsg: "Couldn't update post. Please try again later"
+            return res.status(500).json({
+                serverMsg: 'Couldn\'t update post. Please try again later.'
             });
         });
 };
+
+// @route    GET api/posts/fetch_following_posts
+// @desc     Fetch only the posts from the users you are following
+// @access   Private
+exports.fetchFollowingPosts = (req, res, next) => {
+
+    // checking if there is an array of userId's to search for in posts
+    // if not return a serverMsg
+    if (req.query.userIdArr.length <= 0) {
+        return res.status(401).json({
+            serverMsg: 'You are not following anyone. Please follow someone to view the posts.'
+        });
+    }
+
+    Post.find({ authorId: { $in: req.query.userIdArr } }).sort({ _id: -1 })
+        .then((posts) => {
+            res.status(201).json(posts);
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json({
+                serverMsg: 'Couldn\'t fetch posts at this time.'
+            });
+        })
+}

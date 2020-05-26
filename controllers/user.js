@@ -12,10 +12,10 @@ exports.fetchUsernames = (req, res, next) => {
             users.filter((i) => {
                 usernameArr.push({ _id: i._id, username: i.username });
             });
-            res.status(201).json(usernameArr);
+            return res.status(201).json(usernameArr);
         })
         .catch((err) => {
-            res.status(500).json({
+            return res.status(500).json({
                 serverMsg: 'Error finding users!'
             });
         })
@@ -75,8 +75,8 @@ exports.updateProfile = (req, res, next) => {
     })
         .catch((err) => {
             console.log(err);
-            res.status(500).json({
-                serverMsg: 'Creating profile has failed!'
+            return res.status(500).json({
+                serverMsg: 'Creating profile has failed. Please try again later'
             });
         });
 }
@@ -90,7 +90,7 @@ exports.getUserProfile = (req, res, next) => {
             res.status(201).json(user);
         }).catch((err) => {
             res.status(500).json({
-                serverMsg: 'Error fetching user profile!'
+                serverMsg: 'Error fetching user profile. Please try again later'
             });
         })
 }
@@ -101,25 +101,20 @@ exports.getUserProfile = (req, res, next) => {
 exports.followUser = (req, res, next) => {
     User.findByIdAndUpdate({ _id: req.params.id })
         .then((user) => {
-            if (user.followers.some((follower) => follower.userId.toString() === req.user._id)) {
-                res.status(400).json({
-                    message: 'Profile has already been followed by this user'
-                });
-            };
 
             // adding to followers array
             user.followers.unshift({ userId: req.user._id, username: req.user.username });
 
             user.save();
-            res.status(201).json({
-                serverMsg: 'You have followed this user',
+            return res.status(201).json({
+                serverMsg: 'You have followed this user', 
                 user
             });
         })
         .catch((err) => {
             console.log(err);
-            res.status(500).json({
-                message: 'Following profile has failed!'
+            return res.status(500).json({
+                serverMsg: 'Following profile has failed. Please try again later.'
             });
         });
 };
@@ -130,9 +125,9 @@ exports.followUser = (req, res, next) => {
 exports.unfollowUser = (req, res, next) => {
     User.findByIdAndUpdate({ _id: req.params.id })
         .then((user) => {
-            if (!user.followers.some((follower) => follower.userId.toString() === req.user._id)) {
-                return res.status(400).json({ msg: 'You have not followed this account yet' });
-            }
+            // if (!user.followers.some((follower) => follower.userId.toString() === req.user._id)) {
+            //     res.status(400).json({ serverMsg: 'You have not followed this account yet.' });
+            // }
 
             // remove follower
             user.followers = user.followers.filter(
@@ -146,9 +141,8 @@ exports.unfollowUser = (req, res, next) => {
             })
         })
         .catch((err) => {
-            console.log(err);
             res.status(500).json({
-                message: 'Unfollowing profile has failed!'
+                serverMsg: 'Unfollowing profile has failed. Please try again later'
             });
         });
 };
@@ -159,23 +153,22 @@ exports.unfollowUser = (req, res, next) => {
 exports.setFollowing = (req, res, next) => {
     User.findByIdAndUpdate({ _id: req.user._id })
         .then((user) => {
-            if (user.following.some((follower) => follower.userId.toString() === req.params.userId)) {
-                res.status(400).json({
-                    serverMsg: 'Profile has already been following this user'
-                });
-            };
+            // if (user.following.some((follower) => follower.userId.toString() === req.params.userId)) {
+            //     return res.status(400).json({
+            //         serverMsg: 'Profile has already been following this user'
+            //     });
+            // };
             // adding to followers array
             user.following.unshift({ userId: req.params.userId, username: req.params.username });
             user.save();
-            res.status(201).json({
+            return res.status(201).json({
                 serverMsg: 'You are following this user',
                 user
             });
         })
         .catch((err) => {
-            console.log(err);
-            res.status(500).json({
-                message: 'Setting following profile has failed!'
+            return res.status(500).json({
+                serverMsg: 'Setting following profile has failed. Please try again later.'
             });
         });
 }
@@ -186,9 +179,9 @@ exports.setFollowing = (req, res, next) => {
 exports.unsetFollowing = (req, res, next) => {
     User.findByIdAndUpdate({ _id: req.user._id })
         .then((user) => {
-            if (!user.following.some((follower) => follower.userId.toString() === req.params.userId)) {
-                return res.status(400).json({ serverMsg: 'You haven\'t been following this account yet' });
-            }
+            // if (!user.following.some((follower) => follower.userId.toString() === req.params.userId)) {
+            //     return res.status(400).json({ serverMsg: 'You haven\'t been following this account yet' });
+            // }
 
             // remove follower
             user.following = user.following.filter(
@@ -196,15 +189,14 @@ exports.unsetFollowing = (req, res, next) => {
             );   
 
             user.save();
-            res.status(201).json({
+            return res.status(201).json({
                 serverMsg: 'You are no longer following this user',
                 user
             });
         })
         .catch((err) => {
-            console.log(err);
-            res.status(500).json({
-                message: 'Unsetting following profile has failed!'
+            return res.status(500).json({
+                serverMsg: 'Unsetting following profile has failed. Please try again later.'
             });
         });
 }

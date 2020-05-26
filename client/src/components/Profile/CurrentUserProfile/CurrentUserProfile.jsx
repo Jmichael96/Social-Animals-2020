@@ -8,10 +8,19 @@ import './currentUserProfile.css';
 
 const CurrentUserProfile = ({ auth: { user, loading } }) => {
 
+    const renderFollowers = () => {
+
+    }
+    
+    const renderFollowing = () => {
+
+    }
+
     return loading ? <Spinner /> : (
         <Fragment>
             <h1>Hello {user.username}</h1>
             <img id="profilePic" src={user.profilePicture} />
+            
             <p>{user.name}</p>
             <p>{user.bio}</p>
             <p>{user.location}</p>

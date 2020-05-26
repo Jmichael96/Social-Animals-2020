@@ -38,4 +38,5 @@ router.put('/set_following/:userId/:username', isAuthenticated, UserController.s
 // @access   Private
 router.put('/unset_following/:userId', isAuthenticated, UserController.unsetFollowing);
 
+
 module.exports = router;

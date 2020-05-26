@@ -235,3 +235,34 @@ export const updateComment = (id, formData) => dispatch => {
             });
         });
 };
+
+// fetching posts from the users that the authenticated user is following
+export const fetchFollowingPosts = (followingArr) => dispatch => {
+    // sorting through following array in user profile to send query params of id's
+    let userIdArr = [];
+    for (let i = 0; i < followingArr.length; i++) {
+        userIdArr.push(followingArr[i].userId.toString());
+    }
+
+    axios.get('/api/posts/fetch_following_posts', {
+        params: {
+            userIdArr: userIdArr
+          }
+    })
+        .then((res) => {
+            dispatch({
+                type: types.FETCH_FOLLOWING_POSTS,
+                payload: res.data
+            });
+        })
+        .catch((err) => {
+            const error = err.response.data.serverMsg;
+            if (error) {
+                dispatch(setAlert(error, 'danger'));
+            }
+            dispatch({
+                type: types.POST_ERROR,
+                payload: err
+            });
+        });
+}

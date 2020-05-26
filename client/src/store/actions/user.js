@@ -117,10 +117,10 @@ export const followProfile = (id) => dispatch => {
         .then((res) => {
             dispatch({
                 type: types.FOLLOW_PROFILE,
-                payload: { id, followers: res.data }
+                payload: { id, followers: res.data.user }
             });
             dispatch(fetchProfileById(id));
-            dispatch(setAlert('You have successfully followed this user', 'success'));
+            dispatch(setAlert(res.data.serverMsg, 'success'));
         })
         .catch((err) => {
             console.log(err);
