@@ -325,6 +325,9 @@ exports.fetchMyPosts = (req, res, next) => {
 exports.fetchUsersProfilePosts = (req, res, next) => {
     Post.find({ authorId: req.query.userId }).sort({ _id: -1 })
     .then((posts) => {
+        if (!posts) {
+            return;
+        }
         res.status(201).json(posts);
     })
     .catch((err) => {
