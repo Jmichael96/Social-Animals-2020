@@ -33,17 +33,17 @@ const CreatePost = ({ createPost, setModal, history }) => {
     }
 
     const maxSelectFile = (e) => {
-        let files = e.target.files 
+        let files = e.target.files
         if (files.length > 3) {
             setFileError('You may only have up to 3 images');
             e.target.value = null
             return false;
-        } 
+        }
         else {
             setFileError(null);
             return true;
         }
-        
+
     }
 
     return (
@@ -66,6 +66,13 @@ const CreatePost = ({ createPost, setModal, history }) => {
                         placeholder="Description"
                         onChange={(e) => setContent(e.target.value)}
                     />
+                    <div>
+                        <select className="browser-default custom-select">
+                            <option>Reason for this post?</option>
+                            <option value="adopt">Adopt a pet</option>
+                            <option value="post">Post to feed</option>
+                        </select>
+                    </div>
                     {formError ? <p style={{ color: 'red' }}>{formError}</p> : null}
                     <div className="text-center mt-4">
                         <button color="unique" type="submit">

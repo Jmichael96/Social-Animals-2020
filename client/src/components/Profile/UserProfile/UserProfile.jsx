@@ -14,7 +14,7 @@ const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, setFoll
     // for when a user wants to change the profile photo render the file input
     // const [isUpdatingPic, setIsUpdatingPic] = useState(false);
 
-    const nullProfile = !user;
+    const nullProfile = isEmpty(user);
     useEffect(() => {
         if (nullProfile) {
             fetchProfileById(match.params.id);

@@ -125,7 +125,7 @@ exports.likePost = (req, res, next) => {
             };
 
             post.likes.unshift({ userId: req.user._id, username: req.user.username });
-            console.log(post)
+
             post.save()
             return res.json(post.likes);
         })
@@ -316,7 +316,7 @@ exports.fetchMyPosts = (req, res, next) => {
         res.status(500).json({
             serverMsg: 'Couldn\'t fetch your posts at this time.'
         });
-    })
+    });
 }
 
 // @route    GET api/posts/fetch_user_profile_posts
@@ -334,5 +334,5 @@ exports.fetchUsersProfilePosts = (req, res, next) => {
         res.status(500).json({
             serverMsg: 'Couldn\'t fetch user\'s profile posts at this time.'
         });
-    })
+    });
 }

@@ -1,7 +1,7 @@
 import * as types from '../actions/types';
 
 const initialState = {
-    user: null,
+    user: [],
     users: [],
     loading: true,
     serverMsg: null,
@@ -29,12 +29,7 @@ export default function (state = initialState, action) {
         case types.UNFOLLOW_PROFILE:
             return {
                 ...state,
-                user: (user) => {
-                    if (user._id === user.id) {
-                        return { ...user, followers: payload.followers };
-                    }
-                    return user;
-                },
+                user: payload,
                 loading: false
             }
         case types.CLEAR_PROFILE:

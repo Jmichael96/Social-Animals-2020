@@ -117,9 +117,9 @@ export const followProfile = (id) => dispatch => {
         .then((res) => {
             dispatch({
                 type: types.FOLLOW_PROFILE,
-                payload: { id, followers: res.data.user }
+                payload: res.data.user
             });
-            dispatch(fetchProfileById(id));
+            // dispatch(fetchProfileById(id));
             dispatch(setAlert(res.data.serverMsg, 'success'));
         })
         .catch((err) => {
@@ -137,9 +137,9 @@ export const unfollowProfile = (id) => dispatch => {
         .then((res) => {
             dispatch({
                 type: types.FOLLOW_PROFILE,
-                payload: { id, followers: res.data }
+                payload: res.data.user
             });
-            dispatch(fetchProfileById(id));
+            // dispatch(fetchProfileById(id));
             dispatch(setAlert('You have successfully unfollowed this user', 'success'));
         })
         .catch((err) => {

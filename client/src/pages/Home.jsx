@@ -14,6 +14,8 @@ const Home = ({ auth: { isAuthenticated, user, loading }}) => {
             } else if (!isEmpty(user.following)) {
                 return <FetchFollowingPosts />
             }
+        } else {
+            return <AllPosts />
         }
     }
     return (
