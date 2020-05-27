@@ -1,9 +1,9 @@
 import React, { Fragment, useState } from 'react';
-import AllPosts from '../components/Post/FetchPosts/AllPosts/AllPosts';
-import FetchFollowingPosts from '../components/Post/FetchPosts/RenderFollowingPosts/RenderFollowingPosts';
+import AllPosts from '../../components/Post/FetchPosts/AllPosts/AllPosts';
+import FetchFollowingPosts from '../../components/Post/FetchPosts/RenderFollowingPosts/RenderFollowingPosts';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import isEmpty from '../utils/isEmpty';
+import isEmpty from '../../utils/isEmpty';
 
 const Home = ({ auth: { isAuthenticated, user, loading }}) => {  
 

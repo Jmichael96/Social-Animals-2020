@@ -4,6 +4,7 @@ const initialState = {
     post: [],
     myPosts: [],
     userProfilePosts: [],
+    adoptionPosts: [],
     loading: true,
     serverMsg: null,
     error: {}
@@ -30,6 +31,12 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 userProfilePosts: payload,
+                loading: false
+            }
+        case types.FETCH_ADOPTION_POSTS:
+            return {
+                ...state,
+                adoptionPosts: payload,
                 loading: false
             }
         case types.CREATE_POST:

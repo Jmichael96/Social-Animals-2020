@@ -52,8 +52,7 @@ exports.createPost = (req, res, next) => {
 // @desc     Fetching all posts
 // @access   Public
 exports.fetchAll = (req, res, next) => {
-
-    Post.find().sort({ date: -1 })
+    Post.find({ postType: 'post' }).sort({ date: -1 })
         .then((posts) => {
             if (!posts) {
                 res.status(500).json({
@@ -63,11 +62,31 @@ exports.fetchAll = (req, res, next) => {
             res.status(201).json(posts);
         })
         .catch((err) => {
-            console.log(err);
             res.status(500).json({
                 serverMsg: 'Could not receive posts'
-            })
-        })
+            });
+        });
+}
+
+// @route    GET api/posts/fetch_adoption_posts
+// @desc     Fetching all adoption posts
+// @access   Public
+exports.fetchAdoptionPosts = (req, res, next) => {
+    Post.find({ postType: 'adopt' }).sort({ date: -1 })
+    .then((posts) => {
+        if (!posts) {
+            return res.status(500).json({
+                serverMsg: 'No posts available'
+            });
+        }
+        res.status(201).json(posts);
+    })
+    .catch((err) => {
+        console.log(err);
+        res.status(500).json({
+            serverMsg: 'Could not receive posts'
+        });
+    });
 }
 
 // @route    PUT api/posts/update_post/:id

@@ -70,4 +70,9 @@ router.get('/fetch_my_posts', isAuthenticated, PostController.fetchMyPosts);
 // @access   Private
 router.get('/fetch_user_profile_posts', isAuthenticated, PostController.fetchUsersProfilePosts);
 
+// @route    GET api/posts/fetch_adoption_posts
+// @desc     Fetching all adoption posts
+// @access   Public
+router.get('/fetch_adoption_posts', PostController.fetchAdoptionPosts);
+
 module.exports = router;

@@ -81,9 +81,9 @@ export const fetchAllPosts = () => dispatch => {
             });
         })
         .catch((err) => {
-            if (err) {
-                console.log(err);
-                throw err;
+            const error = err.response.data.serverMsg;
+            if (error) {
+                dispatch(setAlert(error, 'danger'));
             }
 
             dispatch({
@@ -93,6 +93,30 @@ export const fetchAllPosts = () => dispatch => {
         });
 }
 
+// fetch adoption posts only and render it on adoption page
+export const fetchAdoptionPosts = () => dispatch => {
+    axios.get('/api/posts/fetch_adoption_posts')
+    .then((res) => {
+        dispatch({
+            type: types.FETCH_ADOPTION_POSTS,
+            payload: res.data
+        });
+        dispatch({
+            type: types.CLEAR_PROFILE
+        });
+    })
+    .catch((err) => {
+        const error = err.response.data.serverMsg;
+        if (error) {
+            dispatch(setAlert(error, 'danger'));
+        }
+
+        dispatch({
+            type: types.POST_ERROR,
+            payload: err
+        });
+    });
+}
 // delete a post
 export const deletePost = (id) => dispatch => {
     axios.delete(`/api/posts/delete_post/${id}`)
