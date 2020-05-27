@@ -33,6 +33,10 @@ const postSchema = new mongoose.Schema({
                 type: String,
                 ref: 'User',
                 required: true
+            },
+            date: {
+                type: Date,
+                default: Date.now
             }
         }
     ],
@@ -57,6 +61,13 @@ const postSchema = new mongoose.Schema({
             }
         }
     ],
+    postType: {
+        type: String,
+        required: true
+    },
+    animalType: {
+        type: String
+    },
     date: {
         type: Date,
         default: Date.now

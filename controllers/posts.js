@@ -14,9 +14,12 @@ exports.createPost = (req, res, next) => {
 
     const post = new Post({
         content: req.body.content,
+        postType: req.body.postType,
+        animalType: req.body.animalType,
         authorId: req.user._id,
         authorUsername: req.user.username
     });
+
     post.save()
         .then((createdPost) => {
             let fileArr = req.files;

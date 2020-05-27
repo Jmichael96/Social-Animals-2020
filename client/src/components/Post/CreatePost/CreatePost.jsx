@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useState } from 'react';
 import { connect } from 'react-redux';
 import { createPost } from '../../../store/actions/post';
 import PropTypes from 'prop-types';
@@ -8,18 +8,36 @@ import { withRouter } from 'react-router-dom';
 
 const CreatePost = ({ createPost, setModal, history }) => {
     const [content, setContent] = useState('');
+    const [postType, setPostType] = useState('');
+    const [animalType, setAnimalType] = useState('');
     const [imagePath, setImagePath] = useState(null);
     const [formError, setFormError] = useState('');
     const [fileError, setFileError] = useState('');
+    // if there is an error for post type then change to true
+    const [postTypeErr, setPostTypeErr] = useState(false);
+    // if there is any error with the image file input
+    const [borderFileErr, setBorderFileErr] = useState(false);
 
     const onSubmitForm = (e) => {
         e.preventDefault();
-        if (!imagePath) {
-            setModal('You must select an image to submit a post');
+        if (!imagePath && !postType) {
+            setPostTypeErr(true);
+            setBorderFileErr(true);
+            setModal('You must select an image and a post type to submit a post');
+            return;
+        } else if (!imagePath) {
+            setPostTypeErr(false);
+            setBorderFileErr(true);
+            setModal('You must select and image to submit a post');
+            return;
+        } else if (!postType) {
+            setPostTypeErr(true);
+            setBorderFileErr(false);
+            setModal('You must select a post type to submit a post');
             return;
         }
 
-        createPost({ content, imagePath });
+        createPost({ content, imagePath, postType, animalType });
         history.push('/');
     }
 
@@ -53,24 +71,46 @@ const CreatePost = ({ createPost, setModal, history }) => {
                     <label htmlFor="file" className="grey-text">
                         Select an image {fileError ? <p style={{ color: 'red' }}>{fileError}</p> : null}
                     </label>
-                    <input type="file" multiple className="form-control" name="file" id="profilePic" onChange={onFileChange} />
+                    <input type="file" multiple className="form-control" name="file" id="profilePic" onChange={onFileChange} 
+                    style={{ border: !borderFileErr ? '1px solid black' : '1px solid red' }}/>
                     <label htmlFor="content" className="grey-text">
                         Description
                     </label>
-                    <input
+                    <textarea
                         type="text"
                         name="content"
                         id="content"
                         className="form-control"
                         value={content}
                         placeholder="Description"
+                        rows="3"
                         onChange={(e) => setContent(e.target.value)}
-                    />
+                    ></textarea>
                     <div>
-                        <select className="browser-default custom-select">
-                            <option>Reason for this post?</option>
+                        <select id="postType" 
+                        name="postType" 
+                        value={postType} 
+                        onChange={(e) => setPostType(e.target.value)} 
+                        className="browser-default custom-select"
+                        style={{ border: !postTypeErr ? '1px solid black' : '1px solid red'}}
+                        >
+                            <option value="">Post Type</option>
                             <option value="adopt">Adopt a pet</option>
                             <option value="post">Post to feed</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select id="animalType" 
+                        name="animalType" 
+                        value={animalType} 
+                        onChange={(e) => setAnimalType(e.target.value)}
+                        className="browser-default custom-select">
+                            <option value="">Animal Type</option>
+                            <option value="dog">Dog</option>
+                            <option value="cat">Cat</option>
+                            <option value="fish">Fish</option>
+                            <option value="bird">Bird</option>
+                            <option value="horse">Horse</option>
                         </select>
                     </div>
                     {formError ? <p style={{ color: 'red' }}>{formError}</p> : null}

@@ -3,7 +3,7 @@ import * as types from './types';
 import { setAlert } from './alert';
 
 // create post
-export const createPost = ({ content, imagePath }) => dispatch => {
+export const createPost = ({ content, imagePath, postType, animalType }) => dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
@@ -14,6 +14,8 @@ export const createPost = ({ content, imagePath }) => dispatch => {
         data.append('image', imagePath[i]);
     }
     data.append('content', content);
+    data.append('postType', postType);
+    data.append('animalType', animalType);
 
     axios.post('/api/posts/create_post', data, config)
         .then((res) => {
@@ -21,6 +23,7 @@ export const createPost = ({ content, imagePath }) => dispatch => {
                 type: types.CREATE_POST,
                 payload: res.data.createdPost
             });
+            dispatch(fetchAllPosts())
             dispatch(setAlert(res.data.serverMsg, 'success'))
         })
         .catch((err) => {
