@@ -16,6 +16,9 @@ import Image from '../Image/Image';
 import CurrentUserProfile from '../Profile/CurrentUserProfile/CurrentUserProfile';
 import AllPostsPage from '../../pages/AllPostsPage';
 import Adopt from '../../pages/Adopt/Adopt';
+import ChatPage from '../../pages/Chat/Chat';
+import Chat from '../ChatMessaging/Chat/Chat';
+import Join from '../ChatMessaging/Join/Join';
 
 const Routes = () => {
     return (
@@ -25,7 +28,10 @@ const Routes = () => {
             <IteratingModal />
             <Switch>
                 <Route exact path="/" component={Home} />
-                <Route exact path="/adopt_page" component={Adopt} /> 
+                <Route exact path="/adopt_page" component={Adopt} />
+                {/* <Route exact path="/chat" component={ChatPage} /> */}
+                <Route exact path="/chat" component={Chat} />
+                <Route exact path="/join" component={Join} />
                 {/* Path Below Is Temporary!!  */}
                 <Route exact path="/all" component={AllPostsPage} />
                 <Route exact path="/login" component={Login} />
@@ -36,7 +42,6 @@ const Routes = () => {
                 <PrivateRoute exact path="/update_profile" component={UpdateProfile} />
                 <PrivateRoute exact path="/user_profile/:id" component={UserProfile} />
                 <PrivateRoute exact path="/usernames" component={SearchUsernames} />
-                
                 <Route component={NotFound} />
             </Switch>
         </section>
