@@ -168,10 +168,9 @@ exports.unlikePost = (req, res, next) => {
 exports.fetchLikes = (req, res, next) => {
     Post.findById({ _id: req.params.id })
         .then((post) => {
-            return res.status(200).json(post.likes);
+            res.status(200).json(post.likes);
         })
         .catch((err) => {
-            console.log(err);
             res.status(500).json({
                 serverMsg: "Couldn't retrieve likes. Please try again later"
             });
@@ -191,7 +190,7 @@ exports.comment = (req, res, next) => {
             }
             post.comments.unshift(newComment);
             post.save();
-            res.json({
+            res.status(201).json({
                 comments: post.comments,
                 serverMsg: 'Successfully made a comment'
             });
@@ -208,7 +207,7 @@ exports.comment = (req, res, next) => {
 // @desc     Delete a comment
 // @access   Private
 exports.deleteCommment = (req, res, next) => {
-    Post.findById({ _id: req.params.postId })
+    Post.findByIdAndUpdate({ _id: req.params.postId })
         .then((post) => {
             const comment = post.comments.find((comment) =>
                 comment.id === req.params.comment_id
@@ -219,12 +218,13 @@ exports.deleteCommment = (req, res, next) => {
                 });
             }
 
+            // if its the author of the post... delete it
             if (post.authorId.toString() === req.user._id) {
-                console.log('deleted by post author')
                 post.comments = post.comments.filter(
                     ({ id }) => id !== req.params.comment_id
                 );
             }
+            // if its the author of the comment... delete it.
             else if (comment.userId.toString() === req.user._id) {
                 console.log('deleted by comment author')
                 post.comments = post.comments.filter(
@@ -234,7 +234,7 @@ exports.deleteCommment = (req, res, next) => {
 
             post.save();
 
-            return res.json({
+            return res.status(201).json({
                 comments: post.comments,
                 serverMsg: 'Successfully deleted comment'
             });
@@ -256,7 +256,7 @@ exports.updateComment = (req, res, next) => {
             $set: {
                 'comments.$.userId': req.user._id,
                 'comments.$.name': req.user.username,
-                'comments.$.text': req.body.text
+                'comments.$.text': req.body.textContent
             }
         })
         .then((result) => {
@@ -267,7 +267,6 @@ exports.updateComment = (req, res, next) => {
             };
         })
         .catch((err) => {
-            console.log(err);
             return res.status(500).json({
                 serverMsg: 'Couldn\'t update post. Please try again later.'
             });

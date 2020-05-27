@@ -43,7 +43,7 @@ router.post('/comment/:id', [isAuthenticated, checkObjectId('id')], PostControll
 // @route    DELETE api/posts/comment/:postId/:comment_id
 // @desc     Delete a comment
 // @access   Private
-router.delete('/delete_comment/:postId/:comment_id', isAuthenticated, PostController.deleteCommment);
+router.put('/delete_comment/:postId/:comment_id', isAuthenticated, PostController.deleteCommment);
 
 // @route    PUT api/posts/update_comment/:id
 // @desc     Update a comment

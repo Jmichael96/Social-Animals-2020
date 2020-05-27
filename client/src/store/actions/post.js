@@ -169,7 +169,7 @@ export const addComment = (id, formData) => dispatch => {
         .then((res) => {
             dispatch({
                 type: types.ADD_COMMENT,
-                payload: res.data.comments
+                payload: { id, comments: res.data.comments }
             });
             dispatch(setAlert(res.data.serverMsg, 'success'));
         })
@@ -188,11 +188,12 @@ export const addComment = (id, formData) => dispatch => {
 
 // delete comment
 export const deleteComment = (postId, commentId) => dispatch => {
-    axios.delete(`/api/posts/delete_comment/${postId}/${commentId}`)
+    axios.put(`/api/posts/delete_comment/${postId}/${commentId}`)
         .then((res) => {
+            const id = postId;
             dispatch({
                 type: types.DELETE_COMMENT,
-                payload: commentId
+                payload:  { id, comments: res.data.comments }
             });
             dispatch(setAlert(res.data.serverMsg, 'success'));
         })
@@ -215,13 +216,12 @@ export const updateComment = (id, formData) => dispatch => {
             'Content-Type': 'application/json'
         }
     };
-
     axios.put(`/api/posts/update_comment/${id}`, formData, config)
         .then((res) => {
             dispatch({
                 type: types.UPDATE_COMMENT,
-                payload: res.data.comments
             });
+            dispatch(fetchAllPosts())
             dispatch(setAlert(res.data.serverMsg, 'success'));
         })
         .catch((err) => {

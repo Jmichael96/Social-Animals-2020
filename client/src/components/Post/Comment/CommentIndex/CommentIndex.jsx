@@ -1,29 +1,97 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import UpdateComment from '../UpdateComment/UpdateComment';
+// import UpdateComment from '../UpdateComment/UpdateComment';
 import {
     MDBDropdown,
     MDBDropdownToggle,
     MDBDropdownMenu,
     MDBDropdownItem
 } from 'mdbreact';
-import { deleteComment } from '../../../../store/actions/post';
+import { deleteComment, updateComment } from '../../../../store/actions/post';
 import { setModal } from '../../../../store/actions/modal';
+import isEmpty from '../../../../utils/isEmpty';
+import Wrapper from '../../../Layout/Wrapper/Wrapper';
+import {
+    MDBContainer,
+    MDBCol,
+    MDBRow
+} from 'mdbreact';
 
-const CommentIndex = ({ auth, deleteComment, setModal, comment: { _id, name, text, userId }, postId, postAuthorId }) => {
+const CommentIndex = ({ auth, deleteComment, updateComment, setModal, comment: { _id, name, text, userId }, postId, postAuthorId }) => {
+    // set whether the user wants to update the comment or not
     const [updating, setUpdating] = useState(false);
+
+    const [textContent, setTextContent] = useState(text);
+
+    useEffect(() => {
+        setTextContent(text)
+    }, [text]);
 
     // for when you are ready to update a comment
     const isUpdating = () => {
         setUpdating(!updating);
     }
 
-    // render the update component
-    const renderUpdate = () => {
-        return (<UpdateComment textContent={text} postId={postId} commentId={_id} commentAuthorId={userId} auth={auth} />)
+    // on enter key press it will initiate the form submission
+    const enterKeySubmit = (e) => {
+        if (!auth.loading && auth.isAuthenticated) {
+            if (e.keyCode === 13 || e.code === 'Enter' || e.code === 'NumpadEnter') {
+                if (!auth.loading && userId === auth.user._id) {
+                    e.preventDefault();
+                    const formData = {
+                        textContent
+                    };
+                    const commentId = _id;
+                    updateComment(commentId, formData);
+                    isUpdating();
+                }
+                else {
+                    return;
+                }
+            }
+        }
     }
 
+    // on button submit initiate update function
+    const onSubmit = (e) => {
+        e.preventDefault();
+        if (!auth.loading && auth.isAuthenticated) {
+            if (!auth.loading && userId === auth.user._id) {
+                const formData = {
+                    textContent
+                };
+                const commentId = _id;
+                updateComment(commentId, formData);
+                isUpdating();
+            }
+            else {
+                return;
+            }
+        }
+    }
+    const renderUpdate = () => {
+        return (
+            <MDBContainer fluid>
+                <MDBRow>
+                    <MDBCol size="10" className="p-0">
+                        <input
+                            type="text"
+                            name="text"
+                            id="commentText"
+                            className="form-control"
+                            value={textContent || ""}
+                            onKeyDown={(e) => enterKeySubmit(e)}
+                            onChange={(e) => setTextContent(e.target.value)}
+                        />
+                    </MDBCol>
+                    <MDBCol size="2" className="p-0">
+                        <button type="button" onClick={onSubmit} style={{ height: '100%' }}>Submit</button>
+                    </MDBCol>
+                </MDBRow>
+            </MDBContainer>
+        )
+    }
     // render action button for comment
     const renderActionButton = () => {
         return (
@@ -36,7 +104,7 @@ const CommentIndex = ({ auth, deleteComment, setModal, comment: { _id, name, tex
     // render only if the user that created the comment is logged in
     // used for editing purposes only
     const renderDropDownEdit = () => {
-        if (!auth.loading && auth.user === null) {
+        if (!auth.loading && isEmpty(auth.user)) {
             return;
         }
         if (!auth.loading && userId === auth.user._id) {
@@ -51,10 +119,10 @@ const CommentIndex = ({ auth, deleteComment, setModal, comment: { _id, name, tex
     const dropdownMenu = () => {
         // check if user is authenticated 
         // check if user is null
-        // check if the authenticated user is equal to comment userId if not the dont return dropdown
+        // check if the authenticated user is equal to comment userId if not then don't return dropdown
         if (!auth.loading && !auth.isAuthenticated) {
             return;
-        } else if (auth.user === null) {
+        } else if (isEmpty(auth.user)) {
             return;
         } else if (auth.user._id !== userId) {
             return;
@@ -111,6 +179,7 @@ const CommentIndex = ({ auth, deleteComment, setModal, comment: { _id, name, tex
 CommentIndex.propTypes = {
     deleteComment: PropTypes.func.isRequired,
     setModal: PropTypes.func.isRequired,
+    updateComment: PropTypes.func.isRequired,
     comment: PropTypes.any,
     postId: PropTypes.any,
     postAuthorId: PropTypes.any,
@@ -119,5 +188,6 @@ CommentIndex.propTypes = {
 
 const mapStateToProps = (state) => ({
     auth: state.auth
-})
-export default connect(mapStateToProps, { deleteComment, setModal })(CommentIndex);
+});
+
+export default connect(mapStateToProps, { deleteComment, setModal, updateComment })(CommentIndex);

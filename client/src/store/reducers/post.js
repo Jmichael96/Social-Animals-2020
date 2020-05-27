@@ -48,27 +48,24 @@ export default function (state = initialState, action) {
                 loading: false
             }
         case types.ADD_COMMENT:
+        case types.DELETE_COMMENT:
             return {
                 ...state,
-                post: { ...state.post, comments: payload },
+                posts: state.posts.map(post =>
+                    post._id === payload.id ? { ...post, comments: payload.comments } : post
+                ),
                 loading: false
             }
         case types.UPDATE_COMMENT:
             return {
                 ...state,
-                post: { ...state.post, comments: payload },
+                posts: { ...state.posts },
                 loading: false
             }
         case types.DELETE_POST:
             return {
                 ...state,
                 posts: state.posts.filter((post) => post._id !== payload),
-                loading: false
-            }
-        case types.DELETE_COMMENT:
-            return {
-                ...state,
-                post: { ...state.post, comments: payload },
                 loading: false
             }
         case types.POST_ERROR:
