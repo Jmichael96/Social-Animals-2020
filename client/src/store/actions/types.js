@@ -33,7 +33,6 @@ export const FOLLOW_PROFILE = 'FOLLOW_PROFILE';
 export const UNFOLLOW_PROFILE = 'UNFOLLOW_PROFILE';
 export const SET_FOLLOWING = 'SET_FOLLOWING';
 export const UNSET_FOLLOWING = 'UNSET_FOLLOWING';
-export const SET_CHAT = 'SET_CHAT';
 
 // POST TYPES
 export const CREATE_POST = 'CREATE_POST';
@@ -56,5 +55,8 @@ export const LIKE_ERROR = 'LIKE_ERROR';
 export const REMOVE_LIKES = 'REMOVE_LIKES';
 
 // CHAT TYPES
-export const ADD_TEXT = 'ADD_TEXT';
+export const SET_CHAT = 'SET_CHAT';
 export const SEND_MESSAGE = 'SEND_MESSAGE';
+export const FETCH_CHAT_ROOM = 'FETCH_CHAT_ROOM';
+export const CLEAR_CHAT = 'CLEAR_CHAT';
+export const CHAT_ERROR = 'CHAT_ERROR';

@@ -9,15 +9,17 @@ const routes = require('./routes/index');
 const cors = require('cors');
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
-const { addUser, removeUser, getUser, getUsersInRoom } = require('./users');
 const ChatController = require('./controllers/chat');
+// io.adapter(redis({ host: 'localhost', port: PORT }));
 
 // connecting database
 connectDB();
 
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
+app.options('*', cors());
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 const normalizePort = (val) => {
@@ -34,13 +36,31 @@ const normalizePort = (val) => {
 
 const port = normalizePort(PORT);
 
+
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
 }
+// app.use((req, res, next) => {
+//   // Website you wish to allow to connect
+//   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080');
 
+//   // Request methods you wish to allow
+//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+//   // Request headers you wish to allow
+//   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+//   // Set to true if you need the website to include cookies in the requests sent
+//   // to the API (e.g. in case you use sessions)
+//   res.setHeader('Access-Control-Allow-Credentials', true);
+
+//   // Pass to next layer of middleware
+//   next();
+// });
 app.use(routes);
 
 io.on('connection', (socket) => {
+
   console.log('connected to socket.io!');
   socket.on('addText', (text) => {
     ChatController.addChat(io, text);
@@ -51,8 +71,12 @@ io.on('connection', (socket) => {
   });
 
   socket.on('sendMessage', (room, userId, username, message) => {
-    ChatController.sendMessage(io, room, userId, username, message);
+    ChatController.sendMessage(room, userId, username, message);
     io.emit('receive-message', { userId: userId, username: username, message: message });
+  });
+  
+  socket.on('fetchRoom', (room) => {
+    ChatController.fetchRoom(io, room);
   })
 });
 // io.on('connect', (socket) => {

@@ -1,42 +1,57 @@
 const Chat = require('../models/chat');
 
-exports.addChat = (io, T) => {
-    const chat = new Chat({
-        text: T
-    });
-    chat.save()
-        .then((text) => {
-            io.emit('TextAdded', text);
-        })
-}
+// exports.addChat = (io, T) => {
+//     const chat = new Chat({
+//         text: T
+//     });
+//     chat.save()
+//         .then((text) => {
+//             io.emit('TextAdded', text);
+//         })
+//         .catch((err) => {
+//             console.log(err);
+//             throw err;
+//         })
+// }
 
 exports.join = (io, room, userObj) => {
+    console.log('room here! ', room)
     const chat = new Chat({
         room: room,
         users: userObj
     });
-    console.log(chat);
     chat.save().then((chat) => {
         console.log(chat);
-        io.emit('chatCreated', chat);
+        io.emit('chat-created', { room: chat.room, users: chat.users, userMessages: chat.userMessages });
     })
+        .catch((err) => {
+            console.log(err);
+            throw err;
+        })
 };
 
-exports.sendMessage = (io, room, userId, username, message) => {
+exports.sendMessage = (room, userId, username, message) => {
     Chat.findOneAndUpdate({ room: room })
-    .then((chat) => {
-        chat.userMessages.unshift({ userId: userId, username: username, message: message });
-
-        chat.save();
-        // io.to(room).emit('message', { username: username, text: message });
-
-        console.log(chat)
-    })
+        .then((chat) => {
+            chat.userMessages.push({ userId: userId, username: username, message: message });
+            chat.save();
+        })
+        .catch((err) => {
+            console.log(err);
+            throw err;
+        })
 };
 
-exports.getUser = (id, room) => {
+
+exports.fetchRoom = (io, room) => {
     Chat.findOne({ room: room })
     .then((chat) => {
-        chat.users
+       
+        // console.log(array.sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0])
+        io.emit('fetched-room', { room: chat.room, users: chat.users, userMessages: chat.userMessages });
+    })
+    .catch((err) => {
+        console.log(err);
+        throw err;
     })
 }

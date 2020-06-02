@@ -213,6 +213,7 @@ exports.setChat = (req, res, next) => {
         .then((user) => {
             
             io.on('connect', (socket) => {
+                const users = [];
                 socket.on('join', ({ name, room }, callback) => {
                     const { error, user } = addUser({ id: socket.id, name, room });
                 

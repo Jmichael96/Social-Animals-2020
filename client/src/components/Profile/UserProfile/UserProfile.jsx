@@ -92,7 +92,6 @@ const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, setFoll
             }
         ]
         setChat(room, userObj, socket);
-        window.location.href = `/chat?room=${room}`;
     }
 
     // decide what needs to be rendered if user does not have a profile

@@ -7,6 +7,9 @@ import isEmpty from '../../../../utils/isEmpty';
 
 const Message = ({ auth, message: { message, username, userId }}) => {
     const checkUser = () => {
+        if (!message) {
+            return null;
+        }
         if (!auth.loading && !isEmpty(auth.user)) {
             if (userId.toString() === auth.user._id) {
                 return (
