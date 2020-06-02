@@ -2,6 +2,7 @@ import React, { Fragment, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { fetchProfileById, followProfile, unfollowProfile, setFollowing, unsetFollowing } from '../../../store/actions/user';
+import { setChat } from '../../../store/actions/chat';
 import { Link } from 'react-router-dom';
 import Wrapper from '../../Layout/Wrapper/Wrapper';
 import isEmpty from '../../../utils/isEmpty';
@@ -9,8 +10,9 @@ import RenderFollowers from './RenderFollowers/RenderFollowers';
 import Spinner from '../../Layout/Spinner/Spinner';
 import RenderFollowing from './RenderFollowing/RenderFollowing';
 import UserProfilePosts from '../../Post/FetchPosts/UserProfilePosts/UserProfilePosts';
+import io from "socket.io-client";
 
-const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, setFollowing, unsetFollowing, user: { user, loading }, auth, match }) => {
+const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, setFollowing, unsetFollowing, setChat, user: { user, loading }, auth, match }) => {
     // for when a user wants to change the profile photo render the file input
     // const [isUpdatingPic, setIsUpdatingPic] = useState(false);
 
@@ -75,10 +77,24 @@ const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, setFoll
         }
     }
 
-    // set true/false if user wants to change profile pic
-    // const changeProfilePic = () => {
-    //     setIsUpdatingPic(!isUpdatingPic);
-    // }
+    // setting up chat room when you want to message a user!
+    const setupChat = ()  => {
+        let socket = io.connect('http://localhost:8080');
+        let room = `${auth.user.username},${user.username}`;
+        const userObj = [
+            {
+                userId: auth.user._id,
+                username: auth.user.username
+            },
+            {
+                userId: user._id,
+                username: user.username
+            }
+        ]
+        setChat(room, userObj, socket);
+        window.location.href = `/chat?room=${room}`;
+    }
+
     // decide what needs to be rendered if user does not have a profile
     const renderProfile = () => {
         if (!loading && isEmpty(user)) {
@@ -101,6 +117,7 @@ const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, setFoll
                         <RenderFollowing user={user} userLoading={loading} />
                     </div>
                 </Wrapper>
+                <button onClick={setupChat}>Message</button>
                 <Wrapper>
                     {!isUsersProfile() ? renderFollowBtns() : null}
                 </Wrapper>
@@ -129,6 +146,7 @@ UserProfile.propTypes = {
     unfollowProfile: PropTypes.func.isRequired,
     setFollowing: PropTypes.func.isRequired,
     unsetFollowing: PropTypes.func.isRequired,
+    setChat: PropTypes.func.isRequired,
     user: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
 };
@@ -138,4 +156,4 @@ const mapStateToProps = (state) => ({
     auth: state.auth
 });
 
-export default connect(mapStateToProps, { fetchProfileById, followProfile, unfollowProfile, setFollowing, unsetFollowing })(UserProfile);
+export default connect(mapStateToProps, { fetchProfileById, followProfile, unfollowProfile, setFollowing, unsetFollowing, setChat })(UserProfile);

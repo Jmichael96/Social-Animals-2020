@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const config = require('../services/keys');
+const addUser = require('../sockets/chat/addUser');
 
 // @route    GET api/user/usernames
 // @desc     Fetch all usernames
@@ -107,7 +108,7 @@ exports.followUser = (req, res, next) => {
 
             user.save();
             return res.status(201).json({
-                serverMsg: 'You have followed this user', 
+                serverMsg: 'You have followed this user',
                 user
             });
         })
@@ -132,7 +133,7 @@ exports.unfollowUser = (req, res, next) => {
             // remove follower
             user.followers = user.followers.filter(
                 ({ userId }) => userId.toString() !== req.user._id
-            );        
+            );
 
             user.save();
             res.status(201).json({
@@ -186,7 +187,7 @@ exports.unsetFollowing = (req, res, next) => {
             // remove follower
             user.following = user.following.filter(
                 ({ userId }) => userId.toString() !== req.params.userId
-            );   
+            );
 
             user.save();
             return res.status(201).json({
@@ -197,6 +198,41 @@ exports.unsetFollowing = (req, res, next) => {
         .catch((err) => {
             return res.status(500).json({
                 serverMsg: 'Unsetting following profile has failed. Please try again later.'
+            });
+        });
+}
+
+// @route    POST api/user/set_chat/:id
+// @desc     Set up chat and get both the usersId for creating a room
+// @access   Private
+exports.setChat = (req, res, next) => {
+    let io = req.io;
+    
+    // console.log('fired')
+    User.findById({ _id: req.params.id })
+        .then((user) => {
+            
+            io.on('connect', (socket) => {
+                socket.on('join', ({ name, room }, callback) => {
+                    const { error, user } = addUser({ id: socket.id, name, room });
+                
+                    if(error) return callback(error);
+                
+                    socket.join(user.room);
+                
+                    socket.emit('message', { user: 'admin', text: `${user.name}, welcome to room ${user.room}.`});
+                    socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.name} has joined!` });
+                
+                    io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) });
+                
+                    callback();
+                  });            
+            }) 
+            console.log(user)
+        })
+        .catch((err) => {
+            return res.status(500).json({
+                serverMsg: 'Setting up chat has failed. Please try again later'
             });
         });
 }

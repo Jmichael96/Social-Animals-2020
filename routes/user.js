@@ -38,5 +38,9 @@ router.put('/set_following/:userId/:username', isAuthenticated, UserController.s
 // @access   Private
 router.put('/unset_following/:userId', isAuthenticated, UserController.unsetFollowing);
 
+// @route    POST api/user/set_chat/:id
+// @desc     Set up chat and get both the usersId for creating a room
+// @access   Private
+router.post('/set_chat/:id', isAuthenticated, UserController.setChat);
 
 module.exports = router;

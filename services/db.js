@@ -10,9 +10,9 @@ const connectDB = () => {
     }).then(() => {
         console.log('Database has been penetrated!');
     })
-    .catch((err) => {
-        console.log(err);
-    });
+        .catch((err) => {
+            console.log(err);
+        });
 }
 
 module.exports = connectDB

@@ -184,3 +184,20 @@ export const unsetFollowing = (userId) => dispatch => {
         });
     });
 }
+
+// set chat room up
+export const setChat = (id) => dispatch => {
+    axios.post(`/api/user/set_chat/${id}`)
+    .then((res) => {
+        dispatch({
+            type: types.SET_CHAT
+        });
+    })
+    .catch((err) => {
+        console.log(err);
+        dispatch({
+            type: types.PROFILE_ERROR,
+            payload: err
+        });
+    });
+}
