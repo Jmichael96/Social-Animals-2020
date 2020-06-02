@@ -14,6 +14,7 @@ export default function (state = initialState, action) {
     switch (type) {
         case types.SET_CHAT:
         case types.FETCH_CHAT_ROOM:
+        case types.FETCH_CHAT_DATA:
             return {
                 ...state,
                 room: payload.room,

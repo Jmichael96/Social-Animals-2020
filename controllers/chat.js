@@ -1,19 +1,5 @@
 const Chat = require('../models/chat');
 
-// exports.addChat = (io, T) => {
-//     const chat = new Chat({
-//         text: T
-//     });
-//     chat.save()
-//         .then((text) => {
-//             io.emit('TextAdded', text);
-//         })
-//         .catch((err) => {
-//             console.log(err);
-//             throw err;
-//         })
-// }
-
 exports.join = (io, room, userObj) => {
     console.log('room here! ', room)
     const chat = new Chat({
@@ -42,12 +28,10 @@ exports.sendMessage = (room, userId, username, message) => {
         })
 };
 
-
+// fetching data inside room
 exports.fetchRoom = (io, room) => {
     Chat.findOne({ room: room })
     .then((chat) => {
-       
-        // console.log(array.sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0])
         io.emit('fetched-room', { room: chat.room, users: chat.users, userMessages: chat.userMessages });
     })
     .catch((err) => {

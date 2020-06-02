@@ -60,3 +60,4 @@ export const SEND_MESSAGE = 'SEND_MESSAGE';
 export const FETCH_CHAT_ROOM = 'FETCH_CHAT_ROOM';
 export const CLEAR_CHAT = 'CLEAR_CHAT';
 export const CHAT_ERROR = 'CHAT_ERROR';
+export const FETCH_CHAT_DATA = 'FETCH_CHAT_DATA';

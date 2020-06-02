@@ -16,7 +16,8 @@ const Chat = ({ fetchRoom, location, sendMessage, auth, chat }) => {
   const [room, setRoom] = useState('');
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
-
+  const [users, setUsers] = useState([]);
+  
   useEffect(() => {
     // getting room name from query string
     const { room } = queryString.parse(location.search);
@@ -27,24 +28,19 @@ const Chat = ({ fetchRoom, location, sendMessage, auth, chat }) => {
       fetchRoom(room, socket);
     }
 
-    if (!chat.loading && !isEmpty(chat.userMessages)) {
-      setMessages(chat.userMessages);
-    }
-  }, [location.search, fetchRoom, chat.loading, chat.userMessages]);
-
-  useEffect(() => {
     // add message to messages array upon sending a message
     socket.on('receive-message', (message) => {
       setMessages(messages => [...messages, message]);
     });
-  }, []);
 
-  useEffect(() => {
     // fetch room data and messages
     socket.on('fetched-room', (res) => {
       setMessages(messages => [...messages, ...res.userMessages]);
+      setUsers((users) => [...users, ...res.users]);
     });
-  }, []);
+
+
+  }, [location.search, fetchRoom, chat.loading, chat.userMessages]);
 
   const submitMessage = (e) => {
     e.preventDefault();
@@ -74,10 +70,16 @@ Chat.propTypes = {
   chat: PropTypes.object.isRequired,
 }
 
+const mapDispatchToProps = (dispatch) => {
+  return {
+    sendMessage: (room, userId, username, message, socket) => dispatch(sendMessage(room, userId, username, message, socket)),
+    fetchRoom: (room, socket) => dispatch(fetchRoom(room, socket))
+  }
+}
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
   chat: state.chat
 });
 
-export default connect(mapStateToProps, { sendMessage, fetchRoom })(Chat);
+export default connect(mapStateToProps, mapDispatchToProps)(Chat);

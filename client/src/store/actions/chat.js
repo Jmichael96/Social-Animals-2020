@@ -29,17 +29,17 @@ export const sendMessage = (room, userId, username, message, socket) => dispatch
 // fetching chat room data
 export const fetchRoom = (room, socket) => dispatch => {
     socket.emit('fetchRoom', room);
-
-
-    // socket.on('fetched-room', (res) => {
-    //     dispatch({
-    //         type: types.FETCH_CHAT_ROOM,
-    //         payload: {
-    //             room: res.room,
-    //             users: res.users,
-    //             userMessages: res.userMessages
-    //         }
-    //     });
-    // })
-
 };
+
+// fetch all the chat data and store it in the stores state
+export const fetchRoomData = (room, users, userMessages) => dispatch => {
+    console.log(room, users, userMessages)
+        dispatch({
+            type: types.FETCH_CHAT_DATA,
+            payload: {
+                room: room,
+                users: users,
+                userMessages: userMessages
+            }
+        });       
+}
