@@ -43,3 +43,15 @@ export const fetchRoomData = (room, users, userMessages) => dispatch => {
             }
         });       
 }
+
+// fetch all chat messages for authenticated user
+export const fetchAllChatMessages = (userId, socket) => dispatch => {
+    socket.emit('fetchChatMessages', userId);
+
+    socket.on('fetch-chat-messages', (res) => {
+        dispatch({
+            type: types.FETCH_ALL_CHAT_MESSAGES,
+            payload: res.messages
+        })
+    })
+}

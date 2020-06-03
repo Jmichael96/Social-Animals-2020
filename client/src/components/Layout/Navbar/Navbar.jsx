@@ -48,6 +48,9 @@ const Navbar = ({ auth: { isAuthenticated, loading, user }, logout }) => {
                     <Link className="nav-link" to="/usernames">Usernames</Link>
                 </li>
                 <li className="nav-item">
+                    <Link className="nav-link" to="/my_messages">Messages</Link>
+                </li>
+                <li className="nav-item">
                     <a href="#!" className="nav-link" onClick={logout}>Logout</a>
                 </li>
             </ul>

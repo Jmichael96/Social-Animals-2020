@@ -19,6 +19,7 @@ import Adopt from '../../pages/Adopt/Adopt';
 import ChatPage from '../../pages/Chat/Chat';
 import Chat from '../ChatMessaging/Chat/Chat';
 import Join from '../ChatMessaging/Join/Join';
+import TotalChatMessages from '../ChatMessaging/TotalChatMessages/TotalChatMessages';
 
 const Routes = () => {
     return (
@@ -30,8 +31,9 @@ const Routes = () => {
                 <Route exact path="/" component={Home} />
                 <Route exact path="/adopt_page" component={Adopt} />
                 {/* <Route exact path="/chat" component={ChatPage} /> */}
-                <Route exact path="/chat" component={Chat} />
+                <PrivateRoute exact path="/chat" component={Chat} />
                 <Route exact path="/join" component={Join} />
+                <PrivateRoute exact path="/my_messages" component={TotalChatMessages} />
                 {/* Path Below Is Temporary!!  */}
                 <Route exact path="/all" component={AllPostsPage} />
                 <Route exact path="/login" component={Login} />

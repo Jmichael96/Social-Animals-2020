@@ -10,7 +10,7 @@ const cors = require('cors');
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 const ChatController = require('./controllers/chat');
-// io.adapter(redis({ host: 'localhost', port: PORT }));
+const isAuthenticated = require('./middleware/check-auth');
 
 // connecting database
 connectDB();
@@ -40,25 +40,8 @@ const port = normalizePort(PORT);
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
 }
-// app.use((req, res, next) => {
-//   // Website you wish to allow to connect
-//   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080');
 
-//   // Request methods you wish to allow
-//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-
-//   // Request headers you wish to allow
-//   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-
-//   // Set to true if you need the website to include cookies in the requests sent
-//   // to the API (e.g. in case you use sessions)
-//   res.setHeader('Access-Control-Allow-Credentials', true);
-
-//   // Pass to next layer of middleware
-//   next();
-// });
 app.use(routes);
-
 io.on('connection', (socket) => {
 
   console.log('connected to socket.io!');
@@ -66,52 +49,27 @@ io.on('connection', (socket) => {
     ChatController.addChat(io, text);
   });
 
+  // join room and start a chat room
   socket.on('join', (room, userObj) => {
     ChatController.join(io, room, userObj);
   });
 
+  // send a message
   socket.on('sendMessage', (room, userId, username, message) => {
     ChatController.sendMessage(room, userId, username, message);
     io.emit('receive-message', { userId: userId, username: username, message: message });
   });
   
+  // fetch room data
   socket.on('fetchRoom', (room) => {
     ChatController.fetchRoom(io, room);
-  })
+  });
+
+  // fetch all chat data for authenticated user
+  socket.on('fetchChatMessages', (userId) => {
+    ChatController.fetchAllChatMessages(io, userId);
+  });
 });
-// io.on('connect', (socket) => {
-//     socket.on('join', ({ name, room }, callback) => {
-//       const { error, user } = addUser({ id: socket.id, name, room });
-
-//       if(error) return callback(error);
-
-//       socket.join(user.room);
-
-//       socket.emit('message', { user: 'admin', text: `${user.name}, welcome to room ${user.room}.`});
-//       socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.name} has joined!` });
-
-//       io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) });
-
-//       callback();
-//     });
-
-//     socket.on('sendMessage', (message, callback) => {
-//       const user = getUser(socket.id);
-
-//       io.to(user.room).emit('message', { user: user.name, text: message });
-
-//       callback();
-//     });
-
-//     socket.on('disconnect', () => {
-//       const user = removeUser(socket.id);
-
-//       if(user) {
-//         io.to(user.room).emit('message', { user: 'Admin', text: `${user.name} has left.` });
-//         io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room)});
-//       }
-//     })
-//   });
 
 server.listen(PORT, () => {
   console.log(`Bears... Beets... Battlestar Galactica on Port ${port}`);

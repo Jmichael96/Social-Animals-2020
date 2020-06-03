@@ -12,6 +12,7 @@ import isEmpty from '../../../utils/isEmpty';
 
 let socket = io.connect('http://localhost:8080');
 
+
 const Chat = ({ fetchRoom, location, sendMessage, auth, chat }) => {
   const [room, setRoom] = useState('');
   const [message, setMessage] = useState('');
