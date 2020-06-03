@@ -9,8 +9,7 @@ const routes = require('./routes/index');
 const cors = require('cors');
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
-const ChatController = require('./controllers/chat');
-const isAuthenticated = require('./middleware/check-auth');
+const connectChatSocket = require('./sockets/chat/index');
 
 // connecting database
 connectDB();
@@ -42,34 +41,10 @@ if (process.env.NODE_ENV === "production") {
 }
 
 app.use(routes);
-io.on('connection', (socket) => {
 
-  console.log('connected to socket.io!');
-  socket.on('addText', (text) => {
-    ChatController.addChat(io, text);
-  });
+// connect socket.io
+connectChatSocket(io);
 
-  // join room and start a chat room
-  socket.on('join', (room, userObj) => {
-    ChatController.join(io, room, userObj);
-  });
-
-  // send a message
-  socket.on('sendMessage', (room, userId, username, message) => {
-    ChatController.sendMessage(room, userId, username, message);
-    io.emit('receive-message', { userId: userId, username: username, message: message });
-  });
-  
-  // fetch room data
-  socket.on('fetchRoom', (room) => {
-    ChatController.fetchRoom(io, room);
-  });
-
-  // fetch all chat data for authenticated user
-  socket.on('fetchChatMessages', (userId) => {
-    ChatController.fetchAllChatMessages(io, userId);
-  });
-});
 
 server.listen(PORT, () => {
   console.log(`Bears... Beets... Battlestar Galactica on Port ${port}`);

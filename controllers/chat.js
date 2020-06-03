@@ -32,7 +32,7 @@ exports.sendMessage = (room, userId, username, message) => {
 exports.fetchRoom = (io, room) => {
     Chat.findOne({ room: room })
         .then((chat) => {
-            io.emit('fetched-room', { room: chat.room, users: chat.users, userMessages: chat.userMessages });
+            io.emit('fetch-room-data', { room: chat.room, users: chat.users, userMessages: chat.userMessages });
         })
         .catch((err) => {
             console.log(err);
@@ -40,22 +40,22 @@ exports.fetchRoom = (io, room) => {
         })
 }
 
-// fetch the chats that the authenticated user is in
-exports.fetchAllChatMessages = (io, userId) => {
-    Chat.find().then((chat) => {
-        let usersChatsArr = [];
-        for (let i = 0; i < chat.length; i++) {
-            let users = chat[i].users;
-            for (let j = 0; j < users.length; j++) {
-                if (users[j].userId.toString() === userId) {
-                    usersChatsArr.push(chat[i]);
-                }
-            }
-        }
-        io.emit('fetch-chat-messages', { messages: usersChatsArr })
-    })
-        .catch((err) => {
-            console.log(err);
-            throw err;
-        })
-}
+// // fetch the chats that the authenticated user is in
+// exports.fetchAllChatMessages = (io, userId) => {
+//     Chat.find().then((chat) => {
+//         let usersChatsArr = [];
+//         for (let i = 0; i < chat.length; i++) {
+//             let users = chat[i].users;
+//             for (let j = 0; j < users.length; j++) {
+//                 if (users[j].userId.toString() === userId) {
+//                     usersChatsArr.push(chat[i]);
+//                 }
+//             }
+//         }
+//         io.emit('fetch-chat-messages', { messages: usersChatsArr })
+//     })
+//         .catch((err) => {
+//             console.log(err);
+//             throw err;
+//         });
+// };

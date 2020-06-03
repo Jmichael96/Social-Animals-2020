@@ -1,7 +1,7 @@
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const config = require('../services/keys');
-const addUser = require('../sockets/chat/addUser');
+const Chat = require('../models/chat');
 
 // @route    GET api/user/usernames
 // @desc     Fetch all usernames
@@ -26,7 +26,6 @@ exports.fetchUsernames = (req, res, next) => {
 // @desc     Update a profile
 // @access   Private
 exports.updateProfile = (req, res, next) => {
-    console.log('firing update profile api')
     const url = req.protocol + '://' + req.get('host');
     let path;
     //  setting the profile picture image accordingly if there is or isnt a file submitted
@@ -202,38 +201,65 @@ exports.unsetFollowing = (req, res, next) => {
         });
 }
 
-// @route    POST api/user/set_chat/:id
-// @desc     Set up chat and get both the usersId for creating a room
+// // @route    POST api/user/set_chat/:id
+// // @desc     Set up chat and get both the usersId for creating a room
+// // @access   Private
+// exports.setChat = (req, res, next) => {
+//     let io = req.io;
+
+//     // console.log('fired')
+//     User.findById({ _id: req.params.id })
+//         .then((user) => {
+
+//             io.on('connect', (socket) => {
+//                 const users = [];
+//                 socket.on('join', ({ name, room }, callback) => {
+//                     const { error, user } = addUser({ id: socket.id, name, room });
+
+//                     if(error) return callback(error);
+
+//                     socket.join(user.room);
+
+//                     socket.emit('message', { user: 'admin', text: `${user.name}, welcome to room ${user.room}.`});
+//                     socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.name} has joined!` });
+
+//                     io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) });
+
+//                     callback();
+//                   });            
+//             }) 
+//             console.log(user)
+//         })
+//         .catch((err) => {
+//             return res.status(500).json({
+//                 serverMsg: 'Setting up chat has failed. Please try again later'
+//             });
+//         });
+// }
+
+// @route    GET api/user/fetch_messages
+// @desc     Fetch all messages the auth user is involved in
 // @access   Private
-exports.setChat = (req, res, next) => {
-    let io = req.io;
-    
-    // console.log('fired')
-    User.findById({ _id: req.params.id })
-        .then((user) => {
-            
-            io.on('connect', (socket) => {
-                const users = [];
-                socket.on('join', ({ name, room }, callback) => {
-                    const { error, user } = addUser({ id: socket.id, name, room });
-                
-                    if(error) return callback(error);
-                
-                    socket.join(user.room);
-                
-                    socket.emit('message', { user: 'admin', text: `${user.name}, welcome to room ${user.room}.`});
-                    socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.name} has joined!` });
-                
-                    io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) });
-                
-                    callback();
-                  });            
-            }) 
-            console.log(user)
+exports.fetchMessages = (req, res, next) => {
+    Chat.find().then((chat) => {
+        let usersChatsArr = [];
+        for (let i = 0; i < chat.length; i++) {
+            let users = chat[i].users;
+            for (let j = 0; j < users.length; j++) {
+                if (users[j].userId.toString() === req.user._id) {
+                    usersChatsArr.push(chat[i]);
+                }
+            }
+        }
+        console.log('=========')
+        console.log(usersChatsArr);
+        res.status(201).json({
+            messages: usersChatsArr
         })
+    })
         .catch((err) => {
             return res.status(500).json({
-                serverMsg: 'Setting up chat has failed. Please try again later'
+                serverMsg: 'There was an error fetching your messages. Please try again later.'
             });
         });
 }

@@ -79,6 +79,9 @@ export const fetchAllPosts = () => dispatch => {
             dispatch({
                 type: types.CLEAR_PROFILE
             });
+            dispatch({
+                type: types.CLEAR_CHAT
+            });
         })
         .catch((err) => {
             const error = err.response.data.serverMsg;
@@ -103,6 +106,9 @@ export const fetchAdoptionPosts = () => dispatch => {
         });
         dispatch({
             type: types.CLEAR_PROFILE
+        });
+        dispatch({
+            type: types.CLEAR_CHAT
         });
     })
     .catch((err) => {

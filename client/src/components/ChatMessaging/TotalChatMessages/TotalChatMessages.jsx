@@ -1,41 +1,34 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import io from "socket.io-client";
-import { fetchAllChatMessages } from '../../../store/actions/chat';
 import isEmpty from '../../../utils/isEmpty';
 import { Link } from 'react-router-dom';
+import { fetchMessages } from '../../../store/actions/user'
 
-let socket = io.connect('http://localhost:8080');
-
-const TotalChatMessages = ({ auth, fetchAllChatMessages, chat: { loading, allMessages } }) => {
-    const [messageData, setMessageData] = useState([]);
+const TotalChatMessages = ({ fetchMessages, auth, chat: { loading, allMessages } }) => {
 
     useEffect(() => {
-        let isMounted = true;
         if (!auth.loading && !isEmpty(auth.user)) {
-            fetchAllChatMessages(auth.user._id, socket);
-
-            // socket.on('fetch-chat-messages', (res) => {
-            //     setMessageData((msgDatas) => [...msgDatas, ...res.messages]);
-            // })
-
+            fetchMessages();
         }
-
-        return;
-    }, [fetchAllChatMessages, auth])
+    }, [fetchMessages, auth])
 
     const renderMessages = () => {
         if (!loading && !isEmpty(allMessages)) {
             return Object.values(allMessages).map((msg) => {
-                let str = msg.room.split(',')[1];
-                return (
-                    <div key={msg._id}>
-                        <Link to={`/chat?room=${msg.room}`}>
-                            <h4>{str}</h4>
-                        </Link>
-                    </div>
-                )
+                let users = msg.users;
+                return Object.values(users).map((user) => {
+                    if (user.userId.toString() !== auth.user._id) {
+                        return (
+                            <div key={msg._id}>
+                                <Link to={`/chat?room=${msg.room}`}>
+                                    <h4>{user.username}</h4>
+                                </Link>
+                            </div>
+                        )
+                    }
+                })
+               
             })
         }
     }
@@ -47,7 +40,7 @@ const TotalChatMessages = ({ auth, fetchAllChatMessages, chat: { loading, allMes
 }
 
 TotalChatMessages.propTypes = {
-    fetchAllChatMessages: PropTypes.func.isRequired,
+    fetchMessages: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
     chat: PropTypes.object.isRequired,
 }
@@ -57,4 +50,4 @@ const mapStateToProps = (state) => ({
     chat: state.chat
 });
 
-export default connect(mapStateToProps, { fetchAllChatMessages })(TotalChatMessages);
+export default connect(mapStateToProps, { fetchMessages })(TotalChatMessages);

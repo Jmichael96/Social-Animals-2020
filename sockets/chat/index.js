@@ -1,41 +1,32 @@
-const { addUser, removeUser, getUser, getUsersInRoom } = require('../../users');
-// const addUser = require('./addUser');
-// const removeUser = require('./removeUser');
-// const getUser = require('./getUser');
-// const getUsersInRoom = require('./getUsersInRoom');
+const ChatController = require('../../controllers/chat');
 
-const connectSockets = (io, socket) => {
-    socket.on('join', ({ name, room }, callback) => {
-        const { error, user } = addUser({ id: socket.id, name, room });
-    
-        if(error) return callback(error);
-    
-        socket.join(user.room);
-    
-        socket.emit('message', { user: 'admin', text: `${user.name}, welcome to room ${user.room}.`});
-        socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.name} has joined!` });
-    
-        io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) });
-    
-        callback();
-      });
-    
-      socket.on('sendMessage', (message, callback) => {
-        const user = getUser(socket.id);
-    
-        io.to(user.room).emit('message', { user: user.name, text: message });
-    
-        callback();
-      });
-    
-      socket.on('disconnect', () => {
-        const user = removeUser(socket.id);
-    
-        if(user) {
-          io.to(user.room).emit('message', { user: 'Admin', text: `${user.name} has left.` });
-          io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room)});
-        }
-      })
+module.exports = (io) => {
+  io.on('connection', (socket) => {
+
+    console.log('connected to socket.io!');
+    socket.on('addText', (text) => {
+      ChatController.addChat(io, text);
+    });
+
+    // join room and start a chat room
+    socket.on('join', (room, userObj) => {
+      ChatController.join(io, room, userObj);
+    });
+
+    // send a message
+    socket.on('sendMessage', (room, userId, username, message) => {
+      ChatController.sendMessage(room, userId, username, message);
+      io.emit('receive-message', { userId: userId, username: username, message: message });
+    });
+
+    // fetch room data
+    socket.on('fetchRoom', (room) => {
+      ChatController.fetchRoom(io, room);
+    });
+
+    // disconnect method
+    socket.on('disconnect', () => {
+      console.log('user has left')
+    })
+  });
 }
-
-module.exports = connectSockets;

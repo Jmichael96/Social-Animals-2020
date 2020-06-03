@@ -14,6 +14,9 @@ export const fetchUsernames = () => dispatch => {
             dispatch({
                 type: types.CLEAR_PROFILE
             });
+            dispatch({
+                type: types.CLEAR_CHAT
+            });
         })
         .catch((err) => {
             dispatch({
@@ -99,7 +102,10 @@ export const fetchProfileById = (id) => dispatch => {
             dispatch({
                 type: types.FETCH_USER_PROFILE,
                 payload: res.data
-            })
+            });
+            dispatch({
+                type: types.CLEAR_CHAT
+            });
         })
         .catch((err) => {
             console.log(err);
@@ -185,19 +191,19 @@ export const unsetFollowing = (userId) => dispatch => {
     });
 }
 
-// set chat room up
-export const setChat = (id) => dispatch => {
-    // axios.post(`/api/user/set_chat/${id}`)
-    // .then((res) => {
-    //     dispatch({
-    //         type: types.SET_CHAT
-    //     });
-    // })
-    // .catch((err) => {
-    //     console.log(err);
-    //     dispatch({
-    //         type: types.PROFILE_ERROR,
-    //         payload: err
-    //     });
-    // });
+export const fetchMessages = () => dispatch => {
+    axios.get('/api/user/fetch_messages')
+    .then((res) => {
+        dispatch({
+            type: types.FETCH_ALL_CHAT_MESSAGES,
+            payload: res.data.messages
+        });
+    })
+    .catch((err) => {
+        console.log(err);
+        dispatch({
+            type: types.CHAT_ERROR,
+            payload: err
+        });
+    });
 }

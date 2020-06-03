@@ -56,7 +56,6 @@ const UpdateProfile = ({ auth: { isAuthenticated, user, loading }, updateProfile
     }
 
     const onfilechange = (e) => {
-        console.log(e.target.files[0]);
         setProfilePicture(e.target.files[0]);
     }
 

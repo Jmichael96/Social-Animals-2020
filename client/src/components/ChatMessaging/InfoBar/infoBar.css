@@ -1,28 +1,38 @@
 .infoBar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #2979FF;
-    border-radius: 4px 4px 0 0;
-    height: 60px;
-    width: 100%;
-  }
-  
-  .leftInnerContainer {
-    flex: 0.5;
-    display: flex;
-    align-items: center;
-    margin-left: 5%;
-    color: white;
-  }
-  
-  .rightInnerContainer {
-    display: flex;
-    flex: 0.5;
-    justify-content: flex-end;
-    margin-right: 5%;
-  }
-  
-  .onlineIcon {
-    margin-right: 5%;
-  }
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #2979FF;
+  border-radius: 4px 4px 0 0;
+  height: 60px;
+  width: 100%;
+}
+
+.leftInnerContainer {
+  flex: 0.5;
+  display: flex;
+  align-items: center;
+  margin-left: 5%;
+  color: white;
+}
+
+.rightInnerContainer {
+  display: flex;
+  flex: 0.5;
+  justify-content: flex-end;
+  margin-right: 5%;
+}
+
+.onlineIcon {
+  margin-right: 5%;
+}
+/* name inside info bar */
+.infoBarName {
+  color: black;
+}
+/* 5ed6e5425dc57ce3d03f715e */
+/* 5ecc1ccccc784b8b961eee16 */
+
+/* jacks */
+/* 5ecc43869b6a49d0228484a9 */
+/* 5ecc43869b6a49d0228484a9 */

@@ -6,7 +6,6 @@ const initialState = {
     userMessages: [],
     allMessages: [],
     loading: true,
-    serverMsg: null,
 };
 
 export default function (state = initialState, action) {
@@ -14,7 +13,6 @@ export default function (state = initialState, action) {
 
     switch (type) {
         case types.SET_CHAT:
-        case types.FETCH_CHAT_ROOM:
         case types.FETCH_CHAT_DATA:
             return {
                 ...state,
@@ -35,6 +33,7 @@ export default function (state = initialState, action) {
                 room: null,
                 users: [],
                 userMessages: [],
+                allMessages: [],
                 loading: true
             };
         default:

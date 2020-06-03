@@ -1,5 +1,6 @@
 import * as types from './types';
 
+// set the chat room when creating a new message
 export const setChat = (room, userObj, socket) => dispatch => {
     console.log(room);
     socket.emit('join', room, userObj);
@@ -16,9 +17,9 @@ export const setChat = (room, userObj, socket) => dispatch => {
         });
         window.location.href = `/chat?room=${res.room}`;
     })
-
 }
 
+// send a message
 export const sendMessage = (room, userId, username, message, socket) => dispatch => {
     dispatch({
         type: types.SEND_MESSAGE
@@ -33,25 +34,19 @@ export const fetchRoom = (room, socket) => dispatch => {
 
 // fetch all the chat data and store it in the stores state
 export const fetchRoomData = (room, users, userMessages) => dispatch => {
-    console.log(room, users, userMessages)
-        dispatch({
-            type: types.FETCH_CHAT_DATA,
-            payload: {
-                room: room,
-                users: users,
-                userMessages: userMessages
-            }
-        });       
+    dispatch({
+        type: types.FETCH_CHAT_DATA,
+        payload: {
+            room: room,
+            users: users,
+            userMessages: userMessages
+        }
+    });
 }
 
-// fetch all chat messages for authenticated user
-export const fetchAllChatMessages = (userId, socket) => dispatch => {
-    socket.emit('fetchChatMessages', userId);
-
-    socket.on('fetch-chat-messages', (res) => {
-        dispatch({
-            type: types.FETCH_ALL_CHAT_MESSAGES,
-            payload: res.messages
-        })
-    })
+// clear the chat data in store state
+export const clearChat = () => dispatch => {
+    dispatch({
+        type: types.CLEAR_CHAT
+    });
 }
