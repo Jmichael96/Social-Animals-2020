@@ -1,37 +1,37 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import isEmpty from '../../../utils/isEmpty';
 import { Link } from 'react-router-dom';
 import { fetchMessages } from '../../../store/actions/user'
 
-const TotalChatMessages = ({ fetchMessages, auth, chat: { loading, allMessages } }) => {
-
+const TotalChatMessages = ({ auth: { loading, user, isAuthenticated} }) => {
+    const [messages, setMessages] = useState();
     useEffect(() => {
-        if (!auth.loading && !isEmpty(auth.user)) {
-            fetchMessages();
+        if (!loading && !isEmpty(user)) {
+           setMessages(user.messages);
         }
-    }, [fetchMessages, auth])
+    }, [loading, user])
 
     const renderMessages = () => {
-        if (!loading && !isEmpty(allMessages)) {
-            return Object.values(allMessages).map((msg) => {
-                let users = msg.users;
-                return Object.values(users).map((user) => {
-                    if (user.userId.toString() !== auth.user._id) {
+        if (!loading && !isEmpty(messages)) {
+            return Object.values(messages).map((msg) => {
+                let msgUsers = msg.users;
+                return Object.values(msgUsers).map((usr) => {
+                    if (user._id !== usr.userId) {
                         return (
                             <div key={msg._id}>
-                                <Link to={`/chat?room=${msg.room}`}>
-                                    <h4>{user.username}</h4>
+                                <Link to={`/chat?roomid=${msg.createdId}`}>
+                                    <h4>{usr.username}</h4>
                                 </Link>
                             </div>
                         )
                     }
                 })
-               
             })
         }
     }
+
     return (
         <div>
             {renderMessages()}
@@ -40,7 +40,6 @@ const TotalChatMessages = ({ fetchMessages, auth, chat: { loading, allMessages }
 }
 
 TotalChatMessages.propTypes = {
-    fetchMessages: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
     chat: PropTypes.object.isRequired,
 }

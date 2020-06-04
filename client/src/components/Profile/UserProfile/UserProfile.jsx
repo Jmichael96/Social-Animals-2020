@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { fetchProfileById, followProfile, unfollowProfile, setFollowing, unsetFollowing } from '../../../store/actions/user';
+import { fetchProfileById, followProfile, unfollowProfile, setFollowing, unsetFollowing, createRoom } from '../../../store/actions/user';
 import { setChat } from '../../../store/actions/chat';
 import { Link } from 'react-router-dom';
 import Wrapper from '../../Layout/Wrapper/Wrapper';
@@ -11,8 +11,9 @@ import Spinner from '../../Layout/Spinner/Spinner';
 import RenderFollowing from './RenderFollowing/RenderFollowing';
 import UserProfilePosts from '../../Post/FetchPosts/UserProfilePosts/UserProfilePosts';
 import io from "socket.io-client";
+import { uuid } from 'uuidv4';
 
-const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, setFollowing, unsetFollowing, setChat, user: { user, loading }, auth, match }) => {
+const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, setFollowing, unsetFollowing, setChat, createRoom, user: { user, loading }, auth, match }) => {
     // for when a user wants to change the profile photo render the file input
     // const [isUpdatingPic, setIsUpdatingPic] = useState(false);
 
@@ -68,7 +69,7 @@ const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, setFoll
     // check and see if the authenticated user is the owner of the profile 
     // then render the buttons accordingly
     const isUsersProfile = () => {
-        if (!isEmpty(user) && !auth.loading) {
+        if (!auth.loading && !isEmpty(user) && !isEmpty(auth.user)) {
             if (isEmpty(user)) {
                 return false;
             } else if (user._id === auth.user._id) {
@@ -78,20 +79,23 @@ const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, setFoll
     }
 
     // setting up chat room when you want to message a user!
-    const setupChat = ()  => {
-        let socket = io.connect('http://localhost:8080');
-        let room = `${auth.user.username},${user.username}`;
-        const userObj = [
-            {
-                userId: auth.user._id,
-                username: auth.user.username
-            },
-            {
-                userId: user._id,
-                username: user.username
-            }
-        ]
-        setChat(room, userObj, socket);
+    const setupChat = () => {
+        if (!auth.loading && !isEmpty(auth.user)) {
+            let room = `${auth.user.username},${user.username}`;
+            const userObj = [
+                {
+                    userId: auth.user._id,
+                    username: auth.user.username
+                },
+                {
+                    userId: user._id,
+                    username: user.username
+                }
+            ]
+            let roomId = uuid()
+            createRoom(auth.user._id, user._id, roomId, room, userObj);
+        }
+        // createRoom(user._id, room, userObj);
     }
 
     // decide what needs to be rendered if user does not have a profile
@@ -145,6 +149,7 @@ UserProfile.propTypes = {
     unfollowProfile: PropTypes.func.isRequired,
     setFollowing: PropTypes.func.isRequired,
     unsetFollowing: PropTypes.func.isRequired,
+    createRoom: PropTypes.func.isRequired,
     setChat: PropTypes.func.isRequired,
     user: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
@@ -155,4 +160,4 @@ const mapStateToProps = (state) => ({
     auth: state.auth
 });
 
-export default connect(mapStateToProps, { fetchProfileById, followProfile, unfollowProfile, setFollowing, unsetFollowing, setChat })(UserProfile);
+export default connect(mapStateToProps, { fetchProfileById, followProfile, unfollowProfile, setFollowing, unsetFollowing, setChat, createRoom })(UserProfile);

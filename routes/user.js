@@ -43,4 +43,9 @@ router.put('/unset_following/:userId', isAuthenticated, UserController.unsetFoll
 // @access   Private
 router.get('/fetch_messages', isAuthenticated, UserController.fetchMessages);
 
+// @route    PUT api/user/create_room/:userId1/:userId2
+// @desc     Creating a chat room
+// @access   Private
+router.put('/create_room/:userId1/:userId2', isAuthenticated, UserController.createRoom);
+
 module.exports = router;

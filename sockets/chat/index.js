@@ -4,9 +4,6 @@ module.exports = (io) => {
   io.on('connection', (socket) => {
 
     console.log('connected to socket.io!');
-    socket.on('addText', (text) => {
-      ChatController.addChat(io, text);
-    });
 
     // join room and start a chat room
     socket.on('join', (room, userObj) => {
@@ -14,14 +11,14 @@ module.exports = (io) => {
     });
 
     // send a message
-    socket.on('sendMessage', (room, userId, username, message) => {
-      ChatController.sendMessage(room, userId, username, message);
-      io.emit('receive-message', { userId: userId, username: username, message: message });
+    socket.on('sendMessage', (roomId, userId1, userId2, messageUserId, username, message) => {
+      ChatController.sendMessage(roomId, userId1, userId2, messageUserId, username, message);
+      io.emit('receive-message', { userId: messageUserId, username: username, message: message });
     });
 
     // fetch room data
-    socket.on('fetchRoom', (room) => {
-      ChatController.fetchRoom(io, room);
+    socket.on('fetchRoom', (userId, roomId) => {
+      ChatController.fetchRoom(io, userId, roomId);
     });
 
     // on typing

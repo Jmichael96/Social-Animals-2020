@@ -158,52 +158,77 @@ export const unfollowProfile = (id) => dispatch => {
 // set following array for current authenticated user
 export const setFollowing = (userId, username) => dispatch => {
     axios.put(`/api/user/set_following/${userId}/${username}`)
-    .then((res) => {
-        dispatch({
-            type: types.SET_FOLLOWING,
-            payload: { user: res.data.user, serverMsg: res.data.serverMsg }
+        .then((res) => {
+            dispatch({
+                type: types.SET_FOLLOWING,
+                payload: { user: res.data.user, serverMsg: res.data.serverMsg }
+            });
+        })
+        .catch((err) => {
+            console.log(err);
+            dispatch({
+                type: types.PROFILE_ERROR,
+                payload: err
+            });
         });
-    })
-    .catch((err) => {
-        console.log(err);
-        dispatch({
-            type: types.PROFILE_ERROR,
-            payload: err
-        });
-    });
 }
 
 // unset following array for current authenticated user
 export const unsetFollowing = (userId) => dispatch => {
     axios.put(`/api/user/unset_Following/${userId}`)
-    .then((res) => {
-        dispatch({
-            type: types.SET_FOLLOWING,
-            payload: { user: res.data.user, serverMsg: res.data.serverMsg }
+        .then((res) => {
+            dispatch({
+                type: types.SET_FOLLOWING,
+                payload: { user: res.data.user, serverMsg: res.data.serverMsg }
+            });
+        })
+        .catch((err) => {
+            console.log(err);
+            dispatch({
+                type: types.PROFILE_ERROR,
+                payload: err
+            });
         });
-    })
-    .catch((err) => {
-        console.log(err);
-        dispatch({
-            type: types.PROFILE_ERROR,
-            payload: err
-        });
-    });
 }
 
 export const fetchMessages = () => dispatch => {
     axios.get('/api/user/fetch_messages')
-    .then((res) => {
-        dispatch({
-            type: types.FETCH_ALL_CHAT_MESSAGES,
-            payload: res.data.messages
+        .then((res) => {
+            dispatch({
+                type: types.FETCH_ALL_CHAT_MESSAGES,
+                payload: res.data.messages
+            });
+        })
+        .catch((err) => {
+            console.log(err);
+            dispatch({
+                type: types.CHAT_ERROR,
+                payload: err
+            });
         });
-    })
-    .catch((err) => {
-        console.log(err);
-        dispatch({
-            type: types.CHAT_ERROR,
-            payload: err
+}
+
+// create a new chat room
+export const createRoom = (userId1, userId2, roomId, room, userObj) => dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+    
+    axios.put(`/api/user/create_room/${userId1}/${userId2}`, { roomId, room, userObj }, config)
+        .then((res) => {
+            dispatch({
+                type: types.CREATE_ROOM,
+                payload: res.data.user
+            });
+            // dispatch(setAlert(res.data.serverMsg, 'success'));
+        })
+        .catch((err) => {
+            console.log(err);
+            const error = err.response.data.serverMsg;
+            if (error) {
+                dispatch(setAlert(error, 'danger'));
+            }
         });
-    });
 }

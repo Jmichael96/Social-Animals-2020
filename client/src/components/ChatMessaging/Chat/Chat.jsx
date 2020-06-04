@@ -14,28 +14,38 @@ import { withRouter } from 'react-router-dom';
 let socket = io.connect('http://localhost:8080');
 
 
-const Chat = ({ fetchRoomData, fetchRoom, location, sendMessage, auth, chat: { loading, room, users, userMessages }, history }) => {
+const Chat = ({ fetchRoomData, fetchRoom, location, sendMessage, auth, chat: { loading, createdId, room, users, userMessages }, history }) => {
   const [roomData, setRoomData] = useState('');
   const [message, setMessage] = useState('');
   const [messageData, setMessageData] = useState([]);
   const [userData, setUserData] = useState();
   const [typingStr, setTypingStr] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+
   let timeout;
 
   useEffect(() => {
     // getting room name from query string
     const outerRoom = queryString.parse(location.search);
-
     // fetching data on the chat room to dispatch to initial state
     if (!auth.loading && !isEmpty(auth.user)) {
-      fetchRoom(outerRoom.room, socket)
+      let obj = {
+        userId: auth.user._id,
+        roomId: outerRoom.roomid
+      }
+      fetchRoom(socket, obj)
     }
 
     // ones fetch-room-data receives data about the chat room 
     // dispatch it to the reducers state
     socket.on('fetch-room-data', (res) => {
-      fetchRoomData(res.room, res.users, res.userMessages)
+      let roomObj = {
+        createdId: res.roomId,
+        room: res.room,
+        users: res.users,
+        userMessages: res.userMessages
+      }
+      fetchRoomData(roomObj)
     });
 
   }, [location.search, fetchRoom, fetchRoomData, auth]);
@@ -51,22 +61,23 @@ const Chat = ({ fetchRoomData, fetchRoom, location, sendMessage, auth, chat: { l
   useEffect(() => {
     // wait for chat data in the store and assign it with the useState methods
     if (!loading && !isEmpty(room)) {
-      setRoomData(room);
-      setMessageData((messages) => [...messages, ...userMessages]);
+      setRoomData(createdId);
       setUserData(users);
-
+      if (userMessages) {
+        setMessageData((messages) => [...messages, ...userMessages]);
+      }
       // check to see if authenticated user id is in the users array. 
       // if not then push them to the home page
-      if (users) {
-        for (let i = 0; i < users.length; i++) {
-          if (users[i].userId.toString() === auth.user._id) {
-            return;
-          }
-          else {
-            // history.push('/')
-          }
-        }
-      }
+      // if (users) {
+      //   for (let i = 0; i < users.length; i++) {
+      //     if (users[i].userId.toString() === auth.user._id) {
+      //       return;
+      //     }
+      //     else {
+      //       // history.push('/')
+      //     }
+      //   }
+      // }
     }
   }, [loading, room, users, userMessages]);
 
@@ -88,11 +99,20 @@ const Chat = ({ fetchRoomData, fetchRoom, location, sendMessage, auth, chat: { l
     }
   }, [auth]);
 
+  //roomId, userId1, userId2, messageUserId, username, message
   const submitMessage = (e) => {
     e.preventDefault();
     if (message) {
       if (!auth.loading && !isEmpty(auth.user)) {
-        sendMessage(room, auth.user._id, auth.user.username, message, socket);
+        let msgObj = {
+          roomId: createdId,
+          userId1: users[0].userId,
+          userId2: users[1].userId,
+          messageUserId: auth.user._id,
+          username: auth.user.username,
+          message: message
+        }
+        sendMessage(socket, msgObj);
         setMessage('');
       }
     }
@@ -116,7 +136,7 @@ const Chat = ({ fetchRoomData, fetchRoom, location, sendMessage, auth, chat: { l
   return (
     <div className="outerContainer">
       <div className="innerContainer">
-        <InfoBar room={roomData} users={userData} chatLoading={loading} auth={auth} />
+        <InfoBar users={userData} chatLoading={loading} auth={auth} />
         <Messages messages={messageData} />
         <div style={{ height: '90px', backgroundColor: 'grey' }}>{typingStr}</div>
         <Input message={message} setMessage={setMessage} sendMessage={submitMessage} onKeyUp={onKeyUp} />

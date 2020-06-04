@@ -356,4 +356,6 @@ exports.fetchUsersProfilePosts = (req, res, next) => {
             serverMsg: 'Couldn\'t fetch user\'s profile posts at this time.'
         });
     });
+
+    
 }

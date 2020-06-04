@@ -1,10 +1,10 @@
 import * as types from '../actions/types';
 
 const initialState = {
+    createdId: null,
     room: null,
     users: [],
     userMessages: [],
-    allMessages: [],
     loading: true,
 };
 
@@ -16,17 +16,12 @@ export default function (state = initialState, action) {
         case types.FETCH_CHAT_DATA:
             return {
                 ...state,
+                createdId: payload.roomId,
                 room: payload.room,
                 users: payload.users,
                 userMessages: payload.userMessages,
                 loading: false
             };
-        case types.FETCH_ALL_CHAT_MESSAGES:
-            return {
-                ...state,
-                allMessages: payload,
-                loading: false
-            }
         case types.CLEAR_CHAT:
             return {
                 ...state,

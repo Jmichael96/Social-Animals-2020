@@ -54,6 +54,52 @@ const userSchema = new mongoose.Schema({
             }
         }
     ],
+    messages: [
+        {
+            createdId: {
+                type: String,
+                required: true
+            },
+            room: {
+                type: String
+            },
+            users: [
+                {
+                    userId: {
+                        type: mongoose.Schema.Types.ObjectId,
+                        ref: 'User',
+                        required: true
+                    },
+                    username: {
+                        type: String,
+                        ref: 'User',
+                        required: true
+                    },
+                }
+            ],
+            userMessages: [
+                {
+                    userId: {
+                        type: mongoose.Schema.Types.ObjectId,
+                        ref: 'User',
+                        required: true
+                    },
+                    username: {
+                        type: String,
+                        ref: 'User',
+                        required: true
+                    },
+                    message: {
+                        type: String
+                    },
+                    date: {
+                        type: Date,
+                        default: Date.now
+                    }
+                }
+            ],
+        }
+    ],
     date: {
         type: Date,
         default: Date.now

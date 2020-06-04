@@ -61,3 +61,4 @@ export const CLEAR_CHAT = 'CLEAR_CHAT';
 export const CHAT_ERROR = 'CHAT_ERROR';
 export const FETCH_CHAT_DATA = 'FETCH_CHAT_DATA';
 export const FETCH_ALL_CHAT_MESSAGES = 'FETCH_ALL_CHAT_MESSAGES';
+export const CREATE_ROOM = 'CREATE_ROOM';

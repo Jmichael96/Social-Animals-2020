@@ -201,42 +201,6 @@ exports.unsetFollowing = (req, res, next) => {
         });
 }
 
-// // @route    POST api/user/set_chat/:id
-// // @desc     Set up chat and get both the usersId for creating a room
-// // @access   Private
-// exports.setChat = (req, res, next) => {
-//     let io = req.io;
-
-//     // console.log('fired')
-//     User.findById({ _id: req.params.id })
-//         .then((user) => {
-
-//             io.on('connect', (socket) => {
-//                 const users = [];
-//                 socket.on('join', ({ name, room }, callback) => {
-//                     const { error, user } = addUser({ id: socket.id, name, room });
-
-//                     if(error) return callback(error);
-
-//                     socket.join(user.room);
-
-//                     socket.emit('message', { user: 'admin', text: `${user.name}, welcome to room ${user.room}.`});
-//                     socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.name} has joined!` });
-
-//                     io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) });
-
-//                     callback();
-//                   });            
-//             }) 
-//             console.log(user)
-//         })
-//         .catch((err) => {
-//             return res.status(500).json({
-//                 serverMsg: 'Setting up chat has failed. Please try again later'
-//             });
-//         });
-// }
-
 // @route    GET api/user/fetch_messages
 // @desc     Fetch all messages the auth user is involved in
 // @access   Private
@@ -262,4 +226,41 @@ exports.fetchMessages = (req, res, next) => {
                 serverMsg: 'There was an error fetching your messages. Please try again later.'
             });
         });
+}
+
+// @route    PUT api/user/create_room/:userId1/:userId2
+// @desc     Creating a chat room
+// @access   Private
+exports.createRoom = (req, res, next) => {
+   
+    User.findById({ _id: req.params.userId2 })
+    .then((user) => {
+        console.log('id== ', req.body.roomId)
+        const newMessage = {
+            createdId: req.body.roomId,
+            room: req.body.room,
+            users: req.body.userObj,
+        }
+        user.messages.unshift(newMessage);
+        user.save();
+        console.log('=== new room ===');
+        console.log(user.messages);
+    })
+
+    User.findById({ _id: req.params.userId1 })
+    .then((user) => {
+        console.log('id== ', req.body.roomId)
+        const newMessage = {
+            createdId: req.body.roomId,
+            room: req.body.room,
+            users: req.body.userObj,
+        }
+        user.messages.unshift(newMessage);
+        user.save();
+        console.log('=== new room ===');
+        console.log(user.messages);
+        res.status(201).json({
+            user: user,
+        })
+    })
 }

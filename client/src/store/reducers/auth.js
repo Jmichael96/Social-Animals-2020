@@ -42,6 +42,13 @@ export default function (state = initialState, action) {
                 user: payload,
                 loading: false
             }
+        case types.CREATE_ROOM: 
+            return {
+                ...state,
+                isAuthenticated: true,
+                user: payload.user,
+                loading: false
+            }
         case types.REGISTER_FAIL:
         case types.LOGIN_FAIL:
         case types.AUTH_ERROR:
