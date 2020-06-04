@@ -19,6 +19,9 @@ const Chat = ({ fetchRoomData, fetchRoom, location, sendMessage, auth, chat: { l
   const [message, setMessage] = useState('');
   const [messageData, setMessageData] = useState([]);
   const [userData, setUserData] = useState();
+  const [typingStr, setTypingStr] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  let timeout;
 
   useEffect(() => {
     // getting room name from query string
@@ -51,7 +54,7 @@ const Chat = ({ fetchRoomData, fetchRoom, location, sendMessage, auth, chat: { l
       setRoomData(room);
       setMessageData((messages) => [...messages, ...userMessages]);
       setUserData(users);
-      
+
       // check to see if authenticated user id is in the users array. 
       // if not then push them to the home page
       if (users) {
@@ -60,13 +63,30 @@ const Chat = ({ fetchRoomData, fetchRoom, location, sendMessage, auth, chat: { l
             return;
           }
           else {
-            history.push('/')
+            // history.push('/')
           }
         }
       }
     }
   }, [loading, room, users, userMessages]);
 
+  useEffect(() => {
+    // checking if the user is typing and displaying the message
+    if (!auth.loading && !isEmpty(auth.user)) {
+      socket.on('display', (data) => {
+        if (data.typing == true) {
+          let user = data.user.toString();
+          if (user === auth.user.username) {
+            setTypingStr('');
+          } else if (user !== auth.user.username) {
+            setTypingStr(`${data.user} is typing...`);
+          }
+        } else {
+          setTypingStr('')
+        }
+      })
+    }
+  }, [auth]);
 
   const submitMessage = (e) => {
     e.preventDefault();
@@ -77,13 +97,29 @@ const Chat = ({ fetchRoomData, fetchRoom, location, sendMessage, auth, chat: { l
       }
     }
   }
+  
+
+  const typingStopped = () => {
+    setIsTyping(false);
+    socket.emit('typing', { user: auth.user.username, typing: false });
+  }
+
+  const onKeyUp = () => {
+    if (isTyping == false) {
+      setIsTyping(true)
+      socket.emit('typing', { user: auth.user.username, typing: true });
+      clearTimeout(timeout);
+      timeout = setTimeout(typingStopped, 4000);
+    }
+  }
 
   return (
     <div className="outerContainer">
       <div className="innerContainer">
         <InfoBar room={roomData} users={userData} chatLoading={loading} auth={auth} />
         <Messages messages={messageData} />
-        <Input message={message} setMessage={setMessage} sendMessage={submitMessage} />
+        <div style={{ height: '90px', backgroundColor: 'grey' }}>{typingStr}</div>
+        <Input message={message} setMessage={setMessage} sendMessage={submitMessage} onKeyUp={onKeyUp} />
       </div>
     </div>
   );

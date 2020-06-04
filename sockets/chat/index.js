@@ -24,6 +24,15 @@ module.exports = (io) => {
       ChatController.fetchRoom(io, room);
     });
 
+    // on typing
+    socket.on('typing', (data) => {
+      if (data.typing == true) {
+        io.emit('display', data);
+      } else {
+        io.emit('display', data);
+      }
+    });
+
     // disconnect method
     socket.on('disconnect', () => {
       console.log('user has left')
