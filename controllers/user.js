@@ -232,35 +232,41 @@ exports.fetchMessages = (req, res, next) => {
 // @desc     Creating a chat room
 // @access   Private
 exports.createRoom = (req, res, next) => {
-   
+
     User.findById({ _id: req.params.userId2 })
-    .then((user) => {
-        console.log('id== ', req.body.roomId)
-        const newMessage = {
-            createdId: req.body.roomId,
-            room: req.body.room,
-            users: req.body.userObj,
-        }
-        user.messages.unshift(newMessage);
-        user.save();
-        console.log('=== new room ===');
-        console.log(user.messages);
-    })
+        .then((user) => {
+            console.log('id== ', req.body.roomId)
+            const newMessage = {
+                createdId: req.body.roomId,
+                room: req.body.room,
+                users: req.body.userObj,
+            }
+            user.messages.unshift(newMessage);
+            user.save();
+            console.log('=== new room ===');
+            console.log(user.messages);
+        })
 
     User.findById({ _id: req.params.userId1 })
-    .then((user) => {
-        console.log('id== ', req.body.roomId)
-        const newMessage = {
-            createdId: req.body.roomId,
-            room: req.body.room,
-            users: req.body.userObj,
-        }
-        user.messages.unshift(newMessage);
-        user.save();
-        console.log('=== new room ===');
-        console.log(user.messages);
-        res.status(201).json({
-            user: user,
+        .then((user) => {
+            console.log('id== ', req.body.roomId)
+            const newMessage = {
+                createdId: req.body.roomId,
+                room: req.body.room,
+                users: req.body.userObj,
+            }
+            user.messages.unshift(newMessage);
+            user.save();
+            console.log('=== new room ===');
+            console.log(user.messages);
+            res.status(201).json({
+                user: user,
+                serverMsg: 'You have successfully created a new message.'
+            })
         })
-    })
+        .catch((err) => {
+            return res.status(500).json({
+                serverMsg: 'There was an error while creating your message. Please try again later.'
+            });
+        });
 }

@@ -1,19 +1,18 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { fetchProfileById, followProfile, unfollowProfile, setFollowing, unsetFollowing, createRoom } from '../../../store/actions/user';
 import { setChat } from '../../../store/actions/chat';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import Wrapper from '../../Layout/Wrapper/Wrapper';
 import isEmpty from '../../../utils/isEmpty';
 import RenderFollowers from './RenderFollowers/RenderFollowers';
 import Spinner from '../../Layout/Spinner/Spinner';
 import RenderFollowing from './RenderFollowing/RenderFollowing';
 import UserProfilePosts from '../../Post/FetchPosts/UserProfilePosts/UserProfilePosts';
-import io from "socket.io-client";
 import { uuid } from 'uuidv4';
 
-const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, setFollowing, unsetFollowing, setChat, createRoom, user: { user, loading }, auth, match }) => {
+const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, setFollowing, unsetFollowing, createRoom, user: { user, loading }, auth, match, history }) => {
     // for when a user wants to change the profile photo render the file input
     // const [isUpdatingPic, setIsUpdatingPic] = useState(false);
 
@@ -93,9 +92,8 @@ const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, setFoll
                 }
             ]
             let roomId = uuid()
-            createRoom(auth.user._id, user._id, roomId, room, userObj);
+            createRoom(auth.user._id, user._id, roomId, room, userObj, history);            
         }
-        // createRoom(user._id, room, userObj);
     }
 
     // decide what needs to be rendered if user does not have a profile
@@ -153,6 +151,7 @@ UserProfile.propTypes = {
     setChat: PropTypes.func.isRequired,
     user: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
+    history: PropTypes.any,
 };
 
 const mapStateToProps = (state) => ({
@@ -160,4 +159,5 @@ const mapStateToProps = (state) => ({
     auth: state.auth
 });
 
-export default connect(mapStateToProps, { fetchProfileById, followProfile, unfollowProfile, setFollowing, unsetFollowing, setChat, createRoom })(UserProfile);
+const exportUserProfile = withRouter(UserProfile);
+export default connect(mapStateToProps, { fetchProfileById, followProfile, unfollowProfile, setFollowing, unsetFollowing, setChat, createRoom })(exportUserProfile);

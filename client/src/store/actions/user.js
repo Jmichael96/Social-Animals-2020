@@ -209,7 +209,7 @@ export const fetchMessages = () => dispatch => {
 }
 
 // create a new chat room
-export const createRoom = (userId1, userId2, roomId, room, userObj) => dispatch => {
+export const createRoom = (userId1, userId2, roomId, room, userObj, history) => dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
@@ -222,7 +222,8 @@ export const createRoom = (userId1, userId2, roomId, room, userObj) => dispatch 
                 type: types.CREATE_ROOM,
                 payload: res.data.user
             });
-            // dispatch(setAlert(res.data.serverMsg, 'success'));
+            dispatch(setAlert(res.data.serverMsg, 'success'));
+            history.push('/my_messages')
         })
         .catch((err) => {
             console.log(err);

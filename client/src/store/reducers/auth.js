@@ -4,7 +4,8 @@ const initialState = {
     isAuthenticated: null,
     loading: true,
     user: null,
-    serverMsg: null
+    serverMsg: null,
+    createdRoom: false,
 }
 
 export default function (state = initialState, action) {
@@ -46,8 +47,9 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 isAuthenticated: true,
-                user: payload.user,
-                loading: false
+                user: payload,
+                loading: false,
+                createdRoom: true
             }
         case types.REGISTER_FAIL:
         case types.LOGIN_FAIL:
