@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import './messages.css';
 
 const Messages = ({ messages, roomId, socket, users }) => {
-  console.log(messages);
+
   return (
     <ScrollToBottom className="messages">
       {messages.map((message, i) =>

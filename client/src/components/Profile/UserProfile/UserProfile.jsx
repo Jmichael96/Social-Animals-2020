@@ -2,7 +2,6 @@ import React, { Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { fetchProfileById, followProfile, unfollowProfile, setFollowing, unsetFollowing, createRoom } from '../../../store/actions/user';
-import { setChat } from '../../../store/actions/chat';
 import { Link, withRouter } from 'react-router-dom';
 import Wrapper from '../../Layout/Wrapper/Wrapper';
 import isEmpty from '../../../utils/isEmpty';
@@ -148,7 +147,6 @@ UserProfile.propTypes = {
     setFollowing: PropTypes.func.isRequired,
     unsetFollowing: PropTypes.func.isRequired,
     createRoom: PropTypes.func.isRequired,
-    setChat: PropTypes.func.isRequired,
     user: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
     history: PropTypes.any,
@@ -160,4 +158,4 @@ const mapStateToProps = (state) => ({
 });
 
 const exportUserProfile = withRouter(UserProfile);
-export default connect(mapStateToProps, { fetchProfileById, followProfile, unfollowProfile, setFollowing, unsetFollowing, setChat, createRoom })(exportUserProfile);
+export default connect(mapStateToProps, { fetchProfileById, followProfile, unfollowProfile, setFollowing, unsetFollowing, createRoom })(exportUserProfile);

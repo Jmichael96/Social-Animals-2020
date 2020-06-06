@@ -4,7 +4,7 @@ import io from "socket.io-client";
 import Messages from '../Messages/Messages';
 import InfoBar from '../InfoBar/InfoBar';
 import Input from '../Input/Input';
-import { sendMessage, fetchRoom, fetchRoomData } from '../../../store/actions/chat';
+import { sendMessage, fetchRoom } from '../../../store/actions/chat';
 import './chat.css';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -14,7 +14,7 @@ import { withRouter } from 'react-router-dom';
 let socket = io.connect('http://localhost:8080');
 
 
-const Chat = ({ fetchRoomData, fetchRoom, location, sendMessage, auth, chat: { loading, createdId, room, users, userMessages }, history }) => {
+const Chat = ({ fetchRoom, location, sendMessage, auth, history }) => {
   const [roomData, setRoomData] = useState('');
   const [message, setMessage] = useState('');
   const [messageData, setMessageData] = useState([]);
@@ -29,8 +29,7 @@ const Chat = ({ fetchRoomData, fetchRoom, location, sendMessage, auth, chat: { l
     // getting room name from query string
     const roomStr = queryString.parse(location.search);
     setOuterRoom(roomStr);
-
-  }, [location]);
+  }, [location.search]);
 
   useEffect(() => {
     // fetching data on the chat room to dispatch to initial state
@@ -109,7 +108,6 @@ const Chat = ({ fetchRoomData, fetchRoom, location, sendMessage, auth, chat: { l
       sendMessage(socket, msgObj);
       setMessage('');
     }
-
   }
 
   const typingStopped = () => {
@@ -148,9 +146,7 @@ const Chat = ({ fetchRoomData, fetchRoom, location, sendMessage, auth, chat: { l
 Chat.propTypes = {
   sendMessage: PropTypes.func.isRequired,
   fetchRoom: PropTypes.func.isRequired,
-  fetchRoomData: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
-  chat: PropTypes.object.isRequired,
   history: PropTypes.any,
 }
 
@@ -158,13 +154,11 @@ const mapDispatchToProps = (dispatch) => {
   return {
     sendMessage: (room, userId, username, message, socket) => dispatch(sendMessage(room, userId, username, message, socket)),
     fetchRoom: (room, socket) => dispatch(fetchRoom(room, socket)),
-    fetchRoomData: (room, users, userMessages) => dispatch(fetchRoomData(room, users, userMessages))
   }
 }
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
-  chat: state.chat
 });
 
 const exportChat = withRouter(Chat);
