@@ -11,9 +11,18 @@ const Message = ({ auth, message: { _id, message, username, userId }, setModal, 
 
     const onDeleteSubmit = () => {
         if (!auth.loading && !isEmpty(auth.user)) {
+            let authUser = '';
+            let otherUser = '';
+            for (let i = 0; i < users.length; i++) {
+                if (users[i].userId.toString() === auth.user._id) {
+                    authUser = users[i].userId;
+                }
+                otherUser = users[i].userId;
+            }
+
             let deleteObj = {
-                userId1: users[0].userId,
-                userId2: users[1].userId,
+                userId1: authUser,
+                userId2: otherUser,
                 roomId: roomId,
                 msgId: _id
             }

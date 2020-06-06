@@ -6,8 +6,12 @@ module.exports = (io) => {
 
     // send a message
     socket.on('sendMessage', (roomId, userId1, userId2, messageUserId, username, message) => {
+      
       ChatController.sendMessage(io, roomId, userId1, userId2, messageUserId, username, message);
       io.emit('receive-message', { userId: messageUserId, username: username, message: message });
+      // setTimeout(() => {
+      //   ChatController.getMessages(io, roomId, userId1);
+      // }, 1000)
     });
 
     // fetch room data
@@ -17,7 +21,7 @@ module.exports = (io) => {
 
     // delete a message 
     socket.on('deleteMessage', (userId1, userId2, roomId, msgId) => {
-      ChatController.deleteMessage(io, userId1, userId2, roomId, msgId);
+      ChatController.deleteMessage(userId1, userId2, roomId, msgId);
     });
 
     // on typing

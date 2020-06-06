@@ -26,29 +26,14 @@ export const fetchRoomData = (roomObj) => dispatch => {
 // send a message 
 export const sendMessage = (socket, msgObj) => dispatch => {
     socket.emit('sendMessage', msgObj.roomId, msgObj.userId1, msgObj.userId2, msgObj.messageUserId, msgObj.username, msgObj.message);
-
-    socket.on('fetch-new-message', (res) => {
-        dispatch({
-            type: types.SEND_MESSAGE,
-            payload: res.userMessages
-        })
-    })
 }
 
 // delete a message [userId, roomId, msgId]
 export const deleteMessage = (socket, deleteObj) => dispatch => {
-   
     // just assigning the deleteObj to a shorter variable because... SCIENCE & REASONS
     let dObj = deleteObj;
     console.log(dObj)
     socket.emit('deleteMessage', dObj.userId1, dObj.userId2, dObj.roomId, dObj.msgId);
-
-    socket.on('fetch-removed-messages', (res) => {
-        dispatch({
-            type: types.DELETE_MESSAGE,
-            payload: res.userMessages
-        });
-    })
 }
 // clear the chat data in store state
 export const clearChat = () => dispatch => {

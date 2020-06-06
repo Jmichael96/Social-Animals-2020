@@ -4,13 +4,13 @@ import isEmpty from '../../../utils/isEmpty';
 import './infoBar.css';
 import { Link } from 'react-router-dom';
 
-const InfoBar = ({ auth, users, chatLoading }) => {
+const InfoBar = ({ auth, users }) => {
 
   const renderUser = () => {
-    if (chatLoading) {
+    if (isEmpty(users)) {
       return <h4>Loading...</h4>
     }
-    else if (!chatLoading && users) {
+    else if (users) {
       return Object.values(users).map((user) => {
         if (!auth.loading && !isEmpty(auth.user)) {
           if (user.userId.toString() !== auth.user._id) {
@@ -42,7 +42,6 @@ const InfoBar = ({ auth, users, chatLoading }) => {
 InfoBar.propTypes = {
   auth: PropTypes.object.isRequired,
   users: PropTypes.array,
-  chatLoading: PropTypes.bool,
 }
 
 export default InfoBar;

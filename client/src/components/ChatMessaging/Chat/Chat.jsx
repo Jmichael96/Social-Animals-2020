@@ -21,12 +21,18 @@ const Chat = ({ fetchRoomData, fetchRoom, location, sendMessage, auth, chat: { l
   const [userData, setUserData] = useState();
   const [typingStr, setTypingStr] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [outerRoom, setOuterRoom] = useState('');
 
   let timeout;
 
   useEffect(() => {
     // getting room name from query string
-    const outerRoom = queryString.parse(location.search);
+    const roomStr = queryString.parse(location.search);
+    setOuterRoom(roomStr);
+
+  }, [location]);
+
+  useEffect(() => {
     // fetching data on the chat room to dispatch to initial state
     if (!auth.loading && !isEmpty(auth.user)) {
       let obj = {
@@ -35,45 +41,30 @@ const Chat = ({ fetchRoomData, fetchRoom, location, sendMessage, auth, chat: { l
       }
       fetchRoom(socket, obj)
     }
+  }, [auth]);
 
-  }, [location.search, fetchRoom, fetchRoomData, auth]);
+  // fetch all the room data and assigning it to the variables with useState()
+  useEffect(() => {
+    socket.on('fetch-room-data', (res) => {
+      setMessageData(res.userMessages);
+      setUserData(res.users);
+      setRoomData(res.roomId)
+    })
+  }, []);
 
   useEffect(() => {
     // add message to messages array upon sending a message
     socket.on('receive-message', (message) => {
-      setMessageData(messages => [...messages, message]);
+      // setMessageData(messages => [...messages, message]);
     });
   }, []);
 
+  // fetch all messages after a new one is submitted
   useEffect(() => {
-    // ones fetch-room-data receives data about the chat room 
-    // dispatch it to the reducers state
-    socket.on('fetch-room-data', (res) => {
-      // if (isEmpty(res)) {
-      //   history.push('/bad_req');
-      //   return;
-      // }
-
-      let roomObj = {
-        createdId: res.roomId,
-        room: res.room,
-        users: res.users,
-        userMessages: res.userMessages
-      }
-      fetchRoomData(roomObj)
+    socket.on('fetched-new-messages', (res) => {
+      setMessageData(res.userMessages);
     });
-  }, [])
-
-  useEffect(() => {
-    // wait for chat data in the store and assign it with the useState methods
-    if (!loading && !isEmpty(room)) {
-      setRoomData(createdId);
-      setUserData(users);
-      if (userMessages) {
-        setMessageData((messages) => [...messages, ...userMessages]);
-      }
-    }
-  }, [loading, room, users, userMessages]);
+  }, []);
 
   useEffect(() => {
     // checking if the user is typing and displaying the message
@@ -96,22 +87,30 @@ const Chat = ({ fetchRoomData, fetchRoom, location, sendMessage, auth, chat: { l
   //roomId, userId1, userId2, messageUserId, username, message
   const submitMessage = (e) => {
     e.preventDefault();
-    if (message) {
-      if (!auth.loading && !isEmpty(auth.user)) {
-        let msgObj = {
-          roomId: createdId,
-          userId1: users[0].userId,
-          userId2: users[1].userId,
-          messageUserId: auth.user._id,
-          username: auth.user.username,
-          message: message
+    if (!auth.loading && !isEmpty(auth.user) && !isEmpty(userData) && !isEmpty(roomData)) {
+      let authUser = '';
+      let otherUser = '';
+      // getting the specific user id's to assign in the msgObj
+      for (let i = 0; i < userData.length; i++) {
+        if (userData[i].userId.toString() === auth.user._id) {
+          authUser = userData[i].userId;
         }
-        sendMessage(socket, msgObj);
-        setMessage('');
+        otherUser = userData[i].userId;
       }
-    }
-  }
 
+      let msgObj = {
+        roomId: roomData,
+        userId1: userData[0].userId,
+        userId2: userData[1].userId,
+        messageUserId: auth.user._id,
+        username: auth.user.username,
+        message: message
+      }
+      sendMessage(socket, msgObj);
+      setMessage('');
+    }
+
+  }
 
   const typingStopped = () => {
     setIsTyping(false);
@@ -128,15 +127,16 @@ const Chat = ({ fetchRoomData, fetchRoom, location, sendMessage, auth, chat: { l
   }
 
   const renderMessages = () => {
-    if (!loading && !isEmpty(userMessages) && !isEmpty(users)) {
-      return <Messages messages={messageData} users={users} socket={socket} roomId={roomData} />
+    if (!isEmpty(userData) && !isEmpty(roomData)) {
+      return <Messages messages={messageData} users={userData} socket={socket} roomId={roomData} />
     }
   }
 
+  
   return (
     <div className="outerContainer">
       <div className="innerContainer">
-        <InfoBar users={userData} chatLoading={loading} auth={auth} />
+        <InfoBar users={userData} auth={auth} />
         {renderMessages()}
         <div style={{ height: '90px', backgroundColor: 'grey' }}>{typingStr}</div>
         <Input message={message} setMessage={setMessage} sendMessage={submitMessage} onKeyUp={onKeyUp} />
