@@ -14,7 +14,6 @@ export const sendMessage = (socket, msgObj) => dispatch => {
 export const deleteMessage = (socket, deleteObj) => dispatch => {
     // just assigning the deleteObj to a shorter variable because... SCIENCE & REASONS
     let dObj = deleteObj;
-    console.log(dObj)
     socket.emit('deleteMessage', dObj.userId1, dObj.userId2, dObj.roomId, dObj.msgId);
 }
 

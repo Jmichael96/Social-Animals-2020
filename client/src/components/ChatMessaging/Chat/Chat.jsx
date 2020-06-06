@@ -65,6 +65,14 @@ const Chat = ({ fetchRoom, location, sendMessage, auth, history }) => {
     });
   }, []);
 
+  // fetch all messages after deleting one
+  useEffect(() => {
+    socket.on('fetched-deleted-messages', (res) => {
+      setMessageData(res.userMessages);
+    });
+  }, []);
+
+  // used for if the user is typing the render the appropriate message
   useEffect(() => {
     // checking if the user is typing and displaying the message
     if (!auth.loading && !isEmpty(auth.user)) {

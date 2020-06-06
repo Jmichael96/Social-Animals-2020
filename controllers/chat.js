@@ -48,7 +48,7 @@ exports.fetchRoom = (io, userId, roomId) => {
 }
 
 // delete a message 
-exports.deleteMessage = (userId1, userId2, roomId, msgId) => {
+exports.deleteMessage = (io, userId1, userId2, roomId, msgId) => {
 
     User.findOne({ _id: userId1 })
         .then((user) => {
@@ -63,11 +63,10 @@ exports.deleteMessage = (userId1, userId2, roomId, msgId) => {
                     messages[i].userMessages = messages[i].userMessages.filter(
                         ({ id }) => id !== msgId
                     );
-                    console.log(messages[i]);
                 }
+                user.save();
+                io.emit('fetched-deleted-messages', { userMessages: messages[i].userMessages });
             }
-            user.save();
-            console.log(userId1, ' user 1');
         })
 
     User.findOne({ _id: userId2 })
@@ -83,11 +82,8 @@ exports.deleteMessage = (userId1, userId2, roomId, msgId) => {
                     messages[i].userMessages = messages[i].userMessages.filter(
                         ({ id }) => id !== msgId
                     );
-                    console.log(messages[i]);
                 }
+                user.save();
             }
-            user.save();
-            console.log(userId2, ' user 2');
-
         })
 }

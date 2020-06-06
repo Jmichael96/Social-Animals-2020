@@ -17,7 +17,7 @@ module.exports = (io) => {
 
     // delete a message 
     socket.on('deleteMessage', (userId1, userId2, roomId, msgId) => {
-      ChatController.deleteMessage(userId1, userId2, roomId, msgId);
+      ChatController.deleteMessage(io, userId1, userId2, roomId, msgId);
     });
 
     // on typing
