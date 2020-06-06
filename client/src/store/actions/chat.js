@@ -1,5 +1,5 @@
 import * as types from './types';
-
+import { uuid } from 'uuidv4'
 // fetching chat room data
 export const fetchRoom = (socket, obj) => dispatch => {
     socket.emit('fetchRoom', obj.userId, obj.roomId);
@@ -7,13 +7,16 @@ export const fetchRoom = (socket, obj) => dispatch => {
 
 // send a message 
 export const sendMessage = (socket, msgObj) => dispatch => {
-    socket.emit('sendMessage', msgObj.roomId, msgObj.userId1, msgObj.userId2, msgObj.messageUserId, msgObj.username, msgObj.message);
+    let messageId = uuid();
+    console.log(messageId);
+    socket.emit('sendMessage', msgObj.roomId, msgObj.userId1, msgObj.userId2, msgObj.messageUserId, msgObj.username, msgObj.message, messageId);
 }
 
 // delete a message [userId, roomId, msgId]
 export const deleteMessage = (socket, deleteObj) => dispatch => {
     // just assigning the deleteObj to a shorter variable because... SCIENCE & REASONS
     let dObj = deleteObj;
+    console.log(dObj)
     socket.emit('deleteMessage', dObj.userId1, dObj.userId2, dObj.roomId, dObj.msgId);
 }
 

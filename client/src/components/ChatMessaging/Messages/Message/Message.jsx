@@ -7,24 +7,16 @@ import isEmpty from '../../../../utils/isEmpty';
 import { deleteMessage } from '../../../../store/actions/chat';
 import { setModal } from '../../../../store/actions/modal';
 
-const Message = ({ auth, message: { _id, message, username, userId }, setModal, deleteMessage, socket, roomId, users }) => {
+const Message = ({ auth, message: { _id, messageId, message, username, userId }, setModal, deleteMessage, socket, roomId, users }) => {
 
     const onDeleteSubmit = () => {
         if (!auth.loading && !isEmpty(auth.user)) {
-            let authUser = '';
-            let otherUser = '';
-            for (let i = 0; i < users.length; i++) {
-                if (users[i].userId.toString() === auth.user._id) {
-                    authUser = users[i].userId;
-                }
-                otherUser = users[i].userId;
-            }
-
+            
             let deleteObj = {
-                userId1: authUser,
-                userId2: otherUser,
+                userId1: users[0].userId,
+                userId2: users[1].userId,
                 roomId: roomId,
-                msgId: _id
+                msgId: messageId
             }
             deleteMessage(socket, deleteObj);
         }

@@ -13,49 +13,48 @@ import { withRouter } from 'react-router-dom';
 
 let socket = io.connect('http://localhost:8080');
 
-
 const Chat = ({ fetchRoom, location, sendMessage, auth, history }) => {
-  const [roomData, setRoomData] = useState('');
   const [message, setMessage] = useState('');
   const [messageData, setMessageData] = useState([]);
   const [userData, setUserData] = useState();
   const [typingStr, setTypingStr] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [outerRoom, setOuterRoom] = useState('');
+  const [outerRoom, setOuterRoom] = useState();
 
   let timeout;
 
   useEffect(() => {
     // getting room name from query string
     const roomStr = queryString.parse(location.search);
-    setOuterRoom(roomStr);
+    setOuterRoom(roomStr.roomid);
   }, [location.search]);
 
   useEffect(() => {
     // fetching data on the chat room to dispatch to initial state
-    if (!auth.loading && !isEmpty(auth.user)) {
+    if (!auth.loading && !isEmpty(auth.user && !isEmpty(outerRoom))) {
       let obj = {
         userId: auth.user._id,
-        roomId: outerRoom.roomid
+        roomId: outerRoom
       }
+      
       fetchRoom(socket, obj)
     }
-  }, [auth]);
+  }, [auth, outerRoom]);
 
   // fetch all the room data and assigning it to the variables with useState()
   useEffect(() => {
     socket.on('fetch-room-data', (res) => {
+      
       setMessageData(res.userMessages);
       setUserData(res.users);
-      setRoomData(res.roomId)
     })
   }, []);
 
   useEffect(() => {
     // add message to messages array upon sending a message
-    socket.on('receive-message', (message) => {
+    // socket.on('receive-message', (message) => {
       // setMessageData(messages => [...messages, message]);
-    });
+    // });
   }, []);
 
   // fetch all messages after a new one is submitted
@@ -91,22 +90,12 @@ const Chat = ({ fetchRoom, location, sendMessage, auth, history }) => {
     }
   }, [auth]);
 
-  //roomId, userId1, userId2, messageUserId, username, message
+  // submit the message func
   const submitMessage = (e) => {
     e.preventDefault();
-    if (!auth.loading && !isEmpty(auth.user) && !isEmpty(userData) && !isEmpty(roomData)) {
-      let authUser = '';
-      let otherUser = '';
-      // getting the specific user id's to assign in the msgObj
-      for (let i = 0; i < userData.length; i++) {
-        if (userData[i].userId.toString() === auth.user._id) {
-          authUser = userData[i].userId;
-        }
-        otherUser = userData[i].userId;
-      }
-
+    if (!auth.loading && !isEmpty(auth.user) && !isEmpty(userData) && !isEmpty(outerRoom)) {
       let msgObj = {
-        roomId: roomData,
+        roomId: outerRoom,
         userId1: userData[0].userId,
         userId2: userData[1].userId,
         messageUserId: auth.user._id,
@@ -133,8 +122,8 @@ const Chat = ({ fetchRoom, location, sendMessage, auth, history }) => {
   }
 
   const renderMessages = () => {
-    if (!isEmpty(userData) && !isEmpty(roomData)) {
-      return <Messages messages={messageData} users={userData} socket={socket} roomId={roomData} />
+    if (!isEmpty(userData) && !isEmpty(outerRoom)) {
+      return <Messages messages={messageData} users={userData} socket={socket} roomId={outerRoom} />
     }
   }
 

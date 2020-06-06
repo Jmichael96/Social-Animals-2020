@@ -5,8 +5,8 @@ module.exports = (io) => {
     console.log('connected to socket.io!');
 
     // send a message
-    socket.on('sendMessage', (roomId, userId1, userId2, messageUserId, username, message) => {
-      ChatController.sendMessage(io, roomId, userId1, userId2, messageUserId, username, message);
+    socket.on('sendMessage', (roomId, userId1, userId2, messageUserId, username, message, messageId) => {
+      ChatController.sendMessage(io, roomId, userId1, userId2, messageUserId, username, message, messageId);
       io.emit('receive-message', { userId: messageUserId, username: username, message: message });
     });
 

@@ -79,6 +79,10 @@ const userSchema = new mongoose.Schema({
             ],
             userMessages: [
                 {
+                    messageId: {
+                        type: String,
+                        required: true
+                    },
                     userId: {
                         type: mongoose.Schema.Types.ObjectId,
                         ref: 'User',
