@@ -270,3 +270,38 @@ exports.createRoom = (req, res, next) => {
             });
         });
 }
+
+// @route    PUT api/user/delete_chat/:userId/:chatId
+// @desc     Delete a chat room
+// @access   Private
+exports.deleteChat = (req, res, next) => {
+    User.findById({ _id: req.params.userId })
+    .then((user) => {
+       
+        const message = user.messages.find((message) => 
+            message.id === req.params.chatId
+        )
+
+        if (!message) {
+            return res.status(404).json({
+                serverMsg: 'Message does not exist'
+            });
+        }
+
+        user.messages = user.messages.filter(
+            ({ id }) => id !== req.params.chatId
+        )
+
+        user.save()
+
+        return res.status(201).json({
+            user: user,
+            serverMsg: 'Message successfully deleted'
+        });
+    })
+    .catch((err) => {
+        return res.status(500).json({
+            serverMsg: 'Deleting this message has failed. Please try again later.'
+        });
+    });
+}

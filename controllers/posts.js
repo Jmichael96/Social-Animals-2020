@@ -225,7 +225,7 @@ exports.comment = (req, res, next) => {
         });
 }
 
-// @route    DELETE api/posts/delete_comment/:postId/:comment_id
+// @route    PUT api/posts/delete_comment/:postId/:comment_id
 // @desc     Delete a comment
 // @access   Private
 exports.deleteCommment = (req, res, next) => {
@@ -234,6 +234,7 @@ exports.deleteCommment = (req, res, next) => {
             const comment = post.comments.find((comment) =>
                 comment.id === req.params.comment_id
             )
+            
             if (!comment) {
                 return res.status(404).json({
                     serverMsg: 'Comment does not exist'

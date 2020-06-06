@@ -32,12 +32,6 @@ export default function (state = initialState, action) {
                 user: payload,
                 loading: false
             }
-        // case types.CREATE_ROOM:
-        //     return {
-        //         ...state,
-        //         user: payload.user,
-        //         loading: false
-        //     }
         case types.CLEAR_PROFILE:
             return {
                 ...state,

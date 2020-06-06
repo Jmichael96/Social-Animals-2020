@@ -233,3 +233,28 @@ export const createRoom = (userId1, userId2, roomId, room, userObj, history) => 
             }
         });
 }
+
+// delete one of the chat messages
+export const deleteChat = (userId, chatId) => dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+    console.log(userId, chatId)
+    axios.put(`/api/user/delete_chat/${userId}/${chatId}`, config)
+    .then((res) => {
+        dispatch({
+            type: types.DELETE_CHAT,
+            payload: res.data.user
+        });
+        dispatch(setAlert(res.data.serverMsg, 'success'));
+    })
+    .catch((err) => {
+        console.log(err);
+        const error = err.response.data.serverMsg;
+        if (error) {
+            dispatch(setAlert(error, 'danger'));
+        }
+    });
+}

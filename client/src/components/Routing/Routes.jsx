@@ -16,10 +16,10 @@ import Image from '../Image/Image';
 import CurrentUserProfile from '../Profile/CurrentUserProfile/CurrentUserProfile';
 import AllPostsPage from '../../pages/AllPostsPage';
 import Adopt from '../../pages/Adopt/Adopt';
-import ChatPage from '../../pages/Chat/Chat';
 import Chat from '../ChatMessaging/Chat/Chat';
 import Join from '../ChatMessaging/Join/Join';
 import TotalChatMessages from '../ChatMessaging/TotalChatMessages/TotalChatMessages';
+import BadRequest from '../Layout/BadRequest/BadRequest';
 
 const Routes = () => {
     return (
@@ -30,10 +30,10 @@ const Routes = () => {
             <Switch>
                 <Route exact path="/" component={Home} />
                 <Route exact path="/adopt_page" component={Adopt} />
-                {/* <Route exact path="/chat" component={ChatPage} /> */}
-                <PrivateRoute exact path="/chat" component={Chat} />
                 <Route exact path="/join" component={Join} />
+                <Route exact path="/bad_req" component={BadRequest} />
                 <PrivateRoute exact path="/my_messages" component={TotalChatMessages} />
+                <PrivateRoute exact path="/chat" component={Chat} />
                 {/* Path Below Is Temporary!!  */}
                 <Route exact path="/all" component={AllPostsPage} />
                 <Route exact path="/login" component={Login} />

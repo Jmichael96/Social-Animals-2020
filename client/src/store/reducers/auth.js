@@ -5,7 +5,6 @@ const initialState = {
     loading: true,
     user: null,
     serverMsg: null,
-    createdRoom: false,
 }
 
 export default function (state = initialState, action) {
@@ -49,7 +48,13 @@ export default function (state = initialState, action) {
                 isAuthenticated: true,
                 user: payload,
                 loading: false,
-                createdRoom: true
+            }
+        case types.DELETE_CHAT:
+            return {
+                ...state,
+                isAuthenticated: true,
+                user: payload,
+                loading: false,
             }
         case types.REGISTER_FAIL:
         case types.LOGIN_FAIL:

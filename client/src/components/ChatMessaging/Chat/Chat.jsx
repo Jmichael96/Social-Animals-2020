@@ -36,18 +36,6 @@ const Chat = ({ fetchRoomData, fetchRoom, location, sendMessage, auth, chat: { l
       fetchRoom(socket, obj)
     }
 
-    // ones fetch-room-data receives data about the chat room 
-    // dispatch it to the reducers state
-    socket.on('fetch-room-data', (res) => {
-      let roomObj = {
-        createdId: res.roomId,
-        room: res.room,
-        users: res.users,
-        userMessages: res.userMessages
-      }
-      fetchRoomData(roomObj)
-    });
-
   }, [location.search, fetchRoom, fetchRoomData, auth]);
 
   useEffect(() => {
@@ -57,6 +45,24 @@ const Chat = ({ fetchRoomData, fetchRoom, location, sendMessage, auth, chat: { l
     });
   }, []);
 
+  useEffect(() => {
+    // ones fetch-room-data receives data about the chat room 
+    // dispatch it to the reducers state
+    socket.on('fetch-room-data', (res) => {
+      // if (isEmpty(res)) {
+      //   history.push('/bad_req');
+      //   return;
+      // }
+
+      let roomObj = {
+        createdId: res.roomId,
+        room: res.room,
+        users: res.users,
+        userMessages: res.userMessages
+      }
+      fetchRoomData(roomObj)
+    });
+  }, [])
 
   useEffect(() => {
     // wait for chat data in the store and assign it with the useState methods
@@ -66,18 +72,6 @@ const Chat = ({ fetchRoomData, fetchRoom, location, sendMessage, auth, chat: { l
       if (userMessages) {
         setMessageData((messages) => [...messages, ...userMessages]);
       }
-      // check to see if authenticated user id is in the users array. 
-      // if not then push them to the home page
-      // if (users) {
-      //   for (let i = 0; i < users.length; i++) {
-      //     if (users[i].userId.toString() === auth.user._id) {
-      //       return;
-      //     }
-      //     else {
-      //       // history.push('/')
-      //     }
-      //   }
-      // }
     }
   }, [loading, room, users, userMessages]);
 
@@ -117,7 +111,7 @@ const Chat = ({ fetchRoomData, fetchRoom, location, sendMessage, auth, chat: { l
       }
     }
   }
-  
+
 
   const typingStopped = () => {
     setIsTyping(false);
@@ -133,11 +127,17 @@ const Chat = ({ fetchRoomData, fetchRoom, location, sendMessage, auth, chat: { l
     }
   }
 
+  const renderMessages = () => {
+    if (!loading && !isEmpty(userMessages) && !isEmpty(users)) {
+      return <Messages messages={messageData} users={users} socket={socket} roomId={roomData} />
+    }
+  }
+
   return (
     <div className="outerContainer">
       <div className="innerContainer">
         <InfoBar users={userData} chatLoading={loading} auth={auth} />
-        <Messages messages={messageData} />
+        {renderMessages()}
         <div style={{ height: '90px', backgroundColor: 'grey' }}>{typingStr}</div>
         <Input message={message} setMessage={setMessage} sendMessage={submitMessage} onKeyUp={onKeyUp} />
       </div>

@@ -48,4 +48,9 @@ router.get('/fetch_messages', isAuthenticated, UserController.fetchMessages);
 // @access   Private
 router.put('/create_room/:userId1/:userId2', isAuthenticated, UserController.createRoom);
 
+// @route    PUT api/user/delete_chat/:userId/:chatId
+// @desc     Delete a chat room
+// @access   Private
+router.put('/delete_chat/:userId/:chatId', isAuthenticated, UserController.deleteChat);
+
 module.exports = router;

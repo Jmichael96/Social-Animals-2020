@@ -4,8 +4,27 @@ import ReactEmoji from 'react-emoji';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import isEmpty from '../../../../utils/isEmpty';
+import { deleteMessage } from '../../../../store/actions/chat';
+import { setModal } from '../../../../store/actions/modal';
 
-const Message = ({ auth, message: { message, username, userId }}) => {
+const Message = ({ auth, message: { _id, message, username, userId }, setModal, deleteMessage, socket, roomId, users }) => {
+
+    const onDeleteSubmit = () => {
+        if (!auth.loading && !isEmpty(auth.user)) {
+            let deleteObj = {
+                userId1: users[0].userId,
+                userId2: users[1].userId,
+                roomId: roomId,
+                msgId: _id
+            }
+            deleteMessage(socket, deleteObj);
+        }
+    }
+
+    const configureModal = () => {
+        setModal('Are you sure you want to delete your message?', 'Yes', onDeleteSubmit);
+    }
+
     const checkUser = () => {
         if (!message) {
             return null;
@@ -15,7 +34,7 @@ const Message = ({ auth, message: { message, username, userId }}) => {
                 return (
                     <div className="messageContainer justifyEnd">
                         <p className="sentText pr-10">{username}</p>
-                        <div className="messageBox backgroundBlue">
+                        <div className="messageBox backgroundBlue" onClick={configureModal}>
                             <p className="messageText colorWhite">{ReactEmoji.emojify(message)}</p>
                         </div>
                     </div>
@@ -41,11 +60,16 @@ const Message = ({ auth, message: { message, username, userId }}) => {
 }
 
 Message.propTypes = {
+    deleteMessage: PropTypes.func.isRequired,
+    setModal: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
     message: PropTypes.object.isRequired,
+    roomId: PropTypes.string.isRequired,
+    users: PropTypes.array.isRequired,
+    socket: PropTypes.any,
 }
 const mapStateToProps = (state) => ({
     auth: state.auth
 });
 
-export default connect(mapStateToProps)(Message);
+export default connect(mapStateToProps, { deleteMessage, setModal })(Message);

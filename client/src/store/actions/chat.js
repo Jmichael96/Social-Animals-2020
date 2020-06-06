@@ -2,21 +2,7 @@ import * as types from './types';
 
 // set the chat room when creating a new message
 export const setChat = (room, userObj, socket) => dispatch => {
-    // console.log(room);
-    // socket.emit('join', room, userObj);
 
-    // socket.on('chat-created', (res) => {
-    //     console.log(res);
-    //     dispatch({
-    //         type: types.SET_CHAT,
-    //         payload: {
-    //             room: res.room,
-    //             users: res.users,
-    //             userMessages: res.userMessages
-    //         }
-    //     });
-    //     window.location.href = `/chat?room=${res.room}`;
-    // })
 }
 
 // fetching chat room data
@@ -37,15 +23,33 @@ export const fetchRoomData = (roomObj) => dispatch => {
     });
 }
 
-// send a message [roomId, userId1, userId2, messageUserId, username, message]
+// send a message 
 export const sendMessage = (socket, msgObj) => dispatch => {
-    dispatch({
-        type: types.SEND_MESSAGE
-    });
-    console.log(msgObj);
     socket.emit('sendMessage', msgObj.roomId, msgObj.userId1, msgObj.userId2, msgObj.messageUserId, msgObj.username, msgObj.message);
+
+    socket.on('fetch-new-message', (res) => {
+        dispatch({
+            type: types.SEND_MESSAGE,
+            payload: res.userMessages
+        })
+    })
 }
 
+// delete a message [userId, roomId, msgId]
+export const deleteMessage = (socket, deleteObj) => dispatch => {
+   
+    // just assigning the deleteObj to a shorter variable because... SCIENCE & REASONS
+    let dObj = deleteObj;
+    console.log(dObj)
+    socket.emit('deleteMessage', dObj.userId1, dObj.userId2, dObj.roomId, dObj.msgId);
+
+    socket.on('fetch-removed-messages', (res) => {
+        dispatch({
+            type: types.DELETE_MESSAGE,
+            payload: res.userMessages
+        });
+    })
+}
 // clear the chat data in store state
 export const clearChat = () => dispatch => {
     dispatch({

@@ -22,6 +22,18 @@ export default function (state = initialState, action) {
                 userMessages: payload.userMessages,
                 loading: false
             };
+        case types.DELETE_MESSAGE:
+            return {
+                ...state,
+                userMessages: payload,
+                loading: false
+            }
+        case types.SEND_MESSAGE:
+            return {
+                ...state,
+                userMessages: payload,
+                loading: false
+            }
         case types.CLEAR_CHAT:
             return {
                 ...state,
