@@ -4,7 +4,7 @@ import io from "socket.io-client";
 import Messages from '../Messages/Messages';
 import InfoBar from '../InfoBar/InfoBar';
 import Input from '../Input/Input';
-import { sendMessage, fetchRoom, join } from '../../../store/actions/chat';
+import { sendMessage, fetchRoom } from '../../../store/actions/chat';
 import './chat.css';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -13,7 +13,7 @@ import { withRouter } from 'react-router-dom';
 
 let socket = io.connect('http://localhost:8080');
 
-const Chat = ({ fetchRoom, location, sendMessage, auth, join, history }) => {
+const Chat = ({ fetchRoom, location, sendMessage, auth, history }) => {
   const [message, setMessage] = useState('');
   const [messageData, setMessageData] = useState([]);
   const [userData, setUserData] = useState();
@@ -31,35 +31,12 @@ const Chat = ({ fetchRoom, location, sendMessage, auth, join, history }) => {
   }, [location.search]);
 
   useEffect(() => {
-    socket.on('private-message', (data) => {
-      console.log(data);
-    })
-  },[])
-  // TESTING
-  // useEffect(() => {
-  //   if (!auth.loading && !isEmpty(auth.user) && !isEmpty(outerRoom)) {
-  //     let joinObj = {
-  //       name: auth.user._id,
-  //       room: outerRoom
-  //     }
-  //     join(socket, joinObj);
-  //   }
-  // }, [auth, outerRoom]);
-  
-  // useEffect(() => {
-  //   socket.on('roomData', (res) => {
-  //     console.log(res);
-  //   })
-  // }, []);
-
-  useEffect(() => {
     // fetching data on the chat room to dispatch to initial state
     if (!auth.loading && !isEmpty(auth.user) && !isEmpty(outerRoom)) {
       let obj = {
         userId: auth.user._id,
         roomId: outerRoom
       }
-      
       fetchRoom(socket, obj)
     }
   }, [auth, outerRoom]);
@@ -67,7 +44,6 @@ const Chat = ({ fetchRoom, location, sendMessage, auth, join, history }) => {
   // fetch all the room data and assigning it to the variables with useState()
   useEffect(() => {
     socket.on('fetch-room-data', (res) => {
-      
       setMessageData(res.userMessages);
       setUserData(res.users);
     })
@@ -83,6 +59,7 @@ const Chat = ({ fetchRoom, location, sendMessage, auth, join, history }) => {
   // fetch all messages after deleting one
   useEffect(() => {
     socket.on('fetched-deleted-messages', (res) => {
+      console.log(res);
       setMessageData(res.userMessages);
     });
   }, []);
@@ -167,7 +144,6 @@ const Chat = ({ fetchRoom, location, sendMessage, auth, join, history }) => {
 Chat.propTypes = {
   sendMessage: PropTypes.func.isRequired,
   fetchRoom: PropTypes.func.isRequired,
-  join: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   history: PropTypes.any,
 }
@@ -176,7 +152,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     sendMessage: (room, userId, username, message, socket) => dispatch(sendMessage(room, userId, username, message, socket)),
     fetchRoom: (room, socket) => dispatch(fetchRoom(room, socket)),
-    join: (name, room, socket) => dispatch(join(name, room, socket))
   }
 }
 

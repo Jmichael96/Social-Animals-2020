@@ -1,19 +1,6 @@
 import * as types from './types';
 import { uuid } from 'uuidv4'
 
-// TESTING 
-
-export const join = (socket, joinObj) => dispatch => {
-
-    socket.emit('join', joinObj.name, joinObj.room);
-}
-
-
-
-
-// TESTING
-
-
 // fetching chat room data
 export const fetchRoom = (socket, obj) => dispatch => {
     socket.emit('fetchRoom', obj.userId, obj.roomId);

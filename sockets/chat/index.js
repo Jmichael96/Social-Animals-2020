@@ -4,16 +4,6 @@ module.exports = (io) => {
   io.on('connection', (socket) => {
     console.log('connected to socket.io!');
 
-    // TESTING
-
-    // socket.on('join', (name, room) => {
-    //   ChatController.join(io, name, room);
-
-    //   socket.join(room);
-
-    //   io.to(room).emit('roomData', { room: room, users: name })
-    // });
-
     socket.on('subscribe', (room) => {
       console.log('joining room ', room);
       socket.join(room);
