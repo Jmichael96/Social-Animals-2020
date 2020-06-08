@@ -4,7 +4,7 @@ import io from "socket.io-client";
 import Messages from '../Messages/Messages';
 import InfoBar from '../InfoBar/InfoBar';
 import Input from '../Input/Input';
-import { sendMessage, fetchRoom } from '../../../store/actions/chat';
+import { sendMessage, fetchRoom, join } from '../../../store/actions/chat';
 import './chat.css';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -13,7 +13,7 @@ import { withRouter } from 'react-router-dom';
 
 let socket = io.connect('http://localhost:8080');
 
-const Chat = ({ fetchRoom, location, sendMessage, auth, history }) => {
+const Chat = ({ fetchRoom, location, sendMessage, auth, join, history }) => {
   const [message, setMessage] = useState('');
   const [messageData, setMessageData] = useState([]);
   const [userData, setUserData] = useState();
@@ -27,11 +27,34 @@ const Chat = ({ fetchRoom, location, sendMessage, auth, history }) => {
     // getting room name from query string
     const roomStr = queryString.parse(location.search);
     setOuterRoom(roomStr.roomid);
+    socket.emit('subscribe', roomStr.roomid);
   }, [location.search]);
 
   useEffect(() => {
+    socket.on('private-message', (data) => {
+      console.log(data);
+    })
+  },[])
+  // TESTING
+  // useEffect(() => {
+  //   if (!auth.loading && !isEmpty(auth.user) && !isEmpty(outerRoom)) {
+  //     let joinObj = {
+  //       name: auth.user._id,
+  //       room: outerRoom
+  //     }
+  //     join(socket, joinObj);
+  //   }
+  // }, [auth, outerRoom]);
+  
+  // useEffect(() => {
+  //   socket.on('roomData', (res) => {
+  //     console.log(res);
+  //   })
+  // }, []);
+
+  useEffect(() => {
     // fetching data on the chat room to dispatch to initial state
-    if (!auth.loading && !isEmpty(auth.user && !isEmpty(outerRoom))) {
+    if (!auth.loading && !isEmpty(auth.user) && !isEmpty(outerRoom)) {
       let obj = {
         userId: auth.user._id,
         roomId: outerRoom
@@ -48,13 +71,6 @@ const Chat = ({ fetchRoom, location, sendMessage, auth, history }) => {
       setMessageData(res.userMessages);
       setUserData(res.users);
     })
-  }, []);
-
-  useEffect(() => {
-    // add message to messages array upon sending a message
-    // socket.on('receive-message', (message) => {
-      // setMessageData(messages => [...messages, message]);
-    // });
   }, []);
 
   // fetch all messages after a new one is submitted
@@ -94,13 +110,21 @@ const Chat = ({ fetchRoom, location, sendMessage, auth, history }) => {
   const submitMessage = (e) => {
     e.preventDefault();
     if (!auth.loading && !isEmpty(auth.user) && !isEmpty(userData) && !isEmpty(outerRoom)) {
+      
+      let recipientUser = '';
+      for (let i = 0; i < userData.length; i++) {
+        if (userData[i].userId.toString() !== auth.user._id) {
+          recipientUser = userData[i].userId;
+        }
+      }
       let msgObj = {
         roomId: outerRoom,
         userId1: userData[0].userId,
         userId2: userData[1].userId,
         messageUserId: auth.user._id,
         username: auth.user.username,
-        message: message
+        message: message,
+        recipientUser: recipientUser
       }
       sendMessage(socket, msgObj);
       setMessage('');
@@ -143,6 +167,7 @@ const Chat = ({ fetchRoom, location, sendMessage, auth, history }) => {
 Chat.propTypes = {
   sendMessage: PropTypes.func.isRequired,
   fetchRoom: PropTypes.func.isRequired,
+  join: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   history: PropTypes.any,
 }
@@ -151,6 +176,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     sendMessage: (room, userId, username, message, socket) => dispatch(sendMessage(room, userId, username, message, socket)),
     fetchRoom: (room, socket) => dispatch(fetchRoom(room, socket)),
+    join: (name, room, socket) => dispatch(join(name, room, socket))
   }
 }
 

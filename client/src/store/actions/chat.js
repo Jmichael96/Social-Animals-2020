@@ -1,5 +1,19 @@
 import * as types from './types';
 import { uuid } from 'uuidv4'
+
+// TESTING 
+
+export const join = (socket, joinObj) => dispatch => {
+
+    socket.emit('join', joinObj.name, joinObj.room);
+}
+
+
+
+
+// TESTING
+
+
 // fetching chat room data
 export const fetchRoom = (socket, obj) => dispatch => {
     socket.emit('fetchRoom', obj.userId, obj.roomId);
@@ -8,8 +22,8 @@ export const fetchRoom = (socket, obj) => dispatch => {
 // send a message 
 export const sendMessage = (socket, msgObj) => dispatch => {
     let messageId = uuid();
-    console.log(messageId);
-    socket.emit('sendMessage', msgObj.roomId, msgObj.userId1, msgObj.userId2, msgObj.messageUserId, msgObj.username, msgObj.message, messageId);
+
+    socket.emit('sendMessage', msgObj.roomId, msgObj.userId1, msgObj.userId2, msgObj.messageUserId, msgObj.username, msgObj.message, messageId, msgObj.recipientUser);
 }
 
 // delete a message [userId, roomId, msgId]
