@@ -9,6 +9,7 @@ import { Provider } from 'react-redux';
 import store from './store/store';
 import setAuthToken from './utils/setAuthToken';
 import { loadUser } from './store/actions/auth';
+import { fetchNotifications } from './store/actions/notification';
 
 if (localStorage.token) {
   setAuthToken(localStorage.token);
@@ -16,6 +17,7 @@ if (localStorage.token) {
 const App = () => {
   useEffect(() => {
     store.dispatch(loadUser());
+    store.dispatch(fetchNotifications());
   }, []);
 
   return (

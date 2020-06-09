@@ -12,6 +12,8 @@ import {
 } from 'mdbreact';
 import { connect } from 'react-redux';
 import { updatePost, deletePost, likePost, unlikePost } from '../../../../store/actions/post';
+// import { notify } from '../../../../store/actions/user';
+import { notifyUser } from '../../../../store/actions/notification';
 import { fetchLikes } from '../../../../store/actions/like';
 import { setModal } from '../../../../store/actions/modal';
 import CommentIndex from '../../Comment/CommentIndex/CommentIndex';
@@ -20,8 +22,11 @@ import isEmpty from '../../../../utils/isEmpty';
 import PostImages from './PostImages/PostImages';
 import RenderPostLikes from './RenderPostLikes/RenderPostLikes';
 import RenderPostComments from './RenderPostComments/RenderPostComments';
+import io from "socket.io-client";
 
 import './postItem.css';
+
+let socket = io.connect('http://localhost:8080');
 
 const PostItem = ({
     updatePost,
@@ -32,6 +37,7 @@ const PostItem = ({
     auth: { isAuthenticated, user, loading },
     post: { _id, content, imagePath, date, authorId, authorUsername, likes, comments },
     postLoading,
+    notifyUser
 }) => {
     const [commentLimit, setCommentLimit] = useState(2);
     const [commentLimitReached, setCommentLimitReached] = useState(false);
@@ -198,7 +204,7 @@ const PostItem = ({
             }
         }
     }
-    
+
     return (
         <Fragment>
             <MDBContainer>
@@ -250,14 +256,23 @@ const PostItem = ({
                                     // if user has not liked post. like post with authenticated user's id
                                     setHasLiked(true);
                                     likePost(_id);
+                                    let notifyObj = {
+                                        notifiedUser: authorId,
+                                        userId: user._id,
+                                        username: user.username,
+                                        notificationType: `has liked your post "${content}"`,
+                                        profilePic: user.profilePicture,
+                                        link: `/my_profile`
+                                    }
+                                    notifyUser(socket, notifyObj);
                                 }}>
                                     <i className="fas fa-thumbs-up" />{' '}
                                 </button>
                             ) : (
                                     null
                                 )}
-                                <RenderPostLikes postLoading={postLoading} isAuth={isAuthenticated} likes={likes} />
-                                <RenderPostComments postLoading={postLoading} comments={comments} />
+                            <RenderPostLikes postLoading={postLoading} isAuth={isAuthenticated} likes={likes} />
+                            <RenderPostComments postLoading={postLoading} comments={comments} />
                             {renderLoadMoreComments()}
                             {renderComments()}
                             {renderAddComment()}
@@ -278,6 +293,7 @@ PostItem.propTypes = {
     setModal: PropTypes.func.isRequired,
     likePost: PropTypes.func.isRequired,
     unlikePost: PropTypes.func.isRequired,
+    notifyUser: PropTypes.func.isRequired,
     postLoading: PropTypes.any,
 }
 
@@ -285,4 +301,4 @@ const mapStateToProps = (state) => ({
     auth: state.auth,
 });
 
-export default connect(mapStateToProps, { updatePost, setModal, deletePost, likePost, unlikePost, fetchLikes })(PostItem);
+export default connect(mapStateToProps, { updatePost, setModal, deletePost, likePost, unlikePost, fetchLikes, notifyUser })(PostItem);

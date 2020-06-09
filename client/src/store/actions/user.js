@@ -258,3 +258,30 @@ export const deleteChat = (userId, chatId) => dispatch => {
         }
     });
 }
+
+// notify the user that has had a post or message added to by the authenticated user
+export const notify = (socket, id, notifyObj) => dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+    let socketObj = {
+        notifiedUser: notifyObj.notifiedUser,
+        userId: notifyObj.userId,
+        username: notifyObj.username,
+        notificationType: notifyObj.notificationType
+    }
+    socket.emit('notify', socketObj);
+    axios.put(`/api/user/notify/${id}`, notifyObj, config)
+    .then((res) => {
+       
+    })
+    .catch((err) => {
+        console.log(err);
+        const error = err.response.data.serverMsg;
+        if (error) {
+            dispatch(setAlert(error, 'danger'));
+        }
+    });
+}

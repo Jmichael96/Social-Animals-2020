@@ -2,6 +2,7 @@ import axios from 'axios';
 import { setAlert } from './alert';
 import * as types from './types';
 import setAuthToken from '../../utils/setAuthToken';
+import { fetchNotifications } from './notification';
 
 // Load User
 export const loadUser = () => dispatch => {
@@ -74,7 +75,7 @@ export const login = ({ ...formData }, history) => dispatch => {
         });
         dispatch(loadUser());
         dispatch(setAlert('Logged in successfully', 'success'));
-
+        dispatch(fetchNotifications());
     })
     .catch((err) => {
         const error = err.response.data.serverMsg;

@@ -53,4 +53,9 @@ router.put('/create_room/:userId1/:userId2', isAuthenticated, UserController.cre
 // @access   Private
 router.put('/delete_chat/:userId/:chatId', isAuthenticated, UserController.deleteChat);
 
+// @route    PUT api/user/notify/:id
+// @desc     Adding a notification for the specified user
+// @access   Private
+router.put('/notify/:id', isAuthenticated, UserController.notify);
+
 module.exports = router;

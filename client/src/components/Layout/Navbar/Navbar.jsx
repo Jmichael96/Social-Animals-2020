@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { logout } from '../../../store/actions/auth';
 import WelcomeMessage from '../../Profile/WelcomeMessage/WelcomeMessage';
+import CurrentUserNotifications from '../../Notifications/CurrentUserNotifications/CurrentUserNotifications';
 
 const Navbar = ({ auth: { isAuthenticated, loading, user }, logout }) => {
     const guestLinks = (
@@ -52,6 +53,9 @@ const Navbar = ({ auth: { isAuthenticated, loading, user }, logout }) => {
                 </li>
                 <li className="nav-item">
                     <a href="#!" className="nav-link" onClick={logout}>Logout</a>
+                </li>
+                <li className="nav-item">
+                    <a href="#!" className="nav-link"><CurrentUserNotifications /></a>
                 </li>
             </ul>
         )

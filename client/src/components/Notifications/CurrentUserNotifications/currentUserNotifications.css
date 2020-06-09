@@ -1,0 +1,46 @@
+.button {
+    position: relative;
+    border-radius: 4px;
+    border: 2px solid white;
+    padding: 15px 30px;
+    color: white;
+    background: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+    -webkit-transition: all .3s;
+    transition: all .3s;
+  }
+  
+  .button:active {
+    -webkit-transform: scale(0.96);
+            transform: scale(0.96);
+  }
+  .button:active .badge {
+    -webkit-transform: scale(1.2);
+            transform: scale(1.2);
+  }
+  
+  .badge {
+    border-radius: 39px;
+    width: 30px;
+    height: 30px;
+    display: block;
+    position: absolute;
+    background: #1fceff;
+    border: 2px solid white;
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-align: center;
+            align-items: center;
+    -webkit-box-pack: center;
+            justify-content: center;
+    top: -15px;
+    right: -15px;
+    -webkit-transition: all .3s;
+    transition: all .3s;
+  }
+  

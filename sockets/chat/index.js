@@ -9,8 +9,6 @@ module.exports = (io) => {
       socket.join(room);
     })
 
-
-    // TESTING
     // send a message
     socket.on('sendMessage', (roomId, userId1, userId2, messageUserId, username, message, messageId, recipientUser) => {
       ChatController.sendMessage(io, roomId, userId1, userId2, messageUserId, username, message, messageId, recipientUser);
@@ -38,6 +36,11 @@ module.exports = (io) => {
       }
     });
 
+    // notify
+    socket.on('notify', (data) => {
+      console.log(data);
+    })
+    
     // disconnect method
     socket.on('disconnect', () => {
       console.log('user has left');

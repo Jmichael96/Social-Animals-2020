@@ -249,7 +249,6 @@ exports.createRoom = (req, res, next) => {
 
     User.findById({ _id: req.params.userId1 })
         .then((user) => {
-            console.log('id== ', req.body.roomId)
             const newMessage = {
                 createdId: req.body.roomId,
                 room: req.body.room,
@@ -302,6 +301,41 @@ exports.deleteChat = (req, res, next) => {
     .catch((err) => {
         return res.status(500).json({
             serverMsg: 'Deleting this message has failed. Please try again later.'
+        });
+    });
+}
+
+// @route    PUT api/user/notify/:id
+// @desc     Adding a notification for the specified user
+// @access   Private
+exports.notify = (req, res, next) => {
+    User.findById({ _id: req.params.id })
+    .then((user) => {
+        let newNotification = {}
+        if (!req.body.roomId) {
+            newNotification = {
+                notifiedUser: req.body.notifiedUser,
+                userId: req.body.userId,
+                username: req.body.username,
+                notificationType: req.body.notificationType
+            }
+        } else if (req.body.roomId) {
+            newNotification = {
+                notifiedUser: req.body.notifiedUser,
+                userId: req.body.userId,
+                username: req.body.username,
+                roomId: req.body.roomId,
+                notificationType: req.body.notificationType,
+            }
+        }
+        user.notifications.unshift(newNotification);
+        user.save();
+        console.log(user)
+        res.status(201);
+    })
+    .catch((err) => {
+        return res.status(500).json({
+            serverMsg: 'Error sending notification'
         });
     });
 }
