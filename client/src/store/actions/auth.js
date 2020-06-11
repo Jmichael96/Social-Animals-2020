@@ -3,6 +3,8 @@ import { setAlert } from './alert';
 import * as types from './types';
 import setAuthToken from '../../utils/setAuthToken';
 import { fetchNotifications } from './notification';
+import io from 'socket.io-client';
+let socket = io.connect('http://localhost:8080');
 
 // Load User
 export const loadUser = () => dispatch => {
@@ -16,6 +18,7 @@ export const loadUser = () => dispatch => {
                 type: types.USER_LOADED,
                 payload: res.data
             });
+            socket.emit('auth', res.data);
         })
         .catch((err) => {
             dispatch({

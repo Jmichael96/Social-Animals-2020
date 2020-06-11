@@ -9,7 +9,7 @@ const routes = require('./routes/index');
 const cors = require('cors');
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
-const connectChatSocket = require('./sockets/chat/index');
+const connectChatSocket = require('./sockets/index');
 
 // connecting database
 connectDB();
@@ -44,7 +44,6 @@ app.use(routes);
 
 // connect socket.io
 connectChatSocket(io);
-
 
 server.listen(PORT, () => {
   console.log(`Bears... Beets... Battlestar Galactica on Port ${port}`);

@@ -3,14 +3,13 @@ import axios from 'axios';
 import { setAlert } from './alert';
 
 // send a notification to the specified user
-export const notifyUser = (socket, notifyObj) => dispatch => {
+export const notifyUser = (notifyObj) => dispatch => {
 
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     };
-    socket.emit('notify', notifyObj);
     axios.post('/api/notify/notify_user', notifyObj, config)
         .then((res) => {
             dispatch({
@@ -38,3 +37,13 @@ export const fetchNotifications = () => dispatch => {
         dispatch(setAlert(error, 'danger'));
     });
 };
+
+// set has viewed for the authenticated users notifications
+export const hasViewed = (id) => dispatch => {
+    axios.put(`/api/notify/has_viewed/${id}`)
+    .catch((err) => {
+        console.log(err);
+        const error = err.response.data.serverMsg;
+        dispatch(setAlert(error, 'danger'));
+    })
+}

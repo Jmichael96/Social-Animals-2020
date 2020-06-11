@@ -96,3 +96,13 @@ exports.deleteMessage = async (io, userId1, userId2, roomId, msgId) => {
         throw err;
     }
 }
+
+exports.findUser = async (id) => {
+    try {
+        const users = await User.find();
+
+        return users.find((user) => user._id === id);
+    } catch (err) {
+        console.log(err);
+    }
+}

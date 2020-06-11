@@ -12,7 +12,6 @@ import {
 } from 'mdbreact';
 import { connect } from 'react-redux';
 import { updatePost, deletePost, likePost, unlikePost } from '../../../../store/actions/post';
-// import { notify } from '../../../../store/actions/user';
 import { notifyUser } from '../../../../store/actions/notification';
 import { fetchLikes } from '../../../../store/actions/like';
 import { setModal } from '../../../../store/actions/modal';
@@ -22,11 +21,8 @@ import isEmpty from '../../../../utils/isEmpty';
 import PostImages from './PostImages/PostImages';
 import RenderPostLikes from './RenderPostLikes/RenderPostLikes';
 import RenderPostComments from './RenderPostComments/RenderPostComments';
-import io from "socket.io-client";
 
 import './postItem.css';
-
-let socket = io.connect('http://localhost:8080');
 
 const PostItem = ({
     updatePost,
@@ -264,7 +260,7 @@ const PostItem = ({
                                         profilePic: user.profilePicture,
                                         link: `/my_profile`
                                     }
-                                    notifyUser(socket, notifyObj);
+                                    notifyUser(notifyObj);
                                 }}>
                                     <i className="fas fa-thumbs-up" />{' '}
                                 </button>

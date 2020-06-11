@@ -12,4 +12,9 @@ router.post('/notify_user', isAuthenticated, NotifyController.notifyUser);
 // @access   Private
 router.get('/fetch_notifications', isAuthenticated, NotifyController.fetchNotifications);
 
+// @route    PUT api/notify/has_viewed/:id
+// @desc     Updating all notifications setting hasViewed to true once user has seen them
+// @access   Private
+router.put('/has_viewed/:id', isAuthenticated, NotifyController.hasViewed);
+
 module.exports = router;

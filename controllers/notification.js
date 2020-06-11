@@ -34,7 +34,7 @@ exports.notifyUser = (req, res, next) => {
 // @desc     Fetching all notifications for the authenticated user
 // @access   Private
 exports.fetchNotifications = (req, res, next) => {
-    Notification.find({ notifiedUser: req.user._id })
+    Notification.find({ notifiedUser: req.user._id }).sort({ _id: -1 })
         .then((notifications) => {
             res.status(201).json(notifications);
         })
@@ -44,4 +44,25 @@ exports.fetchNotifications = (req, res, next) => {
                 serverMsg: 'There was a problem with our server...'
             });
         });
+}
+
+// @route    PUT api/notify/has_viewed/:id
+// @desc     Updating all notifications setting hasViewed to true once user has seen them
+// @access   Private
+exports.hasViewed = (req, res, next) => {
+    Notification.updateMany({ notifiedUser: req.params.id }, {
+        $set: {
+            'hasViewed': true
+        }
+    }).then((notifications) => {
+        console.log(notifications);
+        res.status(201);
+    })
+    .catch((err) => {
+        console.log(err);
+        res.status(500).json({
+            serverMsg: 'There was a problem with our server...'
+        });
+    });
+    
 }

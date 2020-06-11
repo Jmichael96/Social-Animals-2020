@@ -11,13 +11,17 @@ import setAuthToken from './utils/setAuthToken';
 import { loadUser } from './store/actions/auth';
 import { fetchNotifications } from './store/actions/notification';
 
+// sockets
+import io from 'socket.io-client';
+let socket = io.connect('http://localhost:8080');
+
 if (localStorage.token) {
   setAuthToken(localStorage.token);
+  store.dispatch(fetchNotifications());
 }
 const App = () => {
   useEffect(() => {
     store.dispatch(loadUser());
-    store.dispatch(fetchNotifications());
   }, []);
 
   return (

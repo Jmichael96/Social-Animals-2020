@@ -24,6 +24,14 @@ const notificationSchema = new mongoose.Schema({
     link: {
         type: String
     },
+    hasViewed: {
+        type: Boolean,
+        default: false
+    },
+    expiresIn: {
+        type: Date,
+        default: 86400
+    },
     date: {
         type: Date,
         default: Date.now

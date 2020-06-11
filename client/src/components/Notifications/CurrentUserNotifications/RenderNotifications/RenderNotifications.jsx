@@ -6,16 +6,17 @@ import {
     MDBCol,
     MDBRow
 } from 'mdbreact';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 
-const RenderNotifications = ({ notifications, loading }) => {
+const RenderNotifications = ({ notifications, loading, history }) => {
+
 
     const renderData = () => {
         if (!loading && !isEmpty(notifications)) {
             return Object.values(notifications).map((data, index) => {
                 const renderText = () => {
                     if (data.notificationType.length > 20) {
-                        return 
+                        return
                     }
                     else {
                         return data.notificationType;
@@ -23,19 +24,21 @@ const RenderNotifications = ({ notifications, loading }) => {
                 }
                 return (
                     <div key={index}>
-                        <Link to={`${data.link}`}>
-                            <MDBContainer fluid>
-                                <MDBRow>
-                                    <MDBCol size="2">
+                        <MDBContainer fluid>
+                            <MDBRow>
+                                <MDBCol size="2">
+                                    <Link to={`/user_profile/${data.userId}`}>
                                         <img src={data.profilePic} style={{ height: '50px' }} />
-                                    </MDBCol>
-                                    <MDBCol size="10">
-                                        <p><Link to={`/user_profile/${data.userId}`}>{data.username}</Link>{' '}{data.notificationType.replace(/(.{40})..+/, "$1…")}</p>
-                                    </MDBCol>
-                                </MDBRow>
-                            </MDBContainer>
-                            <hr />
-                        </Link>
+                                    </Link>
+                                </MDBCol>
+                                <MDBCol size="10">
+                                    <Link to={`${data.link}`}>
+                                        <p>{data.username}{' '}{data.notificationType.replace(/(.{40})..+/, "$1…")}</p>
+                                    </Link>
+                                </MDBCol>
+                            </MDBRow>
+                        </MDBContainer>
+                        <hr />
                     </div>
                 )
             });
@@ -52,6 +55,8 @@ const RenderNotifications = ({ notifications, loading }) => {
 RenderNotifications.propTypes = {
     notifications: PropTypes.array.isRequired,
     loading: PropTypes.bool,
+    history: PropTypes.any,
 }
 
-export default RenderNotifications;
+const exportRenderNotifications = withRouter(RenderNotifications);
+export default exportRenderNotifications;

@@ -55,7 +55,7 @@ const Navbar = ({ auth: { isAuthenticated, loading, user }, logout }) => {
                     <a href="#!" className="nav-link" onClick={logout}>Logout</a>
                 </li>
                 <li className="nav-item">
-                    <a href="#!" className="nav-link"><CurrentUserNotifications /></a>
+                    <div className="nav-link"><CurrentUserNotifications /></div>
                 </li>
             </ul>
         )
