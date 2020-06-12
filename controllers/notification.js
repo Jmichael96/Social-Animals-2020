@@ -5,9 +5,10 @@ const Notification = require('../models/notification');
 // @access   Private
 exports.notifyUser = (req, res, next) => {
     if (req.body.notifiedUser.toString() === req.user._id) {
-        console.log('you dont need to be notified')
+        console.log('you dont need to be notified');
         return;
     }
+
     const notification = new Notification({
         notifiedUser: req.body.notifiedUser,
         userId: req.body.userId,
@@ -15,18 +16,22 @@ exports.notifyUser = (req, res, next) => {
         notificationType: req.body.notificationType,
         roomId: req.body.roomId,
         profilePic: req.body.profilePic,
-        link: req.body.link
+        link: req.body.link,
+        type: req.body.type
     });
 
     notification.save()
         .then((notification) => {
-            res.status(201);
+            if (!notification) {
+                return;
+            }
+            return res.status(201).json(notification);
         })
         .catch((err) => {
             console.log(err);
             res.status(500).json({
                 serverMsg: 'There was a problem with our server...'
-            })
+            });
         });
 }
 

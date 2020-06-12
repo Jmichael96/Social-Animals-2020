@@ -5,42 +5,43 @@ import { withRouter } from 'react-router-dom';
 import RenderNotifications from './RenderNotifications/RenderNotifications';
 import { MDBContainer, MDBBtn, MDBModal, MDBModalBody, MDBModalFooter } from 'mdbreact';
 import isEmpty from '../../../utils/isEmpty';
-import { hasViewed } from '../../../store/actions/notification';
+import { hasViewed, fetchNotifications } from '../../../store/actions/notification';
 
 import './currentUserNotifications.css';
 
-const CurrentUserNotifications = ({ auth, notification: { notifications, loading }, hasViewed }) => {
+const CurrentUserNotifications = ({ fetchNotifications, auth, notification: { notifications, loading }, hasViewed }) => {
     const [modal, setModal] = useState(false);
     const [cleanedArr, setCleanedArr] = useState([]);
 
     useEffect(() => {
-        getNum();
-    }, [])
+        fetchNotifications();
+        if (!loading) {
+            getNum();
+        }
+    }, [loading]);
 
     const toggleModal = () => {
         setModal(!modal);
     }
 
     const getNum = () => {
-
         if (!loading && !isEmpty(notifications)) {
             for (let i = 0; i < notifications.length; i++) {
                 if (notifications[i].hasViewed === false) {
-                    setCleanedArr((item) => [...item, notifications[i]])
+                    setCleanedArr((item) => [...item, notifications[i]]);
                 }
             }
         }
     }
 
     const renderButton = () => {
-
-        if (!loading && isEmpty(cleanedArr)) {
+        if (!loading && cleanedArr.length === 0) {
             return <button onClick={toggleModal} className="button"><span className="content">Notify</span></button>
         }
         else if (!loading && !isEmpty(cleanedArr)) {
             return <button onClick={() => {
                 toggleModal();
-                submitHasViewed()
+                submitHasViewed();
             }} className="button"><span className="content">Notify</span><span className="badge">{cleanedArr.length}</span></button>
         }
     }
@@ -81,10 +82,12 @@ const CurrentUserNotifications = ({ auth, notification: { notifications, loading
 }
 
 CurrentUserNotifications.propTypes = {
+    fetchNotifications: PropTypes.func.isRequired,
     hasViewed: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
     notification: PropTypes.object.isRequired,
 }
+
 const mapStateToProps = (state) => ({
     auth: state.auth,
     notification: state.notification
@@ -92,4 +95,4 @@ const mapStateToProps = (state) => ({
 
 const exportCurrentUserNotifications = withRouter(CurrentUserNotifications);
 
-export default connect(mapStateToProps, { hasViewed })(exportCurrentUserNotifications);
+export default connect(mapStateToProps, { fetchNotifications, hasViewed })(exportCurrentUserNotifications);

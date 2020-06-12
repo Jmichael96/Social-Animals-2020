@@ -10,10 +10,9 @@ import Spinner from '../../Layout/Spinner/Spinner';
 import RenderFollowing from './RenderFollowing/RenderFollowing';
 import UserProfilePosts from '../../Post/FetchPosts/UserProfilePosts/UserProfilePosts';
 import { uuid } from 'uuidv4';
+import { notifyUser } from '../../../store/actions/notification';
 
-const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, setFollowing, unsetFollowing, createRoom, user: { user, loading }, auth, match, history }) => {
-    // for when a user wants to change the profile photo render the file input
-    // const [isUpdatingPic, setIsUpdatingPic] = useState(false);
+const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, setFollowing, unsetFollowing, createRoom, user: { user, loading }, auth, match, history, notifyUser }) => {
 
     const nullProfile = isEmpty(user);
     useEffect(() => {
@@ -27,6 +26,18 @@ const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, setFoll
     const submitFollowReq = () => {
         followProfile(user._id);
         setFollowing(user._id, user.username);
+        if (!auth.loading && !isEmpty(auth.user)) {
+            let notifyObj = {
+                notifiedUser: user.userId,
+                userId: auth.user._id,
+                username: auth.user.username,
+                notificationType: `has started following you.`,
+                profilePic: auth.user.profilePicture,
+                link: `/my_profile`,
+                type: 'profile'
+            };
+            notifyUser(notifyObj);
+        }
     }
 
     // unfollow the profile func
@@ -91,7 +102,17 @@ const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, setFoll
                 }
             ]
             let roomId = uuid()
-            createRoom(auth.user._id, user._id, roomId, room, userObj, history);            
+            createRoom(auth.user._id, user._id, roomId, room, userObj, history);
+            let notifyObj = {
+                notifiedUser: user._id,
+                userId: auth.user._id,
+                username: auth.user.username,
+                notificationType: `created a chat with you.`,
+                profilePic: auth.user.profilePicture,
+                link: `/my_messages`,
+                type: 'message'
+            };
+            notifyUser(notifyObj);
         }
     }
 
@@ -147,6 +168,7 @@ UserProfile.propTypes = {
     setFollowing: PropTypes.func.isRequired,
     unsetFollowing: PropTypes.func.isRequired,
     createRoom: PropTypes.func.isRequired,
+    notifyUser: PropTypes.func.isRequired,
     user: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
     history: PropTypes.any,
@@ -158,4 +180,4 @@ const mapStateToProps = (state) => ({
 });
 
 const exportUserProfile = withRouter(UserProfile);
-export default connect(mapStateToProps, { fetchProfileById, followProfile, unfollowProfile, setFollowing, unsetFollowing, createRoom })(exportUserProfile);
+export default connect(mapStateToProps, { fetchProfileById, followProfile, unfollowProfile, setFollowing, unsetFollowing, createRoom, notifyUser })(exportUserProfile);

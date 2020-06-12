@@ -96,6 +96,10 @@ const userSchema = new mongoose.Schema({
                     message: {
                         type: String
                     },
+                    hasViewed: {
+                        type: Boolean,
+                        default: false
+                    },
                     date: {
                         type: Date,
                         default: Date.now

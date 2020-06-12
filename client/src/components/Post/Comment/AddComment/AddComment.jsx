@@ -1,9 +1,11 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { addComment } from '../../../../store/actions/post';
+import isEmpty from '../../../../utils/isEmpty';
+import { notifyUser } from '../../../../store/actions/notification';
 
-const AddComment = ({ postId, addComment }) => {
+const AddComment = ({ postId, addComment, notifyUser, notifiedUser, userId, username, notificationType, profilePic }) => {
     const [text, setText] = useState('');
 
     const onCommentSubmit = (e) => {
@@ -16,6 +18,16 @@ const AddComment = ({ postId, addComment }) => {
             text
         }
         addComment(id, formData);
+        let notifyObj = {
+            notifiedUser: notifiedUser,
+            userId: userId,
+            username: username,
+            notificationType: notificationType,
+            profilePic: profilePic,
+            link: `/my_profile`,
+            type: 'post'
+        }
+        notifyUser(notifyObj);
     }
 
     // on enter key press it will initiate the form submission
@@ -49,7 +61,13 @@ const AddComment = ({ postId, addComment }) => {
 
 AddComment.propTypes = {
     addComment: PropTypes.func.isRequired,
-    postId: PropTypes.any
+    notifyUser: PropTypes.func.isRequired,
+    postId: PropTypes.any,
+    notifiedUser: PropTypes.string.isRequired,
+    userId: PropTypes.string.isRequired,
+    username: PropTypes.string.isRequired,
+    notificationType: PropTypes.string.isRequired,
+    profilePic: PropTypes.string.isRequired,
 }
 
-export default connect(null, { addComment })(AddComment);
+export default connect(null, { addComment, notifyUser })(AddComment);

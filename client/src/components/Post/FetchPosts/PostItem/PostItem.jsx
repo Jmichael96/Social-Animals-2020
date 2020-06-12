@@ -167,12 +167,18 @@ const PostItem = ({
     // rendering add comment component if there is an authenticated user
     // else returning null
     const renderAddComment = () => {
-        if (!loading && !isAuthenticated) {
-            return null;
+        if (!loading && isAuthenticated && !isEmpty(user)) {
+            return (
+                <AddComment 
+                postId={_id} 
+                notifiedUser={authorId} 
+                userId={user._id} 
+                username={user.username} 
+                profilePic={user.profilePicture} 
+                notificationType={`has commented on your post "${content}"`}
+                />
+            )
         }
-        return (
-            <AddComment postId={_id} />
-        )
     }
 
     // checking if all comments are loaded first before adding the 'show more' comments button
@@ -258,7 +264,8 @@ const PostItem = ({
                                         username: user.username,
                                         notificationType: `has liked your post "${content}"`,
                                         profilePic: user.profilePicture,
-                                        link: `/my_profile`
+                                        link: `/my_profile`,
+                                        type: 'post'
                                     }
                                     notifyUser(notifyObj);
                                 }}>
