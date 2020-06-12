@@ -24,19 +24,21 @@ const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, setFoll
 
     // follow the profile func
     const submitFollowReq = () => {
-        followProfile(user._id);
-        setFollowing(user._id, user.username);
-        if (!auth.loading && !isEmpty(auth.user)) {
-            let notifyObj = {
-                notifiedUser: user.userId,
-                userId: auth.user._id,
-                username: auth.user.username,
-                notificationType: `has started following you.`,
-                profilePic: auth.user.profilePicture,
-                link: `/my_profile`,
-                type: 'profile'
-            };
-            notifyUser(notifyObj);
+        if (!loading && !isEmpty(user)) {
+            followProfile(user._id);
+            setFollowing(user._id, user.username);
+            if (!auth.loading && !isEmpty(auth.user)) {
+                let notifyObj = {
+                    notifiedUser: user._id,
+                    userId: auth.user._id,
+                    username: auth.user.username,
+                    notificationType: `has started following you.`,
+                    profilePic: auth.user.profilePicture,
+                    link: `/my_profile`,
+                    type: 'profile'
+                };
+                notifyUser(notifyObj);
+            }
         }
     }
 

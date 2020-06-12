@@ -10,10 +10,11 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import isEmpty from '../../../utils/isEmpty';
 import { withRouter } from 'react-router-dom';
+import { notifyUser } from '../../../store/actions/notification';
 
 let socket = io.connect('http://localhost:8080');
 
-const Chat = ({ fetchRoom, location, sendMessage, auth, history }) => {
+const Chat = ({ fetchRoom, location, sendMessage, auth, notifyUser, history }) => {
   const [message, setMessage] = useState('');
   const [messageData, setMessageData] = useState([]);
   const [userData, setUserData] = useState();
@@ -104,6 +105,16 @@ const Chat = ({ fetchRoom, location, sendMessage, auth, history }) => {
         recipientUser: recipientUser
       }
       sendMessage(socket, msgObj);
+      let notifyObj = {
+        notifiedUser: recipientUser,
+        userId: auth.user._id,
+        username: auth.user.username,
+        notificationType: `sent you a message "${message}"`,
+        profilePic: auth.user.profilePicture,
+        link: `/chat?roomid=${outerRoom}`,
+        type: 'message'
+      }
+      notifyUser(notifyObj)
       setMessage('');
     }
   }
@@ -145,6 +156,7 @@ Chat.propTypes = {
   sendMessage: PropTypes.func.isRequired,
   fetchRoom: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
+  notifyUser: PropTypes.func.isRequired,
   history: PropTypes.any,
 }
 
@@ -152,6 +164,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     sendMessage: (room, userId, username, message, socket) => dispatch(sendMessage(room, userId, username, message, socket)),
     fetchRoom: (room, socket) => dispatch(fetchRoom(room, socket)),
+    notifyUser: (notifyObj) => dispatch(notifyUser(notifyObj)),
   }
 }
 

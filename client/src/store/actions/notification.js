@@ -39,8 +39,8 @@ export const fetchNotifications = () => dispatch => {
 };
 
 // set has viewed for the authenticated users notifications
-export const hasViewed = (id) => dispatch => {
-    axios.put(`/api/notify/has_viewed/${id}`)
+export const hasViewed = (id, type) => dispatch => {
+    axios.put(`/api/notify/has_viewed/${id}/${type}`)
     .catch((err) => {
         console.log(err);
         const error = err.response.data.serverMsg;

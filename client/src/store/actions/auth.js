@@ -78,7 +78,6 @@ export const login = ({ ...formData }, history) => dispatch => {
         });
         dispatch(loadUser());
         dispatch(setAlert('Logged in successfully', 'success'));
-        dispatch(fetchNotifications());
     })
     .catch((err) => {
         const error = err.response.data.serverMsg;

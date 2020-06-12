@@ -1,8 +1,9 @@
-.button {
+.btnPings {
     position: relative;
     border-radius: 4px;
     border: 2px solid white;
-    padding: 15px 30px;
+    margin-left: 8px;
+    margin-right: 8px;
     color: white;
     background: rgba(0, 0, 0, 0.1);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
@@ -26,8 +27,8 @@
   
   .badge {
     border-radius: 39px;
-    width: 30px;
-    height: 30px;
+    /* width: 30px; */
+    /* height: 30px; */
     display: block;
     position: absolute;
     background: #1fceff;

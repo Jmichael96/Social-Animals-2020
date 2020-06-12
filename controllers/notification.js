@@ -4,7 +4,7 @@ const Notification = require('../models/notification');
 // @desc     Adding a notification for the specified user
 // @access   Private
 exports.notifyUser = (req, res, next) => {
-    if (req.body.notifiedUser.toString() === req.user._id) {
+    if (req.body.notifiedUser === req.user._id) {
         console.log('you dont need to be notified');
         return;
     }
@@ -25,6 +25,7 @@ exports.notifyUser = (req, res, next) => {
             if (!notification) {
                 return;
             }
+            console.log(notification);
             return res.status(201).json(notification);
         })
         .catch((err) => {
@@ -51,17 +52,20 @@ exports.fetchNotifications = (req, res, next) => {
         });
 }
 
-// @route    PUT api/notify/has_viewed/:id
+// @route    PUT api/notify/has_viewed/:id/:type
 // @desc     Updating all notifications setting hasViewed to true once user has seen them
 // @access   Private
 exports.hasViewed = (req, res, next) => {
-    Notification.updateMany({ notifiedUser: req.params.id }, {
+    Notification.updateMany({ notifiedUser: req.params.id, type: req.params.type }, {
         $set: {
             'hasViewed': true
         }
-    }).then((notifications) => {
-        console.log(notifications);
-        res.status(201);
+    }).then((result) => {
+        if (result.n > 0) {
+            return res.status(200).json({ serverMsg: 'Updated notifications successfully' });
+        } else {
+            return res.status(401).json({ serverMsg: 'Not authorized' });
+        };
     })
     .catch((err) => {
         console.log(err);
