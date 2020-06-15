@@ -25,7 +25,7 @@ const AddComment = ({ postId, addComment, notifyUser, notifiedUser, userId, user
             notificationType: notificationType,
             profilePic: profilePic,
             link: `/my_profile`,
-            type: 'post'
+            type: 'nots'
         }
         notifyUser(notifyObj);
     }

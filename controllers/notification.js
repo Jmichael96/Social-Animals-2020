@@ -25,7 +25,6 @@ exports.notifyUser = (req, res, next) => {
             if (!notification) {
                 return;
             }
-            console.log(notification);
             return res.status(201).json(notification);
         })
         .catch((err) => {

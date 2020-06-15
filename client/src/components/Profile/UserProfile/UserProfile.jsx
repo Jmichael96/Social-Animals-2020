@@ -35,7 +35,7 @@ const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, setFoll
                     notificationType: `has started following you.`,
                     profilePic: auth.user.profilePicture,
                     link: `/my_profile`,
-                    type: 'profile'
+                    type: 'nots'
                 };
                 notifyUser(notifyObj);
             }

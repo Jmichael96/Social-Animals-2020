@@ -30,7 +30,7 @@ const notificationSchema = new mongoose.Schema({
     },
     expiresIn: {
         type: Date,
-        default: 86400
+        expires: 86400
     },
     type: {
         type: String,

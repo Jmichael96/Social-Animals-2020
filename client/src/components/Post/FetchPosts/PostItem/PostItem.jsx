@@ -265,7 +265,7 @@ const PostItem = ({
                                         notificationType: `has liked your post "${content}"`,
                                         profilePic: user.profilePicture,
                                         link: `/my_profile`,
-                                        type: 'post'
+                                        type: 'nots'
                                     }
                                     notifyUser(notifyObj);
                                 }}>

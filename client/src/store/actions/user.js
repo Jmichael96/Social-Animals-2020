@@ -96,7 +96,6 @@ export const updateProfile = ({ id, profilePicture, name, bio, location, email }
 
 // fetching user profile by ID
 export const fetchProfileById = (id) => dispatch => {
-    console.log('fetching user profile in actions')
     axios.get(`/api/user/user_profile/${id}`)
         .then((res) => {
             dispatch({
@@ -241,7 +240,6 @@ export const deleteChat = (userId, chatId) => dispatch => {
             'Content-Type': 'application/json'
         }
     };
-    console.log(userId, chatId)
     axios.put(`/api/user/delete_chat/${userId}/${chatId}`, config)
     .then((res) => {
         dispatch({

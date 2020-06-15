@@ -10,18 +10,9 @@ import { Link, withRouter } from 'react-router-dom';
 
 const RenderNotifications = ({ notifications, loading, history }) => {
 
-
     const renderData = () => {
         if (!loading && !isEmpty(notifications)) {
             return Object.values(notifications).map((data, index) => {
-                const renderText = () => {
-                    if (data.notificationType.length > 20) {
-                        return
-                    }
-                    else {
-                        return data.notificationType;
-                    }
-                }
                 return (
                     <div key={index}>
                         <MDBContainer fluid>

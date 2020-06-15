@@ -11,22 +11,21 @@ import './currentUserNotifications.css';
 
 const CurrentUserNotifications = ({ fetchNotifications, auth, notification: { notifications, loading }, hasViewed }) => {
     const [modal, setModal] = useState(false);
-    // for all post notifications
-    const [postNots, setPostNots] = useState([]);
     // for all message notifications
     const [messageNots, setMessageNots] = useState([]);
-    // for all profile notifications
-    const [profileNots, setProfileNots] = useState([]);
+    // for both profile and post notifications
+    const [nots, setNots] = useState([]);
+    // setting the data to always render even when setting the hasviewed method
+    const [notData, setNotData] = useState([]);
+    const [messageData, setMessageData] = useState([]);
 
     // set boolean for each of the notifications to render the correct type appropriately
-    const [isPosts, setIsPosts] = useState(false);
     const [isMessages, setIsMessages] = useState(false);
-    const [isProfiles, setIsProfiles] = useState(false);
+    const [isNots, setIsNots] = useState(false);
 
     // set the length for specific notifications
-    const [postLength, setPostLength] = useState();
     const [msgLength, setMsgLength] = useState();
-    const [prflLength, setPrflLength] = useState();
+    const [notsLength, setNotsLength] = useState();
 
     useEffect(() => {
         if (!auth.loading && !isEmpty(auth.user)) {
@@ -45,50 +44,53 @@ const CurrentUserNotifications = ({ fetchNotifications, auth, notification: { no
     // close modal and reset booleans
     const setCloseModal = () => {
         setModal(false);
-        setIsPosts(false);
         setIsMessages(false);
-        setIsProfiles(false);
+        setIsNots(false);
     }
 
+    // get the number length and the data from notifications
     const getNumNData = () => {
         if (!loading && !isEmpty(notifications)) {
-            let postArr = [];
             let messageArr = [];
-            let profileArr = [];
+            let notsArr = [];
+
             for (let i = 0; i < notifications.length; i++) {
-                if (notifications[i].hasViewed === false && notifications[i].type === 'post') {
-                    postArr.push(notifications[i]);
-                    setPostNots((item) => [...item, notifications[i]]);
-                } 
-                else if (notifications[i].hasViewed === false && notifications[i].type === 'message') {
+                if (notifications[i].type === 'nots') {
+                    setNotData((item) => [...item, notifications[i]]);
+                }
+
+                if (notifications[i].type === 'message') {
+                    setMessageData((item) => [...item, notifications[i]]);
+                }
+
+                if (notifications[i].hasViewed === false && notifications[i].type === 'message') {
                     messageArr.push(notifications[i]);
                     setMessageNots((item) => [...item, notifications[i]]);
                 } 
-                else if (notifications[i].hasViewed === false && notifications[i].type === 'profile') {
-                    profileArr.push(notifications[i]);
-                    setProfileNots((item) => [...item, notifications[i]]);
+                else if (notifications[i].hasViewed === false && notifications[i].type === 'nots') {
+                    notsArr.push(notifications[i]);
+                    setNots((item) => [...item, notifications[i]]);
                 }
             }
-            setPostLength(postArr.length);
             setMsgLength(messageArr.length);
-            setPrflLength(profileArr.length);
+            setNotsLength(notsArr.length);
         }
     }
 
-    // render button icon for post notifications
-    const renderPostBtn = () => {
-        if (!loading && postNots.length === 0) {
+    // render button icon for both post and profile notifications
+    const renderNotsBtn = () => {
+        if (!loading && nots.length === 0) {
             return <button onClick={() => {
                 setOpenModal();
-                setIsPosts(true);
-            }} className="btnPings"><span className="content"><i class="fas fa-bell"></i></span></button>
+                setIsNots(true);
+            }} className="btnPings"><span className="content"><i className="fas fa-bell"></i></span></button>
         }
-        else if (!loading && !isEmpty(postNots)) {
+        else if (!loading && !isEmpty(nots)) {
             return <button onClick={() => {
                 setOpenModal();
-                setIsPosts(true);
-                // submitHasViewed('post');
-            }} className="btnPings"><span className="content"><i class="fas fa-bell"></i></span><span className="badge">{postLength}</span></button>
+                setIsNots(true);
+                submitHasViewed('nots');
+            }} className="btnPings"><span className="content"><i className="fas fa-bell"></i></span><span className="badge">{notsLength}</span></button>
         }
     }
 
@@ -98,83 +100,59 @@ const CurrentUserNotifications = ({ fetchNotifications, auth, notification: { no
             return <button onClick={() => {
                 setOpenModal();
                 setIsMessages(true);
-            }} className="btnPings"><span className="content"><i class="fas fa-comment-alt"></i></span></button>
+            }} className="btnPings"><span className="content"><i className="fas fa-comment-alt"></i></span></button>
         }
         else if (!loading && !isEmpty(messageNots)) {
             return <button onClick={() => {
                 setOpenModal();
                 setIsMessages(true);
-                // submitHasViewed('message');
-            }} className="btnPings"><span className="content"><i class="fas fa-comment-alt"></i></span><span className="badge">{msgLength}</span></button>
+                submitHasViewed('message');
+            }} className="btnPings"><span className="content"><i className="fas fa-comment-alt"></i></span><span className="badge">{msgLength}</span></button>
         }
     }
 
-    // render button icon for profile notifications
-    const renderPrflBtn = () => {
-        if (!loading && profileNots.length === 0) {
-            return <button onClick={() => {
-                setOpenModal();
-                setIsProfiles(true);
-            }} className="btnPings"><span className="content"><i class="fas fa-address-card"></i></span></button>
-        }
-        else if (!loading && !isEmpty(profileNots)) {
-            return <button onClick={() => {
-                setOpenModal();
-                setIsProfiles(true);
-                // submitHasViewed('profile');
-            }} className="btnPings"><span className="content"><i class="fas fa-address-card"></i></span><span className="badge">{prflLength}</span></button>
-        }
-    }
-
-    // render notification data just for posts
-    const renderPostData = () => {
-        if (!loading && isEmpty(postNots)) {
-            return null;
-        }
-        else if (!loading && !isEmpty(postNots) && isPosts) {
-            return <RenderNotifications notifications={postNots} loading={loading} />
-        }
-    }
     // render notification data just for messages
     const renderMessageData = () => {
-        if (!loading && isEmpty(messageNots)) {
+        if (!loading && isEmpty(messageData)) {
             return null;
         }
-        else if (!loading && !isEmpty(messageNots) && isMessages) {
-            return <RenderNotifications notifications={messageNots} loading={loading} />
+        else if (!loading && !isEmpty(messageData) && isMessages) {
+            return <RenderNotifications notifications={messageData} loading={loading} />
         }
     }
-    // render notification data for profiles
-    const renderProfileData = () => {
-        if (!loading && isEmpty(profileNots)) {
+
+    // render notification data for profile and posts
+    const renderNotData = () => {
+        if (!loading && isEmpty(notData)) {
             return null;
         }
-        else if (!loading && !isEmpty(profileNots) && isProfiles) {
-            return <RenderNotifications notifications={profileNots} loading={loading} />
+        else if (!loading && !isEmpty(notData) && isNots) {
+            return <RenderNotifications notifications={notData} loading={loading} />
         }
     }
 
     const submitHasViewed = (type) => {
         if (!auth.loading && !isEmpty(auth.user)) {
             hasViewed(auth.user._id, type);
-            setPostLength(0);
-            setMsgLength(0);
-            setPrflLength(0);
+            setMsgLength();
+            setNotsLength();
         }
     }
 
     return (
         <Fragment>
             <MDBContainer>
-                {renderPostBtn()}
+                {/* {renderPostBtn()} */}
                 {renderMsgBtn()}
-                {renderPrflBtn()}
+                {renderNotsBtn()}
+                {/* {renderPrflBtn()} */}
                 <MDBModal isOpen={modal} toggle={setCloseModal}>
                     <MDBModalBody>
                         <div onClick={setCloseModal}>
-                            {renderPostData()}
+                            {/* {renderPostData()} */}
                             {renderMessageData()}
-                            {renderProfileData()}
+                            {renderNotData()}
+                            {/* {renderProfileData()} */}
                         </div>
                     </MDBModalBody>
                     <MDBModalFooter>

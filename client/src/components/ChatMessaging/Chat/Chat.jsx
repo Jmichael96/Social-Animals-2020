@@ -10,11 +10,11 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import isEmpty from '../../../utils/isEmpty';
 import { withRouter } from 'react-router-dom';
-import { notifyUser } from '../../../store/actions/notification';
+import { notifyUser, hasViewed } from '../../../store/actions/notification';
 
 let socket = io.connect('http://localhost:8080');
 
-const Chat = ({ fetchRoom, location, sendMessage, auth, notifyUser, history }) => {
+const Chat = ({ fetchRoom, location, sendMessage, auth, notifyUser, hasViewed, history }) => {
   const [message, setMessage] = useState('');
   const [messageData, setMessageData] = useState([]);
   const [userData, setUserData] = useState();
@@ -84,11 +84,21 @@ const Chat = ({ fetchRoom, location, sendMessage, auth, notifyUser, history }) =
     }
   }, [auth]);
 
+  // watch all the messages for new ones in case the user is in the chat already. 
+  // if they are then run the hasViewed func to not get notified for new messages that they have already seen
+  useEffect(() => {
+    if (!auth.loading && !isEmpty(auth.user) && !isEmpty(messageData)) {
+      let msg = messageData[messageData.length - 1];
+      if (msg.userId.toString() !== auth.user._id) {
+        hasViewed(auth.user._id, 'message');
+      }
+    }
+  }, [messageData])
   // submit the message func
   const submitMessage = (e) => {
     e.preventDefault();
     if (!auth.loading && !isEmpty(auth.user) && !isEmpty(userData) && !isEmpty(outerRoom)) {
-      
+
       let recipientUser = '';
       for (let i = 0; i < userData.length; i++) {
         if (userData[i].userId.toString() !== auth.user._id) {
@@ -139,7 +149,7 @@ const Chat = ({ fetchRoom, location, sendMessage, auth, notifyUser, history }) =
     }
   }
 
-  
+
   return (
     <div className="outerContainer">
       <div className="innerContainer">
@@ -157,6 +167,7 @@ Chat.propTypes = {
   fetchRoom: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   notifyUser: PropTypes.func.isRequired,
+  hasViewed: PropTypes.func.isRequired,
   history: PropTypes.any,
 }
 
@@ -165,6 +176,7 @@ const mapDispatchToProps = (dispatch) => {
     sendMessage: (room, userId, username, message, socket) => dispatch(sendMessage(room, userId, username, message, socket)),
     fetchRoom: (room, socket) => dispatch(fetchRoom(room, socket)),
     notifyUser: (notifyObj) => dispatch(notifyUser(notifyObj)),
+    hasViewed: (id, type) => dispatch(hasViewed(id, type))
   }
 }
 
