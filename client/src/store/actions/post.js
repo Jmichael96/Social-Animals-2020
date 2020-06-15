@@ -79,9 +79,9 @@ export const fetchAllPosts = () => dispatch => {
             dispatch({
                 type: types.CLEAR_PROFILE
             });
-            dispatch({
-                type: types.CLEAR_CHAT
-            });
+            // dispatch({
+            //     type: types.CLEAR_CHAT
+            // });
         })
         .catch((err) => {
             const error = err.response.data.serverMsg;
@@ -148,8 +148,14 @@ export const deletePost = (id) => dispatch => {
 }
 
 // like a post
-export const likePost = (id) => dispatch => {
-    axios.put(`/api/posts/like/${id}`)
+export const likePost = (id, type) => dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+
+    axios.put(`/api/posts/like/${id}`, { type }, config)
         .then((res) => {
             dispatch({
                 type: types.UPDATE_LIKES,

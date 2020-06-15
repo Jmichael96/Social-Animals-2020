@@ -19,6 +19,7 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 posts: payload,
+                adoptionPosts: payload,
                 loading: false
             }
         case types.FETCH_MY_POSTS:
@@ -44,12 +45,16 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 posts: [payload, ...state.posts],
+                adoptionPosts: [payload, ...state.adoptionPosts],
                 loading: false
             }
         case types.UPDATE_LIKES:
             return {
                 ...state,
                 posts: state.posts.map(post =>
+                    post._id === payload.id ? { ...post, likes: payload.likes } : post
+                ),
+                adoptionPosts: state.adoptionPosts.map(post =>
                     post._id === payload.id ? { ...post, likes: payload.likes } : post
                 ),
                 loading: false
@@ -59,6 +64,9 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 posts: state.posts.map(post =>
+                    post._id === payload.id ? { ...post, comments: payload.comments } : post
+                ),
+                adoptionPosts: state.adoptionPosts.map(post =>
                     post._id === payload.id ? { ...post, comments: payload.comments } : post
                 ),
                 loading: false
@@ -73,6 +81,7 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 posts: state.posts.filter((post) => post._id !== payload),
+                adoptionPosts: state.adoptionPosts.filter((post) => post._id !== payload),
                 loading: false
             }
         case types.POST_ERROR:

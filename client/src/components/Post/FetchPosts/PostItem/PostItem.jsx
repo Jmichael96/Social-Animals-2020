@@ -21,6 +21,8 @@ import isEmpty from '../../../../utils/isEmpty';
 import PostImages from './PostImages/PostImages';
 import RenderPostLikes from './RenderPostLikes/RenderPostLikes';
 import RenderPostComments from './RenderPostComments/RenderPostComments';
+import Wrapper from '../../../Layout/Wrapper/Wrapper';
+import LikePost from '../../Like/LikePost/LikePost';
 
 import './postItem.css';
 
@@ -39,26 +41,10 @@ const PostItem = ({
     const [commentLimitReached, setCommentLimitReached] = useState(false);
     const [editing, setEditing] = useState(false);
     const [contentEdit, setContentEdit] = useState(content);
-    // checking to see if authenticated user has liked this post. if they have change the color of the like button
-    const [hasLiked, setHasLiked] = useState(false);
 
     useEffect(() => {
         setContentEdit(content);
-
-        // checking if authenticated user has already liked post and changing button color accordingly
-        if (!loading && user) {
-            if (!postLoading && likes) {
-                let userId = user._id;
-                for (let i = 0; i < likes.length; i++) {
-                    if (userId === likes[i].userId) {
-                        setHasLiked(true);
-                        return;
-                    }
-                }
-            }
-        }
-
-    }, [content, isEmpty, user, likes]);
+    }, [content]);
 
     // checking if user is authenticated and owns the post 
     // they want to update or delete
@@ -169,13 +155,13 @@ const PostItem = ({
     const renderAddComment = () => {
         if (!loading && isAuthenticated && !isEmpty(user)) {
             return (
-                <AddComment 
-                postId={_id} 
-                notifiedUser={authorId} 
-                userId={user._id} 
-                username={user.username} 
-                profilePic={user.profilePicture} 
-                notificationType={`has commented on your post "${content}"`}
+                <AddComment
+                    postId={_id}
+                    notifiedUser={authorId}
+                    userId={user._id}
+                    username={user.username}
+                    profilePic={user.profilePicture}
+                    notificationType={`has commented on your post "${content}"`}
                 />
             )
         }
@@ -243,42 +229,17 @@ const PostItem = ({
                                     />
                                 )}
 
-
+                            <RenderPostLikes postLoading={postLoading} isAuth={isAuthenticated} likes={likes} />
                             {isAuthenticated && user ? (
-                                <button type="button" style={{ backgroundColor: !hasLiked ? 'white' : 'red' }} onClick={() => {
-                                    for (let i = 0; i < likes.length; i++) {
-                                        if (likes[i].userId === user._id) {
-                                            // if a post has already been liked by the logged in user...
-                                            // unlike it and return nothing;
-                                            setHasLiked(false);
-                                            unlikePost(_id);
-                                            return;
-                                        }
-                                    }
-                                    // if user has not liked post. like post with authenticated user's id
-                                    setHasLiked(true);
-                                    likePost(_id);
-                                    let notifyObj = {
-                                        notifiedUser: authorId,
-                                        userId: user._id,
-                                        username: user.username,
-                                        notificationType: `has liked your post "${content}"`,
-                                        profilePic: user.profilePicture,
-                                        link: `/my_profile`,
-                                        type: 'nots'
-                                    }
-                                    notifyUser(notifyObj);
-                                }}>
-                                    <i className="fas fa-thumbs-up" />{' '}
-                                </button>
+                                <LikePost likePost={likePost} postId={_id} likeArr={likes} user={user} unlikePost={unlikePost} authorId={authorId} notifyUser={notifyUser} postContent={content} />
                             ) : (
                                     null
                                 )}
-                            <RenderPostLikes postLoading={postLoading} isAuth={isAuthenticated} likes={likes} />
                             <RenderPostComments postLoading={postLoading} comments={comments} />
                             {renderLoadMoreComments()}
                             {renderComments()}
                             {renderAddComment()}
+
                         </div>
                     </MDBCol>
                 </MDBRow>

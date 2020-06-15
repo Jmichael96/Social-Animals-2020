@@ -146,7 +146,7 @@ exports.likePost = (req, res, next) => {
                 });
             };
 
-            post.likes.unshift({ userId: req.user._id, username: req.user.username });
+            post.likes.unshift({ userId: req.user._id, username: req.user.username, type: req.body.type });
 
             post.save()
             return res.json(post.likes);
