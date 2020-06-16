@@ -71,6 +71,20 @@ export default function (state = initialState, action) {
                 ),
                 loading: false
             }
+        case types.DELETE_IMAGE:
+            return {
+                ...state,
+                // posts: state.posts.map(post =>
+                //     post._id === payload.postId ? payload.post : post
+                // ),
+                posts: state.posts.map(post =>
+                    post._id === payload.postId ? { ...post, imagePath: payload.imagePath } : post
+                ),
+                adoptionPosts: state.adoptionPosts.map(post =>
+                    post._id === payload.postId ? { ...post, imagePath: payload.imagePath } : post
+                ),
+                loading: false
+            }
         case types.UPDATE_COMMENT:
             return {
                 ...state,

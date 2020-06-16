@@ -3,6 +3,38 @@
 }
 
 /* inner wrap of images inside carousel */
+
 .postImgCarouselInner {
     /* height: 300px; */
+}
+
+
+/* for the delete icon */
+.popup_delete {
+    position: absolute;
+    top: 8px;
+    right: 16px;
+}
+
+.popup_delete:not([aria-hidden="true"]) {
+    -webkit-transition: opacity 0.15s ease-in-out, visibility 0.15s, -webkit-transform 0.15s ease-in-out;
+    transition: opacity 0.15s ease-in-out, visibility 0.15s, -webkit-transform 0.15s ease-in-out;
+    transition: transform 0.15s ease-in-out, opacity 0.15s ease-in-out, visibility 0.15s;
+    transition: transform 0.15s ease-in-out, opacity 0.15s ease-in-out, visibility 0.15s, -webkit-transform 0.15s ease-in-out;
+}
+
+.popup_delete[aria-hidden="true"] {
+    visibility: hidden;
+    opacity: 0;
+    -webkit-transform: translateY(10px);
+    transform: translateY(10px);
+    -webkit-transition: opacity 0.1s ease-in-out, visibility 0s ease 0.1s, -webkit-transform 0.1s ease-in-out;
+    transition: opacity 0.1s ease-in-out, visibility 0s ease 0.1s, -webkit-transform 0.1s ease-in-out;
+    transition: transform 0.1s ease-in-out, opacity 0.1s ease-in-out, visibility 0s ease 0.1s;
+    transition: transform 0.1s ease-in-out, opacity 0.1s ease-in-out, visibility 0s ease 0.1s, -webkit-transform 0.1s ease-in-out;
+}
+
+/* the delete icon button tag */
+.deleteIcon {
+    background-color: red;
 }

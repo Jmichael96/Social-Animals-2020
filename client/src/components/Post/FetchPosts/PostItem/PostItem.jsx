@@ -11,7 +11,7 @@ import {
     MDBDropdownItem
 } from 'mdbreact';
 import { connect } from 'react-redux';
-import { updatePost, deletePost, likePost, unlikePost } from '../../../../store/actions/post';
+import { updatePost, deletePost, likePost, unlikePost, deleteImage } from '../../../../store/actions/post';
 import { notifyUser } from '../../../../store/actions/notification';
 import { fetchLikes } from '../../../../store/actions/like';
 import { setModal } from '../../../../store/actions/modal';
@@ -35,7 +35,8 @@ const PostItem = ({
     auth: { isAuthenticated, user, loading },
     post: { _id, content, imagePath, date, authorId, authorUsername, likes, comments },
     postLoading,
-    notifyUser
+    notifyUser,
+    deleteImage
 }) => {
     const [commentLimit, setCommentLimit] = useState(2);
     const [commentLimitReached, setCommentLimitReached] = useState(false);
@@ -193,6 +194,18 @@ const PostItem = ({
         }
     }
 
+    // render the post images
+    const renderImages = () => {
+        if (!loading && !isEmpty(user) && !isEmpty(imagePath)) {
+            return <PostImages
+                postImages={imagePath}
+                postId={_id}
+                authLoading={loading}
+                user={user}
+                authorId={authorId}
+                deleteImage={deleteImage} />
+        }
+    }
     return (
         <Fragment>
             <MDBContainer>
@@ -214,7 +227,7 @@ const PostItem = ({
                                 </MDBCol>
                             </MDBRow>
                             <div className="postImgWrap">
-                                <PostImages postImages={imagePath} />
+                                {renderImages()}
                             </div>
                             {!editing ? (
                                 <p id="postContent">{content}</p>
@@ -258,6 +271,7 @@ PostItem.propTypes = {
     likePost: PropTypes.func.isRequired,
     unlikePost: PropTypes.func.isRequired,
     notifyUser: PropTypes.func.isRequired,
+    deleteImage: PropTypes.func.isRequired,
     postLoading: PropTypes.any,
 }
 
@@ -265,4 +279,4 @@ const mapStateToProps = (state) => ({
     auth: state.auth,
 });
 
-export default connect(mapStateToProps, { updatePost, setModal, deletePost, likePost, unlikePost, fetchLikes, notifyUser })(PostItem);
+export default connect(mapStateToProps, { updatePost, setModal, deletePost, likePost, unlikePost, fetchLikes, notifyUser, deleteImage })(PostItem);

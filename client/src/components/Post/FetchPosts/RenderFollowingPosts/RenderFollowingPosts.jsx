@@ -17,9 +17,9 @@ const FetchFollowingPosts = ({ fetchFollowingPosts, post: { posts, loading }, au
     
     const renderPosts = () => {
         const postList = posts;
-        return Object.values(postList).map((post) => {
+        return Object.values(postList).map((post, i) => {
             return loading ? (<Spinner />) : (
-                    <PostItem key={post._id} postLoading={loading} post={post} />
+                    <PostItem key={i} postLoading={loading} post={post} />
             )
         })
     }

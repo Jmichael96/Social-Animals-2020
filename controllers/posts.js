@@ -73,20 +73,20 @@ exports.fetchAll = (req, res, next) => {
 // @access   Public
 exports.fetchAdoptionPosts = (req, res, next) => {
     Post.find({ postType: 'adopt' }).sort({ date: -1 })
-    .then((posts) => {
-        if (!posts) {
-            return res.status(500).json({
-                serverMsg: 'No posts available'
+        .then((posts) => {
+            if (!posts) {
+                return res.status(500).json({
+                    serverMsg: 'No posts available'
+                });
+            }
+            res.status(201).json(posts);
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json({
+                serverMsg: 'Could not receive posts'
             });
-        }
-        res.status(201).json(posts);
-    })
-    .catch((err) => {
-        console.log(err);
-        res.status(500).json({
-            serverMsg: 'Could not receive posts'
         });
-    });
 }
 
 // @route    PUT api/posts/update_post/:id
@@ -234,7 +234,7 @@ exports.deleteCommment = (req, res, next) => {
             const comment = post.comments.find((comment) =>
                 comment.id === req.params.comment_id
             )
-            
+
             if (!comment) {
                 return res.status(404).json({
                     serverMsg: 'Comment does not exist'
@@ -328,17 +328,17 @@ exports.fetchFollowingPosts = (req, res, next) => {
 // @access   Private
 exports.fetchMyPosts = (req, res, next) => {
     Post.find({ authorId: req.user._id }).sort({ _id: -1 })
-    .then((posts) => {
-        if (!posts) {
-            return;
-        }
-        res.status(201).json(posts);
-    })
-    .catch((err) => {
-        res.status(500).json({
-            serverMsg: 'Couldn\'t fetch your posts at this time.'
+        .then((posts) => {
+            if (!posts) {
+                return;
+            }
+            res.status(201).json(posts);
+        })
+        .catch((err) => {
+            res.status(500).json({
+                serverMsg: 'Couldn\'t fetch your posts at this time.'
+            });
         });
-    });
 }
 
 // @route    GET api/posts/fetch_user_profile_posts
@@ -346,17 +346,58 @@ exports.fetchMyPosts = (req, res, next) => {
 // @access   Private
 exports.fetchUsersProfilePosts = (req, res, next) => {
     Post.find({ authorId: req.query.userId }).sort({ _id: -1 })
-    .then((posts) => {
-        if (!posts) {
-            return;
-        }
-        res.status(201).json(posts);
-    })
-    .catch((err) => {
-        res.status(500).json({
-            serverMsg: 'Couldn\'t fetch user\'s profile posts at this time.'
+        .then((posts) => {
+            if (!posts) {
+                return;
+            }
+            res.status(201).json(posts);
+        })
+        .catch((err) => {
+            res.status(500).json({
+                serverMsg: 'Couldn\'t fetch user\'s profile posts at this time.'
+            });
         });
-    });
 
-    
+
 }
+
+// @route    PUT api/posts/delete_image/:postId/:imageId
+// @desc     Delete an image
+// @access   Private
+exports.deletePostImage = (req, res, next) => {
+    console.log('fired deletePostImage()')
+    Post.findByIdAndUpdate({ _id: req.params.postId })
+        .then((post) => {
+
+            // finding the image in the imagePath array with the given ID
+            const image = post.imagePath.find((image) =>
+                image.id === req.params.imageId
+            )
+
+            if (!image) {
+                return res.status(404).json({
+                    serverMsg: 'Image does not exist'
+                });
+            }
+
+            // if its the author of the post... delete image
+            if (post.authorId.toString() === req.user._id) {
+                post.imagePath = post.imagePath.filter(
+                    ({ id }) => id !== req.params.imageId
+                );
+            }
+
+            post.save();
+
+            return res.status(201).json({
+                imagePath: post.imagePath,
+                serverMsg: 'Deleted image successfully'
+            });
+        })
+        .catch((err) => {
+            console.log(err);
+            return res.status(500).json({
+                serverMsg: 'Couldn\'t delete image. Please try again later.'
+            });
+        });
+};

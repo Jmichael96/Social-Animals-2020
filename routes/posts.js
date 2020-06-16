@@ -75,4 +75,9 @@ router.get('/fetch_user_profile_posts', isAuthenticated, PostController.fetchUse
 // @access   Public
 router.get('/fetch_adoption_posts', PostController.fetchAdoptionPosts);
 
+// @route    PUT api/posts/delete_image/:postId/:imageId
+// @desc     Delete an image
+// @access   Private
+router.put('/delete_image/:postId/:imageId', isAuthenticated, PostController.deletePostImage);
+
 module.exports = router;
