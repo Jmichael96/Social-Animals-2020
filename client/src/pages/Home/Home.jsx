@@ -4,6 +4,7 @@ import FetchFollowingPosts from '../../components/Post/FetchPosts/RenderFollowin
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import isEmpty from '../../utils/isEmpty';
+import Slide from '../../components/Post/FetchPosts/PostItem/PostImages/Slide';
 
 const Home = ({ auth: { isAuthenticated, user, loading }}) => {  
 

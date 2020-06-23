@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
     MDBCarousel,
@@ -10,10 +10,21 @@ import {
 import Wrapper from '../../../../Layout/Wrapper/Wrapper';
 import './postImages.css';
 import isEmpty from '../../../../../utils/isEmpty';
+import Slide from './Slide';
 
-const PostImages = ({ postImages, postId, authLoading, user, authorId, deleteImage }) => {
+const PostImages = ({ postImages, postId, authLoading, user, authorId, deleteImage, isEditing }) => {
+
     // for the hoverable dropdown
     const [isShown, setIsShown] = useState(false);
+    // set the images array in a variable
+    const [imgArr, setImgArr] = useState([]);
+    // set number length of image array
+    const [imgLength, setImgLength] = useState();
+    const [currentIndex, setCurrentIndex] = useState(0);
+    console.log(isEditing)
+    useEffect(() => {
+        fetchData()
+    }, [postImages]);
 
     const onMouseEnter = () => {
         setIsShown(true);
@@ -23,6 +34,7 @@ const PostImages = ({ postImages, postId, authLoading, user, authorId, deleteIma
         setIsShown(false);
     }
 
+    // function called when hitting the delete button
     const onDeleteSubmit = (imageId) => {
         if (!authLoading && !isEmpty(user)) {
             if (user._id === authorId) {
@@ -31,13 +43,14 @@ const PostImages = ({ postImages, postId, authLoading, user, authorId, deleteIma
         }
     }
 
+    // render the delete button
     const renderDeleteBtn = (imageId) => {
         if (!authLoading && !isEmpty(user)) {
             if (user._id === authorId) {
                 return (
                     <div aria-hidden={!isShown} className="popup_delete">
                         <button onClick={() => {
-                            onDeleteSubmit(imageId)
+                            onDeleteSubmit(imageId);
                         }} className="deleteIcon">X</button>
                     </div>
                 )
@@ -45,23 +58,41 @@ const PostImages = ({ postImages, postId, authLoading, user, authorId, deleteIma
         }
     }
 
-    return !postImages ? (null) : (
+    // function to set the data to setState variables
+    const fetchData = () => {
+        setImgArr(postImages);
+        setImgLength(postImages.length);
+    }
+    
+    return !imgArr && !imgLength ? (null) : (
         <MDBContainer>
             <Wrapper>
+                <div className="image-container">
+                    {Object.values(imgArr).map((img, i) => {
+                        return (
+                            <div className="image-block">
+                                <img className="image" src={img.url} />
+                                {renderDeleteBtn(img._id)}
+                            </div>
+                        )
+                    })}
+                </div>
+            </Wrapper>
+            {/* <Wrapper>
                 <MDBCarousel
                     activeItem={1}
-                    length={postImages.length}
+                    length={imgLength}
                     showControls={false}
                     showIndicators={true}
                     className="z-depth-1"
                     interval={false}
                 >
                     <MDBCarouselInner className="postImgCarouselInner">
-                        {Object.values(postImages).map((image, i) => {
+                        {Object.values(imgArr).map((image, i) => {
                             return (
                                 <MDBCarouselItem
-                                    key={image._id}
-                                    itemId={i + 1} 
+                                    key={i}
+                                    itemId={i + 1}
                                     aria-expanded={isShown}
                                     onMouseEnter={onMouseEnter}
                                     onMouseLeave={onMouseLeave}>
@@ -78,7 +109,7 @@ const PostImages = ({ postImages, postId, authLoading, user, authorId, deleteIma
                         })}
                     </MDBCarouselInner>
                 </MDBCarousel>
-            </Wrapper>
+            </Wrapper> */}
         </MDBContainer>
     )
 }
@@ -90,6 +121,7 @@ PostImages.propTypes = {
     authLoading: PropTypes.bool,
     user: PropTypes.object.isRequired,
     authorId: PropTypes.string.isRequired,
+    isEditing: PropTypes.bool,
 }
 
 export default PostImages;

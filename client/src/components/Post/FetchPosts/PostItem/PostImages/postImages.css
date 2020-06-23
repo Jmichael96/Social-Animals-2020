@@ -8,8 +8,8 @@
     /* height: 300px; */
 }
 
-
 /* for the delete icon */
+
 .popup_delete {
     position: absolute;
     top: 8px;
@@ -35,6 +35,28 @@
 }
 
 /* the delete icon button tag */
+
 .deleteIcon {
     background-color: red;
+}
+
+.image-container {
+    display: inline-block;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: 40%;
+    height: 400px;
+}
+
+.image-block {
+    /* height: 100px;
+    width: 100px; */
+    margin: 10px;
+    display: inline-block;
+}
+
+.image {
+    height: 390px;
+    width: 400px;
 }

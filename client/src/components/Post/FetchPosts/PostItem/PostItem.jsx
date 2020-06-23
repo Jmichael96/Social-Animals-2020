@@ -203,9 +203,11 @@ const PostItem = ({
                 authLoading={loading}
                 user={user}
                 authorId={authorId}
-                deleteImage={deleteImage} />
+                deleteImage={deleteImage}
+                isEditing={editing} />
         }
     }
+
     return (
         <Fragment>
             <MDBContainer>

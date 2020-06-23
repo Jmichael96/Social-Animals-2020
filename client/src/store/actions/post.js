@@ -357,7 +357,6 @@ export const deleteImage = (postId, imageId) => dispatch => {
     
     axios.put(`/api/posts/delete_image/${postId}/${imageId}`)
     .then((res) => {
-        console.log(res.data);
         dispatch({
             type: types.DELETE_IMAGE,
             payload: { postId, imagePath: res.data.imagePath }
