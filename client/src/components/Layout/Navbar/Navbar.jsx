@@ -1,8 +1,12 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
     MDBNavbar,
-    MDBCollapse
+    MDBCollapse,
+    MDBDropdown,
+    MDBDropdownToggle,
+    MDBDropdownMenu,
+    MDBDropdownItem
 } from "mdbreact";
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -11,6 +15,17 @@ import WelcomeMessage from '../../Profile/WelcomeMessage/WelcomeMessage';
 import CurrentUserNotifications from '../../Notifications/CurrentUserNotifications/CurrentUserNotifications';
 
 const Navbar = ({ auth: { isAuthenticated, loading, user }, logout }) => {
+    // for the hoverable dropdown
+    const [isShown, setIsShown] = useState(false);
+
+    const onMouseEnter = () => {
+        setIsShown(true);
+    }
+
+    const onMouseLeave = () => {
+        setIsShown(false);
+    }
+
     const guestLinks = (
         <ul className="navbar-nav">
             <li className="nav-item">
@@ -50,6 +65,24 @@ const Navbar = ({ auth: { isAuthenticated, loading, user }, logout }) => {
                 </li>
                 <li className="nav-item">
                     <Link className="nav-link" to="/my_messages">Messages</Link>
+                </li>
+                <li className="nav-item" 
+                    onMouseEnter={onMouseEnter}
+                    onMouseLeave={onMouseLeave}>
+                    <MDBDropdown>
+                        <Link to="/discover">
+                            <MDBDropdownToggle disabled color="">
+                                Discover
+                        </MDBDropdownToggle>
+                        </Link>
+                        <MDBDropdownMenu basic>
+                            <MDBDropdownItem>Action</MDBDropdownItem>
+                            <MDBDropdownItem>Another Action</MDBDropdownItem>
+                            <MDBDropdownItem>Something else here</MDBDropdownItem>
+                            <MDBDropdownItem divider />
+                            <MDBDropdownItem>Separated link</MDBDropdownItem>
+                        </MDBDropdownMenu>
+                    </MDBDropdown>
                 </li>
                 <li className="nav-item">
                     <a href="#!" className="nav-link" onClick={logout}>Logout</a>

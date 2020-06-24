@@ -374,3 +374,24 @@ export const deleteImage = (postId, imageId) => dispatch => {
         });
     })
 }
+
+// fetch all posts for the discover page
+export const fetchAllDiscoverPosts = () => dispatch => {
+    axios.get('/api/posts/fetch_all_posts')
+    .then((res) => {
+        dispatch({
+            type: types.FETCH_ALL_DISCOVER_POSTS,
+            payload: res.data
+        });
+    })
+    .catch((err) => {
+        const error = err.response.data.serverMsg;
+        if (error) {
+            dispatch(setAlert(error, 'danger'));
+        }
+        dispatch({
+            type: types.POST_ERROR,
+            payload: err
+        });
+    })
+}

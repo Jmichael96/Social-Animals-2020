@@ -80,4 +80,9 @@ router.get('/fetch_adoption_posts', PostController.fetchAdoptionPosts);
 // @access   Private
 router.put('/delete_image/:postId/:imageId', isAuthenticated, PostController.deletePostImage);
 
+// @route    GET api/posts/fetch_all_posts
+// @desc     Fetch all posts
+// @access   Private
+router.get('/fetch_all_posts', isAuthenticated, PostController.fetchAllPosts);
+
 module.exports = router;

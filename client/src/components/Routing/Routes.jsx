@@ -20,6 +20,8 @@ import Chat from '../ChatMessaging/Chat/Chat';
 import Join from '../ChatMessaging/Join/Join';
 import TotalChatMessages from '../ChatMessaging/TotalChatMessages/TotalChatMessages';
 import BadRequest from '../Layout/BadRequest/BadRequest';
+import Discover from '../../pages/Discover/Discover';
+import Usernames from '../Discover/Usernames/Usernames';
 
 const Routes = () => {
     return (
@@ -44,6 +46,7 @@ const Routes = () => {
                 <PrivateRoute exact path="/update_profile" component={UpdateProfile} />
                 <PrivateRoute exact path="/user_profile/:id" component={UserProfile} />
                 <PrivateRoute exact path="/usernames" component={SearchUsernames} />
+                <PrivateRoute exact path="/discover" component={Discover} />
                 <Route component={NotFound} />
             </Switch>
         </section>

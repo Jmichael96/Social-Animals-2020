@@ -365,7 +365,6 @@ exports.fetchUsersProfilePosts = (req, res, next) => {
 // @desc     Delete an image
 // @access   Private
 exports.deletePostImage = (req, res, next) => {
-    console.log('fired deletePostImage()')
     Post.findByIdAndUpdate({ _id: req.params.postId })
         .then((post) => {
 
@@ -401,3 +400,20 @@ exports.deletePostImage = (req, res, next) => {
             });
         });
 };
+
+// @route    GET api/posts/fetch_all_posts
+// @desc     Fetch all posts
+// @access   Private
+exports.fetchAllPosts = (req, res, next) => {
+    console.log('fired fetchAllPosts()');
+    Post.find().sort({ _id: -1 })
+    .then((posts) => {
+        res.status(201).json(posts)
+    })
+    .catch((err) => {
+        console.log(err);
+        return res.status(500).json({
+            serverMsg: 'Error in the server'
+        });
+    });
+}
