@@ -13,26 +13,14 @@ import isEmpty from '../../../../../utils/isEmpty';
 import Slide from './Slide';
 
 const PostImages = ({ postImages, postId, authLoading, user, authorId, deleteImage, isEditing }) => {
-
-    // for the hoverable dropdown
-    const [isShown, setIsShown] = useState(false);
     // set the images array in a variable
     const [imgArr, setImgArr] = useState([]);
     // set number length of image array
     const [imgLength, setImgLength] = useState();
-    const [currentIndex, setCurrentIndex] = useState(0);
-    console.log(isEditing)
+
     useEffect(() => {
         fetchData()
     }, [postImages]);
-
-    const onMouseEnter = () => {
-        setIsShown(true);
-    }
-
-    const onMouseLeave = () => {
-        setIsShown(false);
-    }
 
     // function called when hitting the delete button
     const onDeleteSubmit = (imageId) => {
@@ -48,7 +36,7 @@ const PostImages = ({ postImages, postId, authLoading, user, authorId, deleteIma
         if (!authLoading && !isEmpty(user)) {
             if (user._id === authorId) {
                 return (
-                    <div aria-hidden={!isShown} className="popup_delete">
+                    <div className="popup_delete">
                         <button onClick={() => {
                             onDeleteSubmit(imageId);
                         }} className="deleteIcon">X</button>

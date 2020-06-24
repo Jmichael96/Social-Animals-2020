@@ -15,6 +15,7 @@
     top: 5px;
     right: 5px;
 }
+
 /* 
 .popup_delete:not([aria-hidden="true"]) {
     -webkit-transition: opacity 0.15s ease-in-out, visibility 0.15s, -webkit-transform 0.15s ease-in-out;
@@ -50,12 +51,15 @@
 }
 
 /* div surrounding the image */
+
 .image-block {
     position: relative;
     margin: 10px;
     display: inline-block;
 }
+
 /* the images when isEditing is resulted to truthy */
+
 .edit-image {
     height: 270px;
     width: 300px;
@@ -112,16 +116,39 @@
     background: rgba(242, 242, 242, 0.8);
 }
 
-.flavor-text {
-    display: block;
-    color: rgba(255, 255, 255, 0.5);
-    font-size: .75rem;
-    font-weight: 300;
-    letter-spacing: 2px;
-    line-height: 1.5;
-    margin: 1rem auto;
-    max-width: 100%;
+/* indicators */
+
+.indicators {
+    width: 400px;
+    position: absolute;
+    bottom: -20px;
+    left: -20px;
+    z-index: 2;
     text-align: center;
-    text-transform: uppercase;
-    width: 15rem;
+}
+
+.indicators li {
+    display: inline-block;
+    margin-right: 5px;
+    width: 12px;
+    height: 12px;
+    font-size: 16px;
+    line-height: 30px;
+    border-radius: 100%;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #333;
+    text-indent: -9999px;
+    cursor: pointer;
+    -webkit-transition: all 0.2s linear;
+    transition: all 0.2s linear;
+}
+
+.indicators li:last-child {
+    margin-right: 0;
+}
+
+.active-indicator {
+    background: rgba(0, 0, 0, 0.3) !important;
+    color: #fff;
 }

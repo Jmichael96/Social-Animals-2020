@@ -7,7 +7,6 @@ class Carousel extends React.Component {
         super();
         this.state = {
             currentIndex: 1,
-            isShown: false
         };
     }
 
@@ -29,14 +28,6 @@ class Carousel extends React.Component {
         }
     }
 
-    onMouseEnter = () => {
-        this.setState({ isShown: true });
-    }
-
-    onMouseLeave = () => {
-        this.setState({ isShown: false });
-    }
-
     showPrevSet = () => {
         const currentIndex = (this.state.currentIndex - 1 + this.props.images.length) % this.props.images.length;
         this.setState({ currentIndex });
@@ -47,35 +38,20 @@ class Carousel extends React.Component {
         this.setState({ currentIndex });
     }
 
-    onDeleteSubmit = (imageId) => {
-        if (!this.props.authLoading && !isEmpty(this.props.user)) {
-            if (this.props.user._id === this.props.authorId) {
-                this.props.deleteImage(this.props.postId, imageId);
-            }
-        }
-    }
-
-    renderDeleteBtn = (imageId) => {
-        if (!this.props.authLoading && !isEmpty(this.props.user)) {
-            if (this.props.user._id === this.props.authorId) {
-                return (
-                    <div aria-hidden={!this.state.isShown} className="popup_delete">
-                        <button onClick={() => {
-                            this.onDeleteSubmit(imageId);
-                        }} className="deleteIcon">X</button>
-                    </div>
-                )
-            }
-        }
+    // for when clicking an indicator view the image thats equal to the index clicked
+    onIndicatorClick = (e) => {
+        this.setState({
+            currentIndex: parseInt(e.target.textContent)
+        })
     }
 
     renderIndicators = () => {
         return (
-            <div className="indicators-wrapper">
+            <div className="indicatorWrapper">
                 <ul className="indicators">
                     {Object.values(this.props.images).map((item, i) => {
                         return (
-                            <li className={i + 1 === this.state.currentIndex ? "active-indicator" : ""}>
+                            <li onClick={this.onIndicatorClick} className={i + 1 === this.state.currentIndex ? "active-indicator" : ""}>
                                 {i + 1}
                             </li>
                         )
@@ -87,13 +63,11 @@ class Carousel extends React.Component {
 
     render() {
         const { images } = this.props;
-        const { currentIndex, isShown } = this.state;
+        const { currentIndex } = this.state;
 
         return (
             <div className="carousel__wrapper">
-                <div className="carousel__container" aria-expanded={isShown}
-                    onMouseEnter={this.onMouseEnter}
-                    onMouseLeave={this.onMouseLeave}>
+                <div className="carousel__container">
                     {images.map((img, index) => {
                         let className = 'carousel__image'
                         if (index + 1 === currentIndex) className += ' active';
