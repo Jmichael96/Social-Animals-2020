@@ -63,53 +63,23 @@ const PostImages = ({ postImages, postId, authLoading, user, authorId, deleteIma
         setImgArr(postImages);
         setImgLength(postImages.length);
     }
-    
+
     return !imgArr && !imgLength ? (null) : (
         <MDBContainer>
             <Wrapper>
-                <div className="image-container">
-                    {Object.values(imgArr).map((img, i) => {
-                        return (
-                            <div className="image-block">
-                                <img className="image" src={img.url} />
-                                {renderDeleteBtn(img._id)}
-                            </div>
-                        )
-                    })}
-                </div>
-            </Wrapper>
-            {/* <Wrapper>
-                <MDBCarousel
-                    activeItem={1}
-                    length={imgLength}
-                    showControls={false}
-                    showIndicators={true}
-                    className="z-depth-1"
-                    interval={false}
-                >
-                    <MDBCarouselInner className="postImgCarouselInner">
-                        {Object.values(imgArr).map((image, i) => {
+                {!isEditing ? (<Slide images={imgArr} />) : (
+                    <div>
+                        {Object.values(imgArr).map((img, i) => {
                             return (
-                                <MDBCarouselItem
-                                    key={i}
-                                    itemId={i + 1}
-                                    aria-expanded={isShown}
-                                    onMouseEnter={onMouseEnter}
-                                    onMouseLeave={onMouseLeave}>
-                                    <MDBView>
-                                        <img
-                                            className="postImg"
-                                            src={image.url}
-                                            alt="First slide"
-                                        />
-                                    </MDBView>
-                                    {renderDeleteBtn(image._id)}
-                                </MDBCarouselItem>
+                                <div className="image-block">
+                                    <img className="edit-image" src={img.url} />
+                                    {renderDeleteBtn(img._id)}
+                                </div>
                             )
                         })}
-                    </MDBCarouselInner>
-                </MDBCarousel>
-            </Wrapper> */}
+                    </div>
+                )}
+            </Wrapper>
         </MDBContainer>
     )
 }

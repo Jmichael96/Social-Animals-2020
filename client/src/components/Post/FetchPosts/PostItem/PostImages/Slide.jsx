@@ -101,7 +101,6 @@ class Carousel extends React.Component {
                         return (
                             <div key={index+1}>
                                 <img src={img.url} className={className} key={`img-${index+1}`} />
-                                {this.renderDeleteBtn(img._id)}
                                 {this.renderIndicators()}
                             </div>
                         );
