@@ -33,7 +33,7 @@ const FetchLikes = ({ openOrder, like: { likes, loading } }) => {
         <Fragment>
             <MDBContainer>
                 <MDBModal isOpen={modalOpen} toggle={toggleModal}>
-                    <MDBModalHeader toggle={toggleModal}>Likes</MDBModalHeader>
+                    <MDBModalHeader toggle={toggleModal}>Reactions</MDBModalHeader>
                     <MDBModalBody>
                         {renderLikers()}
                     </MDBModalBody>

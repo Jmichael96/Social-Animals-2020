@@ -83,6 +83,11 @@ router.put('/delete_image/:postId/:imageId', isAuthenticated, PostController.del
 // @route    GET api/posts/fetch_all_posts
 // @desc     Fetch all posts
 // @access   Private
-router.get('/fetch_all_posts', isAuthenticated, PostController.fetchAllPosts);
+router.get('/fetch_all_posts', isAuthenticated, PostController.fetchAllDiscoverPosts);
+
+// @route    GET api/posts/fetch_post_content/:id
+// @desc     Fetch a single post
+// @access   Private
+router.get('/fetch_post_content/:id', isAuthenticated, PostController.fetchPostContent);
 
 module.exports = router;

@@ -47,6 +47,18 @@ export default function (state = initialState, action) {
                 allPosts: payload,
                 loading: false
             }
+        case types.FETCH_POST_CONTENT:
+            return {
+                ...state,
+                post: payload,
+                loading: false
+            }
+        case types.CLEAR_POST_CONTENT:
+            return {
+                ...state,
+                post: [],
+                loading: false
+            }
         case types.CREATE_POST:
         case types.UPDATE_POST:
             return {

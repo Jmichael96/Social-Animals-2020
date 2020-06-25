@@ -72,6 +72,13 @@ const postSchema = new mongoose.Schema({
     animalType: {
         type: String
     },
+    hashtags: [
+        {
+            hashtag: {
+                type: String
+            }
+        }
+    ],
     date: {
         type: Date,
         default: Date.now

@@ -4,10 +4,11 @@ import { connect } from 'react-redux';
 import { fetchUsernames } from '../../store/actions/user';
 import PropTypes from 'prop-types';
 import Usernames from '../../components/Discover/Usernames/Usernames';
-import { fetchAllDiscoverPosts } from '../../store/actions/post';
+import { fetchAllDiscoverPosts, fetchPostContent } from '../../store/actions/post';
+import { setPostModal } from '../../store/actions/postModal';
 import Posts from '../../components/Discover/Posts/Posts';
 
-const Discover = ({ user, fetchUsernames, fetchAllDiscoverPosts, post }) => {
+const Discover = ({ user, fetchUsernames, fetchAllDiscoverPosts, post, setPostModal, fetchPostContent }) => {
     const [search, setSearch] = useState();
 
     const onUsernames = () => {
@@ -30,7 +31,7 @@ const Discover = ({ user, fetchUsernames, fetchAllDiscoverPosts, post }) => {
             case 'users':
                 return <Usernames users={user.users} loading={user.loading} />
             case 'posts':
-                return <Posts posts={post.allPosts} loading={post.loading} />
+                return <Posts posts={post.allPosts} loading={post.loading} fetchPostContent={fetchPostContent} setPostModal={setPostModal} />
             case 'hashtags':
                 return <h1>hashtags</h1>
             default: 
@@ -55,6 +56,8 @@ const Discover = ({ user, fetchUsernames, fetchAllDiscoverPosts, post }) => {
 Discover.propTypes = {
     fetchUsernames: PropTypes.func.isRequired,
     fetchAllDiscoverPosts: PropTypes.func.isRequired,
+    fetchPostContent: PropTypes.func.isRequired,
+    setPostModal: PropTypes.func.isRequired,
     user: PropTypes.object.isRequired,
     post: PropTypes.object.isRequired,
 }
@@ -64,4 +67,4 @@ const mapStateToProps = (state) => ({
     post: state.post
 });
 
-export default connect(mapStateToProps, { fetchUsernames, fetchAllDiscoverPosts })(Discover);
+export default connect(mapStateToProps, { fetchUsernames, fetchAllDiscoverPosts, setPostModal, fetchPostContent })(Discover);

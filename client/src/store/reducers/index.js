@@ -8,6 +8,7 @@ import like from './like';
 import iteratingModal from './iteratingModal';
 import chat from './chat';
 import notification from './notification';
+import postModal from './postModal';
 
 const rootReducer = combineReducers({
     alert,
@@ -18,7 +19,8 @@ const rootReducer = combineReducers({
     like,
     iteratingModal,
     chat,
-    notification
+    notification,
+    postModal
 });
 
 export default rootReducer;

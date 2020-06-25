@@ -21,7 +21,7 @@ import Join from '../ChatMessaging/Join/Join';
 import TotalChatMessages from '../ChatMessaging/TotalChatMessages/TotalChatMessages';
 import BadRequest from '../Layout/BadRequest/BadRequest';
 import Discover from '../../pages/Discover/Discover';
-import Usernames from '../Discover/Usernames/Usernames';
+import PostModal from '../Layout/PostModal/PostModal';
 
 const Routes = () => {
     return (
@@ -29,6 +29,7 @@ const Routes = () => {
             <Alert />
             <Modal />
             <IteratingModal />
+            <PostModal />
             <Switch>
                 <Route exact path="/" component={Home} />
                 <Route exact path="/adopt_page" component={Adopt} />

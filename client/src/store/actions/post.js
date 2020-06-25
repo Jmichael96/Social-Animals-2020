@@ -49,6 +49,7 @@ export const updatePost = (id, formData) => dispatch => {
     };
     axios.put(`/api/posts/update_post/${id}`, formData, config)
         .then((res) => {
+            console.log(res.data)
             dispatch({
                 type: types.UPDATE_POST,
                 payload: res.data
@@ -393,5 +394,26 @@ export const fetchAllDiscoverPosts = () => dispatch => {
             type: types.POST_ERROR,
             payload: err
         });
+    });
+}
+
+// fetch only a single post
+export const fetchPostContent = (id) => dispatch => {
+    axios.get(`/api/posts/fetch_post_content/${id}`)
+    .then((res) => {
+        dispatch({
+            type: types.FETCH_POST_CONTENT,
+            payload: res.data
+        });
     })
+    .catch((err) => {
+        const error = err.response.data.serverMsg;
+        if (error) {
+            dispatch(setAlert(error, 'danger'));
+        }
+        dispatch({
+            type: types.POST_ERROR,
+            payload: err
+        });
+    });
 }

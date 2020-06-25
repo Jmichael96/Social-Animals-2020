@@ -208,6 +208,13 @@ const PostItem = ({
         }
     }
 
+    const renderContent = () => {
+        if (!postLoading && !isEmpty(content)) {
+            let parsedContent = content.replace(/#(\w+)/g, '<a href="#">#$1</a>');
+            return <p className="postContent" dangerouslySetInnerHTML={{ __html: parsedContent }}></p>
+        }
+    }
+
     return (
         <Fragment>
             <MDBContainer>
@@ -232,7 +239,7 @@ const PostItem = ({
                                 {renderImages()}
                             </div>
                             {!editing ? (
-                                <p id="postContent">{content}</p>
+                                <div>{renderContent()}</div>
                             ) : (
                                     <input
                                         type="text"

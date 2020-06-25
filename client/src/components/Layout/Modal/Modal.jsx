@@ -19,6 +19,7 @@ const Modal = ({ removeModal, modal: { modalData, isOpen } }) => {
             }}>{modalData.modalActionText}</MDBBtn>
         )
     }
+    
     return (
         <Fragment>
             <MDBContainer>

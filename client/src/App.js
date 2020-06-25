@@ -18,6 +18,11 @@ if (localStorage.token) {
   setAuthToken(localStorage.token);
 
 }
+// function hashtag(text){
+//   var repl = text.replace(/#(\w+)/g, '<a href="#">#$1</a>');
+//   return repl;
+// }
+// console.log(hashtag('hello bitch #thuglife'))
 const App = () => {
   useEffect(() => {
     store.dispatch(loadUser());

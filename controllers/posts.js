@@ -22,6 +22,15 @@ exports.createPost = (req, res, next) => {
 
     post.save()
         .then((createdPost) => {
+            //  finding the hashtag words inside a post and putting them in an array to add to the hashtags 
+            let regexp = /\B\#\w\w+\b/g
+            let hashtagResult = createdPost.content.match(regexp);
+            if (hashtagResult.length >= 1) {
+                for (let i = 0; i < hashtagResult.length; i++) {
+                    createdPost.hashtags.push({ hashtag: hashtagResult[i] });
+                }
+            }
+            // finding images submitted with the post and then adding them to the model schema
             let fileArr = req.files;
             if (fileArr.length === 1) {
                 for (let i = 0; i < fileArr.length; i++) {
@@ -404,8 +413,7 @@ exports.deletePostImage = (req, res, next) => {
 // @route    GET api/posts/fetch_all_posts
 // @desc     Fetch all posts
 // @access   Private
-exports.fetchAllPosts = (req, res, next) => {
-    console.log('fired fetchAllPosts()');
+exports.fetchAllDiscoverPosts = (req, res, next) => {
     Post.find().sort({ _id: -1 })
     .then((posts) => {
         res.status(201).json(posts)
@@ -414,6 +422,27 @@ exports.fetchAllPosts = (req, res, next) => {
         console.log(err);
         return res.status(500).json({
             serverMsg: 'Error in the server'
+        });
+    });
+}
+
+// @route    GET api/posts/fetch_post_content/:id
+// @desc     Fetch a single post
+// @access   Private
+exports.fetchPostContent = (req, res, next) => {
+    Post.findById({ _id: req.params.id })
+    .then((post) => {
+        if (!post) {
+            return res.status(404).json({
+                serverMsg: 'Post not found.'
+            });
+        }
+        return res.status(201).json(post);
+    })
+    .catch((err) => {
+        console.log(err);
+        return res.status(500).json({
+            serverMsg: 'There was an error fetching post information'
         });
     });
 }
