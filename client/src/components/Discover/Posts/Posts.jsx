@@ -7,13 +7,11 @@ import Wrapper from '../../Layout/Wrapper/Wrapper';
 
 const Posts = ({ posts, loading, fetchPostContent }) => {
     const [filterType, setFilterType] = useState();
-    const [filteredPosts, setFilteredPosts] = useState([]);
     const [trendingPosts, setTrendingPosts] = useState([]);
     const [adoptionPosts, setAdoptionPosts] = useState([]);
     const [searchInput, setSearchInput] = useState('');
 
     useEffect(() => {
-        setFilteredPosts(posts);
         // creating a copy of the posts array order posts from the most trending to least
         let trendingCopy = [];
         let adoptionCopy = [];
@@ -213,6 +211,7 @@ const Posts = ({ posts, loading, fetchPostContent }) => {
             return null;
         }
     }
+    
     return (
         <Fragment>
             <h1>Posts</h1>

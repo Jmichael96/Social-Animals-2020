@@ -27,9 +27,10 @@ exports.createPost = (req, res, next) => {
             let hashtagResult = createdPost.content.match(regexp);
             if (hashtagResult && hashtagResult.length >= 1) {
                 for (let i = 0; i < hashtagResult.length; i++) {
-                    createdPost.hashtag.unshift(hashtagResult[i]);
+                    createdPost.hashtags.unshift(hashtagResult[i]);
                 }
             }
+
             // finding images submitted with the post and then adding them to the model schema
             let fileArr = req.files;
             if (fileArr.length === 1) {
@@ -123,19 +124,18 @@ exports.updatePost = (req, res, next) => {
         }
         //  checking if there are new hashtags in the updated content and assigning it to the difference variable
         let difference;
-
+        // if there is are words including the hashtag... execute
         if (hashtagResult && hashtagResult.length >= 1) {
-            difference =  hashtagResult.filter(x => !post.hashtag.includes(x)).concat(post.hashtag.filter(x => !hashtagResult.includes(x)));
+            difference =  hashtagResult.filter(x => !post.hashtags.includes(x)).concat(post.hashtags.filter(x => !hashtagResult.includes(x)));
         }
-        
+        // checking to see if there are differences made with the hashtags and then adding them to the array
         if (difference && difference.length >= 1) {
             for (let i = 0; i < difference.length; i++) {
-                post.hashtag.unshift(difference[i]);
+                post.hashtags.unshift(difference[i]);
             }
         }
         
         post.save();
-        console.log(post);
         res.status(201).json({
             serverMsg: 'Updated post successfully',
             post: post

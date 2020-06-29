@@ -72,7 +72,7 @@ const postSchema = new mongoose.Schema({
     animalType: {
         type: String
     },
-    hashtag: [
+    hashtags: [
         {
 
             type: String

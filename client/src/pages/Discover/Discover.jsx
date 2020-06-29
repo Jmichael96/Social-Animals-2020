@@ -7,6 +7,7 @@ import Usernames from '../../components/Discover/Usernames/Usernames';
 import { fetchAllDiscoverPosts, fetchPostContent } from '../../store/actions/post';
 import { setPostModal } from '../../store/actions/postModal';
 import Posts from '../../components/Discover/Posts/Posts';
+import Hashtags from '../../components/Discover/Hashtags/Hashtags';
 
 const Discover = ({ user, fetchUsernames, fetchAllDiscoverPosts, post, setPostModal, fetchPostContent }) => {
     const [search, setSearch] = useState();
@@ -23,6 +24,7 @@ const Discover = ({ user, fetchUsernames, fetchAllDiscoverPosts, post, setPostMo
 
     const onHashtags = () => {
         setSearch('hashtags');
+        fetchAllDiscoverPosts();
     }
 
     // setting the component to render based off what is selected
@@ -33,7 +35,7 @@ const Discover = ({ user, fetchUsernames, fetchAllDiscoverPosts, post, setPostMo
             case 'posts':
                 return <Posts posts={post.allPosts} loading={post.loading} fetchPostContent={fetchPostContent} setPostModal={setPostModal} />
             case 'hashtags':
-                return <h1>hashtags</h1>
+                return <Hashtags posts={post.allPosts} loading={post.loading} fetchPostContent={fetchPostContent} setPostModal={setPostModal} />
             default: 
                 return;
         }

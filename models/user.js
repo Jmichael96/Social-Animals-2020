@@ -54,6 +54,11 @@ const userSchema = new mongoose.Schema({
             }
         }
     ],
+    hashtags: [
+        {
+            type: String
+        }
+    ],
     messages: [
         {
             createdId: {
