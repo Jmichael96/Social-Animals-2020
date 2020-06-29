@@ -23,7 +23,6 @@ export const createPost = ({ content, imagePath, postType, animalType }) => disp
                 type: types.CREATE_POST,
                 payload: res.data.createdPost
             });
-            dispatch(fetchAllPosts())
             dispatch(setAlert(res.data.serverMsg, 'success'))
         })
         .catch((err) => {
@@ -49,12 +48,10 @@ export const updatePost = (id, formData) => dispatch => {
     };
     axios.put(`/api/posts/update_post/${id}`, formData, config)
         .then((res) => {
-            console.log(res.data)
             dispatch({
                 type: types.UPDATE_POST,
-                payload: res.data
+                payload: { id, post: res.data.post }
             });
-            dispatch(fetchAllPosts());
             dispatch(setAlert(res.data.serverMsg, 'success'));
         })
         .catch((err) => {
@@ -69,6 +66,7 @@ export const updatePost = (id, formData) => dispatch => {
             });
         })
 }
+
 // fetch all posts
 export const fetchAllPosts = () => dispatch => {
     axios.get('/api/posts/fetch_all')

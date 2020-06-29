@@ -41,7 +41,7 @@ export default function (state = initialState, action) {
                 adoptionPosts: payload,
                 loading: false
             }
-        case types.FETCH_ALL_DISCOVER_POSTS: 
+        case types.FETCH_ALL_DISCOVER_POSTS:
             return {
                 ...state,
                 allPosts: payload,
@@ -60,11 +60,21 @@ export default function (state = initialState, action) {
                 loading: false
             }
         case types.CREATE_POST:
-        case types.UPDATE_POST:
             return {
                 ...state,
                 posts: [payload, ...state.posts],
                 adoptionPosts: [payload, ...state.adoptionPosts],
+                loading: false
+            }
+        case types.UPDATE_POST:
+            return {
+                ...state,
+                posts: state.posts.map(post =>
+                    post._id === payload.id ? { ...post, ...payload.post } : post
+                ),
+                adoptionPosts: state.posts.map(post =>
+                    post._id === payload.id ? { ...post, ...payload.post } : post
+                ),
                 loading: false
             }
         case types.UPDATE_LIKES:
@@ -93,9 +103,6 @@ export default function (state = initialState, action) {
         case types.DELETE_IMAGE:
             return {
                 ...state,
-                // posts: state.posts.map(post =>
-                //     post._id === payload.postId ? payload.post : post
-                // ),
                 posts: state.posts.map(post =>
                     post._id === payload.postId ? { ...post, imagePath: payload.imagePath } : post
                 ),

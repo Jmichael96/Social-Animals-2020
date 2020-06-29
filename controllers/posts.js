@@ -25,9 +25,9 @@ exports.createPost = (req, res, next) => {
             //  finding the hashtag words inside a post and putting them in an array to add to the hashtags 
             let regexp = /\B\#\w\w+\b/g
             let hashtagResult = createdPost.content.match(regexp);
-            if (hashtagResult.length >= 1) {
+            if (hashtagResult && hashtagResult.length >= 1) {
                 for (let i = 0; i < hashtagResult.length; i++) {
-                    createdPost.hashtags.push({ hashtag: hashtagResult[i] });
+                    createdPost.hashtag.unshift(hashtagResult[i]);
                 }
             }
             // finding images submitted with the post and then adding them to the model schema
@@ -103,19 +103,44 @@ exports.fetchAdoptionPosts = (req, res, next) => {
 // @access   Private
 exports.updatePost = (req, res, next) => {
 
-    Post.updateOne({ _id: req.params.id, authorId: req.user._id }, {
+    const postFields = {
         content: req.body.content,
         imagePath: req.body.imagePath,
         authorId: req.user._id,
         authorUsername: req.user.username
+    }
+
+    Post.findByIdAndUpdate(
+        { _id: req.params.id, authorId: req.user._id },
+        { $set: postFields },
+        { new: true, upsert: true }
+    ).then((post) => {
+        //  finding the hashtag words inside a post and putting them in an array to add to the hashtags 
+        let regexp = /\B\#\w\w+\b/g
+        let hashtagResult = post.content.match(regexp);
+        if (!hashtagResult) {
+            post.hashtag = [];
+        }
+        //  checking if there are new hashtags in the updated content and assigning it to the difference variable
+        let difference;
+
+        if (hashtagResult && hashtagResult.length >= 1) {
+            difference =  hashtagResult.filter(x => !post.hashtag.includes(x)).concat(post.hashtag.filter(x => !hashtagResult.includes(x)));
+        }
+        
+        if (difference && difference.length >= 1) {
+            for (let i = 0; i < difference.length; i++) {
+                post.hashtag.unshift(difference[i]);
+            }
+        }
+        
+        post.save();
+        console.log(post);
+        res.status(201).json({
+            serverMsg: 'Updated post successfully',
+            post: post
+        });
     })
-        .then((result) => {
-            if (result.n > 0) {
-                res.status(200).json({ serverMsg: 'Updated post successfully' });
-            } else {
-                res.status(401).json({ serverMsg: 'You are not authorized' });
-            };
-        })
         .catch((err) => {
             console.log(err);
             res.status(500).json({
@@ -415,15 +440,15 @@ exports.deletePostImage = (req, res, next) => {
 // @access   Private
 exports.fetchAllDiscoverPosts = (req, res, next) => {
     Post.find().sort({ _id: -1 })
-    .then((posts) => {
-        res.status(201).json(posts)
-    })
-    .catch((err) => {
-        console.log(err);
-        return res.status(500).json({
-            serverMsg: 'Error in the server'
+        .then((posts) => {
+            res.status(201).json(posts)
+        })
+        .catch((err) => {
+            console.log(err);
+            return res.status(500).json({
+                serverMsg: 'Error in the server'
+            });
         });
-    });
 }
 
 // @route    GET api/posts/fetch_post_content/:id
@@ -431,18 +456,18 @@ exports.fetchAllDiscoverPosts = (req, res, next) => {
 // @access   Private
 exports.fetchPostContent = (req, res, next) => {
     Post.findById({ _id: req.params.id })
-    .then((post) => {
-        if (!post) {
-            return res.status(404).json({
-                serverMsg: 'Post not found.'
+        .then((post) => {
+            if (!post) {
+                return res.status(404).json({
+                    serverMsg: 'Post not found.'
+                });
+            }
+            return res.status(201).json(post);
+        })
+        .catch((err) => {
+            console.log(err);
+            return res.status(500).json({
+                serverMsg: 'There was an error fetching post information'
             });
-        }
-        return res.status(201).json(post);
-    })
-    .catch((err) => {
-        console.log(err);
-        return res.status(500).json({
-            serverMsg: 'There was an error fetching post information'
         });
-    });
 }

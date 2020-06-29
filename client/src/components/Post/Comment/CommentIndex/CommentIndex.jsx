@@ -17,6 +17,7 @@ import {
     MDBCol,
     MDBRow
 } from 'mdbreact';
+import './commentIndex.css';
 
 const CommentIndex = ({ auth, deleteComment, updateComment, setModal, comment: { _id, name, text, userId }, postId, postAuthorId }) => {
     // set whether the user wants to update the comment or not
@@ -165,12 +166,19 @@ const CommentIndex = ({ auth, deleteComment, updateComment, setModal, comment: {
         }
     }
 
+    const renderCommentText = () => {
+        if (!isEmpty(text)) {
+            let parsedContent = text.replace(/#(\w+)/g, '<a href="#">#$1</a>');
+            return <li className="postCommentText" dangerouslySetInnerHTML={{ __html: parsedContent }}></li>
+        }
+    }
+
     return (
         <Fragment key={_id}>
             {dropdownMenu()}
             <ul>
                 <li>{name}</li>
-                {!updating ? (<li>{text}</li>) : (renderUpdate())}
+                {!updating ? (renderCommentText()) : (renderUpdate())}
             </ul>
         </Fragment>
     )

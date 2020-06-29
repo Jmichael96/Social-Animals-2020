@@ -20,7 +20,7 @@ import AddComment from '../../Comment/AddComment/AddComment';
 import isEmpty from '../../../../utils/isEmpty';
 import PostImages from './PostImages/PostImages';
 import RenderPostLikes from './RenderPostLikes/RenderPostLikes';
-import RenderPostComments from './RenderPostComments/RenderPostComments';
+import RenderPostComments from './RenderPostComments/RenderPostCommentLength';
 import Wrapper from '../../../Layout/Wrapper/Wrapper';
 import LikePost from '../../Like/LikePost/LikePost';
 
@@ -196,7 +196,7 @@ const PostItem = ({
 
     // render the post images
     const renderImages = () => {
-        if (!loading && !isEmpty(user) && !isEmpty(imagePath)) {
+        if (!isEmpty(imagePath)) {
             return <PostImages
                 postImages={imagePath}
                 postId={_id}
