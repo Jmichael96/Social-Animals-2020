@@ -27,7 +27,7 @@ exports.createPost = (req, res, next) => {
             let hashtagResult = createdPost.content.match(regexp);
             if (hashtagResult && hashtagResult.length >= 1) {
                 for (let i = 0; i < hashtagResult.length; i++) {
-                    createdPost.hashtags.unshift(hashtagResult[i]);
+                    createdPost.hashtags.unshift({ hashtag: hashtagResult[i] });
                 }
             }
 
@@ -119,19 +119,32 @@ exports.updatePost = (req, res, next) => {
         //  finding the hashtag words inside a post and putting them in an array to add to the hashtags 
         let regexp = /\B\#\w\w+\b/g
         let hashtagResult = post.content.match(regexp);
+        let copiedHashtags = [];
+        // assigning the posts hashtags to a variable
+        let postTags = post.hashtags;
+
         if (!hashtagResult) {
-            post.hashtag = [];
+            post.hashtags = [];
         }
+        // adding all the hashtags that are already in the post to an array of strings
+        if (postTags.length >= 1) {
+            for (let i = 0; i < postTags.length; i++) {
+                copiedHashtags.push(postTags[i].hashtag);
+            }
+        }
+        
         //  checking if there are new hashtags in the updated content and assigning it to the difference variable
         let difference;
+
         // if there is are words including the hashtag... execute
         if (hashtagResult && hashtagResult.length >= 1) {
-            difference =  hashtagResult.filter(x => !post.hashtags.includes(x)).concat(post.hashtags.filter(x => !hashtagResult.includes(x)));
+            difference = hashtagResult.filter(x => !copiedHashtags.includes(x)).concat(copiedHashtags.filter(x => !hashtagResult.includes(x)));
         }
+
         // checking to see if there are differences made with the hashtags and then adding them to the array
         if (difference && difference.length >= 1) {
             for (let i = 0; i < difference.length; i++) {
-                post.hashtags.unshift(difference[i]);
+                post.hashtags.unshift({ hashtag: difference[i] });
             }
         }
         

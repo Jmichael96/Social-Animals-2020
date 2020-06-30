@@ -75,7 +75,9 @@ const postSchema = new mongoose.Schema({
     hashtags: [
         {
 
-            type: String
+            hashtag: {
+                type: String
+            }
 
         }
     ],

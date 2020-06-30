@@ -18,26 +18,31 @@ const Hashtags = ({ posts, loading, fetchPostContent }) => {
                     copyHashArr.push(...posts[i].hashtags)
                 }
             }
+
             // assign the posts to the postsCopy variable
             postsCopy.push(...posts);
             // set the hashtagPosts with the copied posts array
             setHashtagPosts(postsCopy);
         }
-
-        // removing duplicate hashtag values in array and setting the value with the useState method
-        let trimmedArr = new Set(copyHashArr);
-        let cleanedArr = [...trimmedArr];
-        setHashtagArr(cleanedArr);
+        // set the most popular hashtags in the array
+        let popularHashtags = [];
+        for (let x = 0; x < copyHashArr.length; x++) {
+            popularHashtags.push(copyHashArr[x].hashtag);
+        }
 
         // variable to assign the count value for each hashtag found in array
         let countObj = {};
-
         // function that counts how many times an element is in an array
         let countFunc = (keys) => {
             countObj[keys] = ++countObj[keys] || 1;
         }
-        copyHashArr.forEach(countFunc);
+        popularHashtags.forEach(countFunc);
         setHashtagCount(countObj);
+
+        // setting the hashtag strings to the component state
+        for (let i = 0; i < copyHashArr.length; i++) {
+            setHashtagArr((x) => [...x, copyHashArr[i].hashtag]);
+        }
 
     }, [posts]);
 
@@ -53,7 +58,9 @@ const Hashtags = ({ posts, loading, fetchPostContent }) => {
 
     const renderSearchedHashtags = () => {
         if (hashtagArr) {
-            const filteredHashtags = hashtagArr.filter((tag) => tag.includes(searchInput))
+            let tags = new Set(hashtagArr);
+            let arr = [...tags]
+            const filteredHashtags = arr.filter((tag) => tag.includes(searchInput))
             if (isEmpty(searchInput)) {
                 return null;
             }
@@ -69,12 +76,22 @@ const Hashtags = ({ posts, loading, fetchPostContent }) => {
 
     const renderSearchedPosts = () => {
         if (!isEmpty(hashtagPosts)) {
-            const filteredPosts = hashtagPosts.filter((tag) => tag.hashtags.includes(searchInput));
+            let tempArr = [];
+            
+            // const filteredPosts = hashtagPosts.filter((tag) => tag.hashtags.includes(searchInput));
+            for (let obj in hashtagPosts) {
+                let str = JSON.stringify(hashtagPosts[obj]);
+        
+                if (str.indexOf(searchInput) > 0) {
+                    tempArr.push(hashtagPosts[obj]);
+                }
+            }
+
             if (isEmpty(searchInput)) {
                 return null;
             }
-            console.log(hashtagPosts, filteredPosts)
-            return filteredPosts.map((post, i) => {
+            console.log(tempArr)
+            return tempArr.map((post, i) => {
                 return (
                     <div key={`${i + 1}`} class="outer-card" onClick={() => {
                         fetchPostContent(post._id);
