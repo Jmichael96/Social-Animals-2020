@@ -1,16 +1,17 @@
 import React, { Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { fetchAllPosts } from '../../../../store/actions/post';
+import { fetchAllPosts, fetchHashtagPosts } from '../../../../store/actions/post';
 import Wrapper from '../../../Layout/Wrapper/Wrapper';
 import PostItem from '../PostItem/PostItem';
 import Spinner from '../../../Layout/Spinner/Spinner';
 
-const AllPosts = ({ fetchAllPosts, post: { posts, loading } }) => {
+const AllPosts = ({ fetchAllPosts, post: { posts, loading }, fetchHashtagPosts }) => {
 
     useEffect(() => {
         fetchAllPosts();
-    }, [fetchAllPosts])
+        fetchHashtagPosts();
+    }, [fetchAllPosts, fetchHashtagPosts])
 
     const renderPosts = () => {
         const postList = posts;
@@ -31,9 +32,10 @@ const AllPosts = ({ fetchAllPosts, post: { posts, loading } }) => {
 }
 AllPosts.propTypes = {
     fetchAllPosts: PropTypes.func.isRequired,
+    fetchHashtagPosts: PropTypes.func.isRequired,
     post: PropTypes.object.isRequired,
 }
 const mapStateToProps = (state) => ({
     post: state.post
 });
-export default connect(mapStateToProps, { fetchAllPosts })(AllPosts);
+export default connect(mapStateToProps, { fetchAllPosts, fetchHashtagPosts })(AllPosts);

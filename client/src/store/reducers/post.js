@@ -6,6 +6,7 @@ const initialState = {
     userProfilePosts: [],
     adoptionPosts: [],
     allPosts: [],
+    hashtagPosts: [],
     loading: true,
     serverMsg: null,
     error: {}
@@ -45,6 +46,12 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 allPosts: payload,
+                loading: false
+            }
+        case types.FETCH_HASHTAG_POSTS:
+            return {
+                ...state,
+                hashtagPosts: payload,
                 loading: false
             }
         case types.FETCH_POST_CONTENT:

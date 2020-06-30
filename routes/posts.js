@@ -90,4 +90,9 @@ router.get('/fetch_all_posts', isAuthenticated, PostController.fetchAllDiscoverP
 // @access   Private
 router.get('/fetch_post_content/:id', isAuthenticated, PostController.fetchPostContent);
 
+// @route    GET api/posts/fetch_hashtag_posts
+// @desc     Fetch only the posts from the hashtags you are following
+// @access   Private
+router.get('/fetch_hashtag_posts', isAuthenticated, PostController.fetchHashtagPosts);
+
 module.exports = router;

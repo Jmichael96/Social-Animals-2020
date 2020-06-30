@@ -132,7 +132,7 @@ exports.updatePost = (req, res, next) => {
                 copiedHashtags.push(postTags[i].hashtag);
             }
         }
-        
+
         //  checking if there are new hashtags in the updated content and assigning it to the difference variable
         let difference;
 
@@ -147,7 +147,7 @@ exports.updatePost = (req, res, next) => {
                 post.hashtags.unshift({ hashtag: difference[i] });
             }
         }
-        
+
         post.save();
         res.status(201).json({
             serverMsg: 'Updated post successfully',
@@ -488,6 +488,27 @@ exports.fetchPostContent = (req, res, next) => {
 // @route    GET api/posts/fetch_hashtag_posts
 // @desc     Fetch only the posts from the hashtags you are following
 // @access   Private
-exports.fetchHashtagPosts = () => {
-    
+exports.fetchHashtagPosts = (req, res, next) => {
+
+    let tagArr = [];
+    let user = req.user.followedHashtags;
+
+    if (user && user.length >= 1) {
+        for (let i = 0; i < user.length; i++) {
+            tagArr.push(user[i].hashtag);
+        }
+    }
+
+    Post.find({ hashtags: { '$elemMatch': { hashtag: tagArr } } })
+    .then((posts) => {
+        if (posts) {
+            res.status(201).json(posts);
+        }
+    })
+    .catch((err) => {
+        console.log(err);
+        res.status(500).json({
+            serverMsg: 'Couldn\'t fetch posts at this time.'
+        });
+    });
 }

@@ -58,6 +58,7 @@ export const DELETE_IMAGE = 'DELETE_IMAGE';
 export const FETCH_ALL_DISCOVER_POSTS = 'FETCH_ALL_DISCOVER_POSTS';
 export const FETCH_POST_CONTENT = 'FETCH_POST_CONTENT';
 export const CLEAR_POST_CONTENT = 'CLEAR_POST_CONTENT';
+export const FETCH_HASHTAG_POSTS = 'FETCH_HASHTAG_POSTS';
 
 // LIKE TYPES [just to see who all has liked your post]
 export const FETCH_LIKES = 'FETCH_LIKES';

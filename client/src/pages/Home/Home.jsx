@@ -19,6 +19,7 @@ const Home = ({ auth: { isAuthenticated, user, loading }}) => {
             return <AllPosts />
         }
     }
+    
     return (
         <section>
             <h1>Home Page!</h1>

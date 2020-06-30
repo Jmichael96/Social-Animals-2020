@@ -415,3 +415,23 @@ export const fetchPostContent = (id) => dispatch => {
         });
     });
 }
+
+export const fetchHashtagPosts = () => dispatch => {
+    axios.get('/api/posts/fetch_hashtag_posts')
+    .then((res) => {
+        dispatch({
+            type: types.FETCH_HASHTAG_POSTS,
+            payload: res.data
+        });
+    })
+    .catch((err) => {
+        const error = err.response.data.serverMsg;
+        if (error) {
+            dispatch(setAlert(error, 'danger'));
+        }
+        dispatch({
+            type: types.POST_ERROR,
+            payload: err
+        });
+    });
+}

@@ -32,7 +32,8 @@ exports.register = (req, res, next) => {
                         location: user.bio,
                         email: user.email,
                         followers: user.followers,
-                        following: user.following
+                        following: user.following,
+                        followedHashtags: user.followedHashtags
                     }
                 }
                 jwt.sign(payload, config.SECRET,
@@ -107,7 +108,8 @@ exports.login = (req, res, next) => {
                     location: fetchedUser.bio,
                     email: fetchedUser.email,
                     followers: fetchedUser.followers,
-                    following: fetchedUser.following
+                    following: fetchedUser.following,
+                    followedHashtags: fetchedUser.followedHashtags
                 }
             }
 
