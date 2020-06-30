@@ -484,3 +484,10 @@ exports.fetchPostContent = (req, res, next) => {
             });
         });
 }
+
+// @route    GET api/posts/fetch_hashtag_posts
+// @desc     Fetch only the posts from the hashtags you are following
+// @access   Private
+exports.fetchHashtagPosts = () => {
+    
+}

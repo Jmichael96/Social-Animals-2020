@@ -58,7 +58,6 @@ const UserProfile = ({ fetchProfileById, followProfile, unfollowProfile, setFoll
                 }
                 return false;
             }
-
         }
         return false;
     }

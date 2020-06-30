@@ -29,10 +29,11 @@ export default function (state = initialState, action) {
             }
         case types.SET_FOLLOWING:
         case types.UNSET_FOLLOWING:
+        case types.FOLLOW_HASHTAG:
+        case types.UNFOLLOW_HASHTAG:
             return {
                 ...state,
                 user: payload.user,
-                serverMsg: payload.serverMsg,
                 isAuthenticated: true,
                 loading: false
             }

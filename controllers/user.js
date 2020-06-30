@@ -339,3 +339,56 @@ exports.notify = (req, res, next) => {
         });
     });
 }
+
+// @route    PUT api/user/follow_hashtag
+// @desc     Follow a specific hashtag 
+// @access   Private
+exports.followHashtag = (req, res, next) => {
+    User.findByIdAndUpdate({ _id: req.user._id }) 
+    .then((user) => {
+
+        // adding the specified hashtag to the followedHashtags array
+        user.followedHashtags.unshift({ hashtag: req.body.hashtag });
+        
+        user.save();
+
+        res.status(201).json({
+            serverMsg: 'Successfully followed this tag',
+            user: user
+        })
+    })
+    .catch((err) => {
+        return res.status(500).json({
+            serverMsg: 'Error following hashtag'
+        });
+    });
+}
+
+// @route    PUT api/user/unfollow_hashtag
+// @desc     Unfollow a hashtag
+// @access   Private
+exports.unfollowHashtag = (req, res, next) => {
+    User.findByIdAndUpdate({ _id: req.user._id }) 
+    .then((user) => {
+        if (user.followedHashtags.length >= 1) {
+            // assigning the hashtag array of objects to 'arr' variable
+            let arr = user.followedHashtags;
+            // getting the index of the hashtag thats being deleted
+            let index = arr.map((x) => { return x.hashtag }).indexOf(req.body.hashtag);
+            // splicing and removing the hashtag in the array
+            arr.splice(index, 1);
+        }        
+        
+        user.save();
+        res.status(201).json({
+            serverMsg: `Unfollowed the hashtag '${req.body.hashtag}'`,
+            user: user
+        });
+    })
+    .catch((err) => {
+        console.log(err);
+        return res.status(500).json({
+            serverMsg: 'Error unfollowing hashtag'
+        });
+    });
+}

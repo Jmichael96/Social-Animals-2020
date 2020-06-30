@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import isEmpty from '../../../utils/isEmpty';
 
-const Hashtags = ({ posts, loading, fetchPostContent }) => {
+const Hashtags = ({ posts, loading, fetchPostContent, followHashtag, auth, unfollowHashtag }) => {
     const [hashtagPosts, setHashtagPosts] = useState([]);
     const [hashtagArr, setHashtagArr] = useState([]);
     const [hashtagCount, setHashtagCount] = useState({});
@@ -46,42 +46,67 @@ const Hashtags = ({ posts, loading, fetchPostContent }) => {
 
     }, [posts]);
 
+    // function to check what hashtags the user is following and be able to 
+    // render the follow and unfollow button accordingly
+    const checkIfFollowing = (tag) => {
+        if (!auth.loading && !isEmpty(auth.user) && !isEmpty(hashtagArr)) {
+            let user = auth.user;
+            if (user.followedHashtags.some((x) => x.hashtag === tag)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    // render the top ten hashtags to follow upon opening the hashtag page
     const renderMostPopularHashtags = () => {
         if (hashtagCount) {
             let sortedArr = Object.keys(hashtagCount).sort((a, b) => { return hashtagCount[b] - hashtagCount[a] });
             //  only going to render the top 10 hashtags to follow and then the user can search for other available ones
             return sortedArr.slice(0, 10).map((tag) => {
-                return (<li>{tag}</li>)
-            })
+                return (
+                    <li>{tag} {!checkIfFollowing(tag) ? (<button onClick={() => {
+                        followHashtag(tag)
+                    }}>Follow</button>) : (<button onClick={() => {
+                        unfollowHashtag(tag);
+                    }}>Unfollow</button>)}</li>
+                )
+            });
         }
     }
 
     const renderSearchedHashtags = () => {
         if (hashtagArr) {
+            // filtering out all duplicates in the array with new Set()
             let tags = new Set(hashtagArr);
+            // using the spread operator to get only the data out of the "Set" array
             let arr = [...tags]
+
             const filteredHashtags = arr.filter((tag) => tag.includes(searchInput))
             if (isEmpty(searchInput)) {
                 return null;
             }
-            return filteredHashtags.map((item, i) => {
+            return filteredHashtags.map((tag, i) => {
                 return (
-                    <div key={i + 1}>
-                        {item}
-                    </div>
+                    <li>{tag} {!checkIfFollowing(tag) ? (<button onClick={() => {
+                        followHashtag(tag)
+                    }}>Follow</button>) : (<button onClick={() => {
+                        unfollowHashtag(tag);
+                    }}>Unfollow</button>)}</li>
                 )
-            })
+            });
         }
     }
 
     const renderSearchedPosts = () => {
         if (!isEmpty(hashtagPosts)) {
             let tempArr = [];
-            
-            // const filteredPosts = hashtagPosts.filter((tag) => tag.hashtags.includes(searchInput));
+
+            // filtering through the posts according to the search input and pushing the correct projects to the array
             for (let obj in hashtagPosts) {
                 let str = JSON.stringify(hashtagPosts[obj]);
-        
+
                 if (str.indexOf(searchInput) > 0) {
                     tempArr.push(hashtagPosts[obj]);
                 }
@@ -90,7 +115,7 @@ const Hashtags = ({ posts, loading, fetchPostContent }) => {
             if (isEmpty(searchInput)) {
                 return null;
             }
-            console.log(tempArr)
+
             return tempArr.map((post, i) => {
                 return (
                     <div key={`${i + 1}`} class="outer-card" onClick={() => {
@@ -151,7 +176,7 @@ const Hashtags = ({ posts, loading, fetchPostContent }) => {
     }
     return (
         <Fragment>
-            
+
             <ul>
                 <li>Top 10 hashtags to follow right now</li>
                 {renderMostPopularHashtags()}
@@ -165,8 +190,11 @@ const Hashtags = ({ posts, loading, fetchPostContent }) => {
 
 Hashtags.propTypes = {
     fetchPostContent: PropTypes.func.isRequired,
+    followHashtag: PropTypes.func.isRequired,
+    unfollowHashtag: PropTypes.func.isRequired,
     posts: PropTypes.array.isRequired,
     loading: PropTypes.bool.isRequired,
+    auth: PropTypes.object.isRequired,
 }
 
 export default Hashtags;

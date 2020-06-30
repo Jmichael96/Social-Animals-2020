@@ -5,11 +5,12 @@ import { fetchUsernames } from '../../store/actions/user';
 import PropTypes from 'prop-types';
 import Usernames from '../../components/Discover/Usernames/Usernames';
 import { fetchAllDiscoverPosts, fetchPostContent } from '../../store/actions/post';
+import { followHashtag, unfollowHashtag } from '../../store/actions/user';
 import { setPostModal } from '../../store/actions/postModal';
 import Posts from '../../components/Discover/Posts/Posts';
 import Hashtags from '../../components/Discover/Hashtags/Hashtags';
 
-const Discover = ({ user, fetchUsernames, fetchAllDiscoverPosts, post, setPostModal, fetchPostContent }) => {
+const Discover = ({ user, fetchUsernames, fetchAllDiscoverPosts, post, setPostModal, fetchPostContent, followHashtag, auth, unfollowHashtag }) => {
     const [search, setSearch] = useState();
 
     const onUsernames = () => {
@@ -31,11 +32,24 @@ const Discover = ({ user, fetchUsernames, fetchAllDiscoverPosts, post, setPostMo
     const renderComponents = () => {   
         switch(search) {
             case 'users':
-                return <Usernames users={user.users} loading={user.loading} />
+                return <Usernames 
+                users={user.users} 
+                loading={user.loading} />
             case 'posts':
-                return <Posts posts={post.allPosts} loading={post.loading} fetchPostContent={fetchPostContent} setPostModal={setPostModal} />
+                return <Posts 
+                posts={post.allPosts} 
+                loading={post.loading} 
+                fetchPostContent={fetchPostContent} 
+                setPostModal={setPostModal} />
             case 'hashtags':
-                return <Hashtags posts={post.allPosts} loading={post.loading} fetchPostContent={fetchPostContent} setPostModal={setPostModal} />
+                return <Hashtags 
+                posts={post.allPosts} 
+                loading={post.loading} 
+                fetchPostContent={fetchPostContent} 
+                setPostModal={setPostModal} 
+                followHashtag={followHashtag}
+                unfollowHashtag={unfollowHashtag} 
+                auth={auth} />
             default: 
                 return;
         }
@@ -60,13 +74,17 @@ Discover.propTypes = {
     fetchAllDiscoverPosts: PropTypes.func.isRequired,
     fetchPostContent: PropTypes.func.isRequired,
     setPostModal: PropTypes.func.isRequired,
+    followHashtag: PropTypes.func.isRequired,
+    unfollowHashtag: PropTypes.func.isRequired,
     user: PropTypes.object.isRequired,
     post: PropTypes.object.isRequired,
+    auth: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = (state) => ({
     user: state.user,
-    post: state.post
+    post: state.post,
+    auth: state.auth
 });
 
-export default connect(mapStateToProps, { fetchUsernames, fetchAllDiscoverPosts, setPostModal, fetchPostContent })(Discover);
+export default connect(mapStateToProps, { fetchUsernames, fetchAllDiscoverPosts, setPostModal, fetchPostContent, followHashtag, unfollowHashtag })(Discover);

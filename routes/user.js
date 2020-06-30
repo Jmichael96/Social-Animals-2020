@@ -58,4 +58,14 @@ router.put('/delete_chat/:userId/:chatId', isAuthenticated, UserController.delet
 // @access   Private
 router.put('/notify/:id', isAuthenticated, UserController.notify);
 
+// @route    PUT api/user/follow_hashtag
+// @desc     Follow a specific hashtag 
+// @access   Private
+router.put('/follow_hashtag', isAuthenticated, UserController.followHashtag);
+
+// @route    PUT api/user/unfollow_hashtag
+// @desc     Unfollow a user profile
+// @access   Private
+router.put('/unfollow_hashtag', isAuthenticated, UserController.unfollowHashtag);
+
 module.exports = router;

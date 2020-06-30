@@ -214,7 +214,7 @@ export const createRoom = (userId1, userId2, roomId, room, userObj, history) => 
             'Content-Type': 'application/json'
         }
     };
-    
+
     axios.put(`/api/user/create_room/${userId1}/${userId2}`, { roomId, room, userObj }, config)
         .then((res) => {
             dispatch({
@@ -241,18 +241,75 @@ export const deleteChat = (userId, chatId) => dispatch => {
         }
     };
     axios.put(`/api/user/delete_chat/${userId}/${chatId}`, config)
-    .then((res) => {
-        dispatch({
-            type: types.DELETE_CHAT,
-            payload: res.data.user
+        .then((res) => {
+            dispatch({
+                type: types.DELETE_CHAT,
+                payload: res.data.user
+            });
+            dispatch(setAlert(res.data.serverMsg, 'success'));
+        })
+        .catch((err) => {
+            console.log(err);
+            const error = err.response.data.serverMsg;
+            if (error) {
+                dispatch(setAlert(error, 'danger'));
+            }
         });
-        dispatch(setAlert(res.data.serverMsg, 'success'));
-    })
-    .catch((err) => {
-        console.log(err);
-        const error = err.response.data.serverMsg;
-        if (error) {
-            dispatch(setAlert(error, 'danger'));
+}
+
+// follow a hashtag
+export const followHashtag = (hashtag) => dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
         }
-    });
+    };
+
+    axios.put('/api/user/follow_hashtag', { hashtag }, config)
+        .then((res) => {
+            dispatch({
+                type: types.FOLLOW_HASHTAG,
+                payload: res.data
+            });
+            dispatch(setAlert(res.data.serverMsg, 'success'));
+        })
+        .catch((err) => {
+            console.log(err);
+            dispatch({
+                type: types.USER_ERROR,
+                payload: err
+            });
+            const error = err.response.data.serverMsg;
+            if (error) {
+                dispatch(setAlert(error, 'danger'));
+            }
+        });
+}
+// unfollow a hashtag
+export const unfollowHashtag = (hashtag) => dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+
+    axios.put('/api/user/unfollow_hashtag', { hashtag }, config)
+        .then((res) => {
+            dispatch({
+                type: types.UNFOLLOW_HASHTAG,
+                payload: res.data
+            });
+            dispatch(setAlert(res.data.serverMsg, 'success'));
+        })
+        .catch((err) => {
+            console.log(err);
+            dispatch({
+                type: types.USER_ERROR,
+                payload: err
+            });
+            const error = err.response.data.serverMsg;
+            if (error) {
+                dispatch(setAlert(error, 'danger'));
+            }
+        });
 }

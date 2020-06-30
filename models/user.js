@@ -54,9 +54,11 @@ const userSchema = new mongoose.Schema({
             }
         }
     ],
-    hashtags: [
+    followedHashtags: [
         {
-            type: String
+            hashtag: {
+                type: String
+            }
         }
     ],
     messages: [
