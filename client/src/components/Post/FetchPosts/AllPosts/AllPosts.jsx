@@ -1,17 +1,17 @@
 import React, { Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { fetchAllPosts, fetchHashtagPosts } from '../../../../store/actions/post';
+import { fetchAllPosts } from '../../../../store/actions/post';
 import Wrapper from '../../../Layout/Wrapper/Wrapper';
 import PostItem from '../PostItem/PostItem';
 import Spinner from '../../../Layout/Spinner/Spinner';
 
-const AllPosts = ({ fetchAllPosts, post: { posts, loading }, fetchHashtagPosts }) => {
+const AllPosts = ({ fetchAllPosts, post: { posts, loading } }) => {
 
     useEffect(() => {
         fetchAllPosts();
-        fetchHashtagPosts();
-    }, [fetchAllPosts, fetchHashtagPosts])
+    }, [fetchAllPosts])
+
 
     const renderPosts = () => {
         const postList = posts;
@@ -21,6 +21,7 @@ const AllPosts = ({ fetchAllPosts, post: { posts, loading }, fetchHashtagPosts }
             )
         })
     }
+    
     return (
         <Fragment>
             {renderPosts()}
@@ -30,12 +31,15 @@ const AllPosts = ({ fetchAllPosts, post: { posts, loading }, fetchHashtagPosts }
     //     return <PostItem key={post._id} postLoading={loading} post={post} />
     // }))
 }
+
 AllPosts.propTypes = {
     fetchAllPosts: PropTypes.func.isRequired,
     fetchHashtagPosts: PropTypes.func.isRequired,
     post: PropTypes.object.isRequired,
 }
+
 const mapStateToProps = (state) => ({
     post: state.post
 });
-export default connect(mapStateToProps, { fetchAllPosts, fetchHashtagPosts })(AllPosts);
+
+export default connect(mapStateToProps, { fetchAllPosts })(AllPosts);

@@ -416,8 +416,19 @@ export const fetchPostContent = (id) => dispatch => {
     });
 }
 
-export const fetchHashtagPosts = () => dispatch => {
-    axios.get('/api/posts/fetch_hashtag_posts')
+export const fetchHashtagPosts = (hashtags) => dispatch => {
+    // sorting through following hashtags array in user profile to send query params of hashtags
+    let hashtagArr = [];
+  
+    for (let i = 0; i < hashtags.length; i++) {
+        hashtagArr.push(hashtags[i].hashtag.toString());
+    }
+    
+    axios.get('/api/posts/fetch_hashtag_posts', {
+        params: {
+            hashtagArr: hashtagArr
+        }
+    })
     .then((res) => {
         dispatch({
             type: types.FETCH_HASHTAG_POSTS,

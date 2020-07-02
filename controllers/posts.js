@@ -485,21 +485,18 @@ exports.fetchPostContent = (req, res, next) => {
         });
 }
 
-// @route    GET api/posts/fetch_hashtag_posts
-// @desc     Fetch only the posts from the hashtags you are following
-// @access   Private
+//  @route    GET api/posts/fetch_hashtag_posts
+//  @desc     Fetch only the posts from the hashtags you are following
+//  @access   Private
 exports.fetchHashtagPosts = (req, res, next) => {
 
-    let tagArr = [];
-    let user = req.user.followedHashtags;
-
-    if (user && user.length >= 1) {
-        for (let i = 0; i < user.length; i++) {
-            tagArr.push(user[i].hashtag);
-        }
+    // checking if there is an array of users followedHashtags to search for in posts
+    // if not return a serverMsg
+    if (req.query.hashtagArr.length <= 0) {
+        return res.status(401);
     }
 
-    Post.find({ hashtags: { '$elemMatch': { hashtag: tagArr } } })
+    Post.find({ hashtags: { '$elemMatch': { hashtag: req.query.hashtagArr } } })
     .then((posts) => {
         if (posts) {
             res.status(201).json(posts);
