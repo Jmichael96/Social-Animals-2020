@@ -11,7 +11,7 @@ exports.fetchUsernames = (req, res, next) => {
         .then((users) => {
             let usernameArr = [];
             users.filter((i) => {
-                usernameArr.push({ _id: i._id, username: i.username });
+                usernameArr.push({ _id: i._id, username: i.username, followers: i.followers });
             });
             return res.status(201).json(usernameArr);
         })
