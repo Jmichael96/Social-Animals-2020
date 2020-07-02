@@ -10,7 +10,8 @@ const initialState = {
     name: '',
     bio: '',
     location: '',
-    email: ''
+    email: '',
+    profileType: ''
 }
 const UpdateProfile = ({ auth: { isAuthenticated, user, loading }, updateProfile, history }) => {
     const [formData, setFormData] = useState(initialState);
@@ -25,6 +26,7 @@ const UpdateProfile = ({ auth: { isAuthenticated, user, loading }, updateProfile
     useEffect(() => {
         if (!loading && user) {
             const profileData = { ...initialState };
+            // assigning current user data to the initial state
             for (const key in user) {
                 if (key in profileData) {
                     profileData[key] = user[key];
@@ -34,7 +36,7 @@ const UpdateProfile = ({ auth: { isAuthenticated, user, loading }, updateProfile
         }
 
     }, [loading, user]);
-    const { name, bio, location, email } = formData;
+    const { name, bio, location, email, profileType } = formData;
 
     const onChange = (e) =>
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -46,7 +48,7 @@ const UpdateProfile = ({ auth: { isAuthenticated, user, loading }, updateProfile
         if (!profilePicture) {
             setProfilePicture(user.profilePicture);
         }
-        updateProfile({ id, profilePicture, name, bio, location, email });
+        updateProfile({ id, profilePicture, name, bio, location, email, profileType });
         history.push('/my_profile')
     }
 
@@ -118,6 +120,19 @@ const UpdateProfile = ({ auth: { isAuthenticated, user, loading }, updateProfile
                         placeholder="Email@yahoo.com"
                         onChange={onChange}
                     />
+                    <label htmlFor="profileType">
+                        Please choose what you would like to use this profile for
+                    </label>
+                        <select id="profileType" 
+                        name="profileType" 
+                        value={profileType} 
+                        onChange={onChange}
+                        className="browser-default custom-select">
+                            <option value="user">Select Your Profile Type</option>
+                            <option value="breeder">Breeder</option>
+                            <option value="shelter">Shelter</option>
+                            <option value="user">Neither</option>
+                        </select>
                     <div className="text-center mt-4">
                         <Link to="/my_profile"><button type="button">Cancel</button></Link>
                         <button color="unique" type="submit">

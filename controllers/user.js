@@ -40,8 +40,10 @@ exports.updateProfile = (req, res, next) => {
         name: req.body.name,
         bio: req.body.bio,
         location: req.body.location,
-        email: req.body.email
+        email: req.body.email,
+        profileType: req.body.profileType
     }
+
     User.findOneAndUpdate(
         { _id: req.params.id },
         { $set: profileFields },
@@ -56,7 +58,11 @@ exports.updateProfile = (req, res, next) => {
                 name: user.name,
                 bio: user.bio,
                 location: user.bio,
-                email: user.email
+                followers: user.followers,
+                following: user.following,
+                followedHashtags: user.followedHashtags,
+                email: user.email,
+                profileType: user.profileType
             }
         }
 
@@ -275,34 +281,34 @@ exports.createRoom = (req, res, next) => {
 // @access   Private
 exports.deleteChat = (req, res, next) => {
     User.findById({ _id: req.params.userId })
-    .then((user) => {
-       
-        const message = user.messages.find((message) => 
-            message.id === req.params.chatId
-        )
+        .then((user) => {
 
-        if (!message) {
-            return res.status(404).json({
-                serverMsg: 'Message does not exist'
+            const message = user.messages.find((message) =>
+                message.id === req.params.chatId
+            )
+
+            if (!message) {
+                return res.status(404).json({
+                    serverMsg: 'Message does not exist'
+                });
+            }
+
+            user.messages = user.messages.filter(
+                ({ id }) => id !== req.params.chatId
+            )
+
+            user.save()
+
+            return res.status(201).json({
+                user: user,
+                serverMsg: 'Message successfully deleted'
             });
-        }
-
-        user.messages = user.messages.filter(
-            ({ id }) => id !== req.params.chatId
-        )
-
-        user.save()
-
-        return res.status(201).json({
-            user: user,
-            serverMsg: 'Message successfully deleted'
+        })
+        .catch((err) => {
+            return res.status(500).json({
+                serverMsg: 'Deleting this message has failed. Please try again later.'
+            });
         });
-    })
-    .catch((err) => {
-        return res.status(500).json({
-            serverMsg: 'Deleting this message has failed. Please try again later.'
-        });
-    });
 }
 
 // @route    PUT api/user/notify/:id
@@ -310,85 +316,85 @@ exports.deleteChat = (req, res, next) => {
 // @access   Private
 exports.notify = (req, res, next) => {
     User.findById({ _id: req.params.id })
-    .then((user) => {
-        let newNotification = {}
-        if (!req.body.roomId) {
-            newNotification = {
-                notifiedUser: req.body.notifiedUser,
-                userId: req.body.userId,
-                username: req.body.username,
-                notificationType: req.body.notificationType
+        .then((user) => {
+            let newNotification = {}
+            if (!req.body.roomId) {
+                newNotification = {
+                    notifiedUser: req.body.notifiedUser,
+                    userId: req.body.userId,
+                    username: req.body.username,
+                    notificationType: req.body.notificationType
+                }
+            } else if (req.body.roomId) {
+                newNotification = {
+                    notifiedUser: req.body.notifiedUser,
+                    userId: req.body.userId,
+                    username: req.body.username,
+                    roomId: req.body.roomId,
+                    notificationType: req.body.notificationType,
+                }
             }
-        } else if (req.body.roomId) {
-            newNotification = {
-                notifiedUser: req.body.notifiedUser,
-                userId: req.body.userId,
-                username: req.body.username,
-                roomId: req.body.roomId,
-                notificationType: req.body.notificationType,
-            }
-        }
-        user.notifications.unshift(newNotification);
-        user.save();
-        console.log(user)
-        res.status(201);
-    })
-    .catch((err) => {
-        return res.status(500).json({
-            serverMsg: 'Error sending notification'
+            user.notifications.unshift(newNotification);
+            user.save();
+            console.log(user)
+            res.status(201);
+        })
+        .catch((err) => {
+            return res.status(500).json({
+                serverMsg: 'Error sending notification'
+            });
         });
-    });
 }
 
 // @route    PUT api/user/follow_hashtag
 // @desc     Follow a specific hashtag 
 // @access   Private
 exports.followHashtag = (req, res, next) => {
-    User.findByIdAndUpdate({ _id: req.user._id }) 
-    .then((user) => {
+    User.findByIdAndUpdate({ _id: req.user._id })
+        .then((user) => {
 
-        // adding the specified hashtag to the followedHashtags array
-        user.followedHashtags.unshift({ hashtag: req.body.hashtag });
-        
-        user.save();
+            // adding the specified hashtag to the followedHashtags array
+            user.followedHashtags.unshift({ hashtag: req.body.hashtag });
 
-        res.status(201).json({
-            serverMsg: 'Successfully followed this tag',
-            user: user
+            user.save();
+
+            res.status(201).json({
+                serverMsg: 'Successfully followed this tag',
+                user: user
+            })
         })
-    })
-    .catch((err) => {
-        return res.status(500).json({
-            serverMsg: 'Error following hashtag'
+        .catch((err) => {
+            return res.status(500).json({
+                serverMsg: 'Error following hashtag'
+            });
         });
-    });
 }
 
 // @route    PUT api/user/unfollow_hashtag
 // @desc     Unfollow a hashtag
 // @access   Private
 exports.unfollowHashtag = (req, res, next) => {
-    User.findByIdAndUpdate({ _id: req.user._id }) 
-    .then((user) => {
-        if (user.followedHashtags.length >= 1) {
-            // assigning the hashtag array of objects to 'arr' variable
-            let arr = user.followedHashtags;
-            // getting the index of the hashtag thats being deleted
-            let index = arr.map((x) => { return x.hashtag }).indexOf(req.body.hashtag);
-            // splicing and removing the hashtag in the array
-            arr.splice(index, 1);
-        }        
-        
-        user.save();
-        res.status(201).json({
-            serverMsg: `Unfollowed the hashtag '${req.body.hashtag}'`,
-            user: user
+    User.findByIdAndUpdate({ _id: req.user._id })
+        .then((user) => {
+            if (user.followedHashtags.length >= 1) {
+                // assigning the hashtag array of objects to 'arr' variable
+                let arr = user.followedHashtags;
+                // getting the index of the hashtag thats being deleted
+                let index = arr.map((x) => { return x.hashtag }).indexOf(req.body.hashtag);
+                // splicing and removing the hashtag in the array
+                arr.splice(index, 1);
+            }
+
+            user.save();
+            res.status(201).json({
+                serverMsg: `Unfollowed the hashtag '${req.body.hashtag}'`,
+                user: user
+            });
+        })
+        .catch((err) => {
+            console.log(err);
+            return res.status(500).json({
+                serverMsg: 'Error unfollowing hashtag'
+            });
         });
-    })
-    .catch((err) => {
-        console.log(err);
-        return res.status(500).json({
-            serverMsg: 'Error unfollowing hashtag'
-        });
-    });
 }

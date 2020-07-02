@@ -18,7 +18,8 @@ exports.register = (req, res, next) => {
             name: req.body.name,
             bio: req.body.bio,
             location: req.body.location,
-            email: req.body.email
+            email: req.body.email,
+            profileType: req.body.profileType
         });
         user.save()
             .then((user) => {
@@ -33,7 +34,8 @@ exports.register = (req, res, next) => {
                         email: user.email,
                         followers: user.followers,
                         following: user.following,
-                        followedHashtags: user.followedHashtags
+                        followedHashtags: user.followedHashtags,
+                        profileType: user.profileType
                     }
                 }
                 jwt.sign(payload, config.SECRET,
@@ -109,7 +111,8 @@ exports.login = (req, res, next) => {
                     email: fetchedUser.email,
                     followers: fetchedUser.followers,
                     following: fetchedUser.following,
-                    followedHashtags: fetchedUser.followedHashtags
+                    followedHashtags: fetchedUser.followedHashtags,
+                    profileType: fetchedUser.profileType
                 }
             }
 

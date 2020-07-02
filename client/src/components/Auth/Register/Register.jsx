@@ -7,6 +7,12 @@ import { setAlert } from '../../../store/actions/alert';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
+import {
+    MDBDropdown,
+    MDBDropdownToggle,
+    MDBDropdownMenu,
+    MDBDropdownItem
+} from 'mdbreact';
 
 const initialState = {
     username: '',
@@ -15,17 +21,21 @@ const initialState = {
     bio: '',
     location: '',
     email: '',
+    profileType: ''
 }
+
 const Register = ({ register, setAlert, isAuthenticated, history }) => {
     const [formData, setFormData] = useState(initialState);
 
-    const { username, password, name, bio, location, email } = formData;
+    const { username, password, name, bio, location, email, profileType } = formData;
+
     const onSubmitForm = (e) => {
         e.preventDefault();
-        
-        register({ username, password, name, bio, location, email });
+
+        register({ username, password, name, bio, location, email, profileType });
         history.push('/');
     }
+
     const onChange = (e) =>
         setFormData({ ...formData, [e.target.name]: e.target.value });
 
@@ -37,7 +47,7 @@ const Register = ({ register, setAlert, isAuthenticated, history }) => {
                 <form onSubmit={(e) => onSubmitForm(e)}>
                     <p className="h4 text-center mb-4">Sign up</p>
                     <label htmlFor="username" className="grey-text">
-                        Username
+                        Username *
                         {/* {!isValid && usernameErr ? <span style={{ color: 'red' }}>{usernameErr}</span> : <span>Username</span>} */}
                     </label>
                     <input
@@ -51,7 +61,7 @@ const Register = ({ register, setAlert, isAuthenticated, history }) => {
                     />
                     <br />
                     <label htmlFor="password" className="grey-text">
-                        Password
+                        Password *
                         {/* {!isValid && passwordErr ? <span style={{ color: 'red' }}>{passwordErr}</span> : <span>Password</span>} */}
                     </label>
                     <input
@@ -88,7 +98,7 @@ const Register = ({ register, setAlert, isAuthenticated, history }) => {
                     />
                     <label htmlFor="bio" className="grey-text">
                         About You
-                </label>
+                    </label>
                     <input
                         type="text"
                         name="bio"
@@ -100,7 +110,7 @@ const Register = ({ register, setAlert, isAuthenticated, history }) => {
                     />
                     <label htmlFor="location" className="grey-text">
                         Where You Are Located
-                </label>
+                    </label>
                     <input
                         type="text"
                         name="location"
@@ -112,7 +122,7 @@ const Register = ({ register, setAlert, isAuthenticated, history }) => {
                     />
                     <label htmlFor="email" className="grey-text">
                         E-Mail
-                </label>
+                    </label>
                     <input
                         type="email"
                         name="email"
@@ -122,6 +132,19 @@ const Register = ({ register, setAlert, isAuthenticated, history }) => {
                         placeholder="Email@yahoo.com"
                         onChange={onChange}
                     />
+                    <label htmlFor="profileType">
+                        Please choose what you would like to use this profile for
+                    </label>
+                        <select id="profileType" 
+                        name="profileType" 
+                        value={profileType} 
+                        onChange={onChange}
+                        className="browser-default custom-select">
+                            <option value="user">Select Your Profile Type</option>
+                            <option value="breeder">Breeder</option>
+                            <option value="shelter">Shelter</option>
+                            <option value="user">Neither</option>
+                        </select>
                     <div className="text-center mt-4">
                         <MDBBtn color="unique" type="submit">
                             Register

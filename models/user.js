@@ -111,6 +111,10 @@ const userSchema = new mongoose.Schema({
             ],
         }
     ],
+    profileType: {
+        type: String,
+        default: 'user'
+    },
     date: {
         type: Date,
         default: Date.now

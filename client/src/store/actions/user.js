@@ -54,7 +54,7 @@ export const updateProfilePicture = ({ id, profilePicture }) => dispatch => {
 };
 
 // update profile
-export const updateProfile = ({ id, profilePicture, name, bio, location, email }) => dispatch => {
+export const updateProfile = ({ id, profilePicture, name, bio, location, email, profileType }) => dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
@@ -68,12 +68,14 @@ export const updateProfile = ({ id, profilePicture, name, bio, location, email }
         data.append('bio', bio);
         data.append('location', location);
         data.append('email', email);
+        data.append('profileType', profileType);
     } else if (profilePicture) {
         data.append('image', profilePicture);
         data.append('name', name);
         data.append('bio', bio);
         data.append('location', location);
         data.append('email', email);
+        data.append('profileType', profileType)
     }
 
     axios.put(`/api/user/update_profile/${id}`, data, config)

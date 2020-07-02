@@ -28,14 +28,14 @@ export const loadUser = () => dispatch => {
 };
 
 // register
-export const register = ({ username, password, name, bio, location, email }) => dispatch => {
+export const register = ({ username, password, name, bio, location, email, profileType }) => dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     };
     
-    const formData = { username, password, name, bio, location, email };
+    const formData = { username, password, name, bio, location, email, profileType };
     
     axios.post('/api/auth/register', formData, config)
         .then((res) => {
