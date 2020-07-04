@@ -11,9 +11,9 @@ export const fetchUsernames = () => dispatch => {
                 type: types.FETCH_USERNAMES,
                 payload: res.data
             });
-            dispatch({
-                type: types.CLEAR_PROFILE
-            });
+            // dispatch({
+            //     type: types.CLEAR_PROFILE
+            // });
             dispatch({
                 type: types.CLEAR_CHAT
             });

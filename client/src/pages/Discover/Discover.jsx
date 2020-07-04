@@ -16,6 +16,7 @@ const Discover = ({ user, fetchUsernames, fetchAllDiscoverPosts, post, setPostMo
     const onUsernames = () => {
         setSearch('users');
         fetchUsernames();
+        fetchAllDiscoverPosts();
     }
 
     const onPosts = () => {
@@ -34,7 +35,8 @@ const Discover = ({ user, fetchUsernames, fetchAllDiscoverPosts, post, setPostMo
             case 'users':
                 return <Usernames 
                 users={user.users} 
-                loading={user.loading} />
+                loading={user.loading}
+                posts={post.allPosts} />
             case 'posts':
                 return <Posts 
                 posts={post.allPosts} 

@@ -1,7 +1,12 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import isEmpty from '../../../utils/isEmpty';
-import { MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem } from 'mdbreact';
+import { 
+    MDBDropdown, 
+    MDBDropdownToggle, 
+    MDBDropdownMenu, 
+    MDBDropdownItem 
+} from 'mdbreact';
 import './posts.css';
 import Wrapper from '../../Layout/Wrapper/Wrapper';
 

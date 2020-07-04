@@ -11,8 +11,11 @@ exports.fetchUsernames = (req, res, next) => {
         .then((users) => {
             let usernameArr = [];
             users.filter((i) => {
-                usernameArr.push({ _id: i._id, username: i.username, followers: i.followers });
+                if (i.username.toString() !== req.user.username) {
+                    usernameArr.push({ _id: i._id, username: i.username, followers: i.followers, following: i.following, profilePicture: i.profilePicture, location: i.location, bio: i.bio, profileType: i.profileType });
+                }
             });
+
             return res.status(201).json(usernameArr);
         })
         .catch((err) => {
