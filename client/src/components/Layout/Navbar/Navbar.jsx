@@ -61,9 +61,6 @@ const Navbar = ({ auth: { isAuthenticated, loading, user }, logout }) => {
                     <Link className="nav-link" to="/my_profile">Profile</Link>
                 </li>
                 <li className="nav-item">
-                    <Link className="nav-link" to="/usernames">Usernames</Link>
-                </li>
-                <li className="nav-item">
                     <Link className="nav-link" to="/my_messages">Messages</Link>
                 </li>
                 <li className="nav-item" 
