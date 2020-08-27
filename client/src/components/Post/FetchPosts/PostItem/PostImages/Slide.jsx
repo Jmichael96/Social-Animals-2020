@@ -51,7 +51,7 @@ class Carousel extends React.Component {
                 <ul className="indicators">
                     {Object.values(this.props.images).map((item, i) => {
                         return (
-                            <li onClick={this.onIndicatorClick} className={i + 1 === this.state.currentIndex ? "active-indicator" : ""}>
+                            <li key={i+1} onClick={this.onIndicatorClick} className={i + 1 === this.state.currentIndex ? "active-indicator" : ""}>
                                 {i + 1}
                             </li>
                         )

@@ -16,7 +16,7 @@ export const createPost = ({ content, imagePath, postType, animalType }) => disp
     data.append('content', content);
     data.append('postType', postType);
     data.append('animalType', animalType);
-
+    
     axios.post('/api/posts/create_post', data, config)
         .then((res) => {
             dispatch({

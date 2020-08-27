@@ -17,7 +17,7 @@ exports.createPost = (req, res, next) => {
         postType: req.body.postType,
         animalType: req.body.animalType,
         authorId: req.user._id,
-        authorUsername: req.user.username
+        authorUsername: req.user.username,
     });
 
     post.save()

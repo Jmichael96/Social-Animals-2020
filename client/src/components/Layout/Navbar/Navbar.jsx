@@ -63,7 +63,7 @@ const Navbar = ({ auth: { isAuthenticated, loading, user }, logout }) => {
                 <li className="nav-item">
                     <Link className="nav-link" to="/my_messages">Messages</Link>
                 </li>
-                <li className="nav-item" 
+                <li className="nav-item"
                     onMouseEnter={onMouseEnter}
                     onMouseLeave={onMouseLeave}>
                     <MDBDropdown>
@@ -74,6 +74,24 @@ const Navbar = ({ auth: { isAuthenticated, loading, user }, logout }) => {
                         </Link>
                         <MDBDropdownMenu basic>
                             <MDBDropdownItem>Action</MDBDropdownItem>
+                            <MDBDropdownItem>Another Action</MDBDropdownItem>
+                            <MDBDropdownItem>Something else here</MDBDropdownItem>
+                            <MDBDropdownItem divider />
+                            <MDBDropdownItem>Separated link</MDBDropdownItem>
+                        </MDBDropdownMenu>
+                    </MDBDropdown>
+                </li>
+                <li className="nav-item"
+                    onMouseEnter={onMouseEnter}
+                    onMouseLeave={onMouseLeave}>
+                    <MDBDropdown>
+                        <MDBDropdownToggle color="">
+                            Map
+                        </MDBDropdownToggle>
+                        <MDBDropdownMenu basic>
+                            <Link to="/map/shelter">
+                                <MDBDropdownItem>Shelters Near Me</MDBDropdownItem>
+                            </Link>
                             <MDBDropdownItem>Another Action</MDBDropdownItem>
                             <MDBDropdownItem>Something else here</MDBDropdownItem>
                             <MDBDropdownItem divider />

@@ -8,14 +8,19 @@ import Slide from '../../components/Post/FetchPosts/PostItem/PostImages/Slide';
 
 const Home = ({ auth: { isAuthenticated, user, loading }}) => {  
 
+    // ! must figure out bug where it doesnt render posts if followed users have not made a post.
     const renderPostData = () => {
         if (!loading && isAuthenticated && !isEmpty(user)) {
+
             if (isEmpty(user.following)) {
+                console.log('inside block 2')
                 return <AllPosts />
             } else if (!isEmpty(user.following)) {
+                console.log('inside block 3')
                 return <FetchFollowingPosts />
             }
         } else {
+            console.log('block 4');
             return <AllPosts />
         }
     }

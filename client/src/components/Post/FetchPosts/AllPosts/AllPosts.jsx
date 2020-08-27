@@ -34,7 +34,6 @@ const AllPosts = ({ fetchAllPosts, post: { posts, loading } }) => {
 
 AllPosts.propTypes = {
     fetchAllPosts: PropTypes.func.isRequired,
-    fetchHashtagPosts: PropTypes.func.isRequired,
     post: PropTypes.object.isRequired,
 }
 

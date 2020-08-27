@@ -21,6 +21,7 @@ import TotalChatMessages from '../ChatMessaging/TotalChatMessages/TotalChatMessa
 import BadRequest from '../Layout/BadRequest/BadRequest';
 import Discover from '../../pages/Discover/Discover';
 import PostModal from '../Layout/PostModal/PostModal';
+import Shelters from '../Map/Shelters/Shelters';
 
 const Routes = () => {
     return (
@@ -46,6 +47,7 @@ const Routes = () => {
                 <PrivateRoute exact path="/update_profile" component={UpdateProfile} />
                 <PrivateRoute exact path="/user_profile/:id" component={UserProfile} />
                 <PrivateRoute exact path="/discover" component={Discover} />
+                <PrivateRoute exact path="/map/shelter" component={Shelters} />
                 <Route component={NotFound} />
             </Switch>
         </section>

@@ -33,7 +33,7 @@ const PostItem = ({
     likePost,
     unlikePost,
     auth: { isAuthenticated, user, loading },
-    post: { _id, content, imagePath, date, authorId, authorUsername, likes, comments },
+    post: { _id, content, imagePath, date, authorId, authorUsername, likes, comments, postType, animalType, breed, adoptionCount },
     postLoading,
     notifyUser,
     deleteImage
@@ -196,7 +196,7 @@ const PostItem = ({
 
     // render the post images
     const renderImages = () => {
-        if (!isEmpty(imagePath)) {
+        if (!isEmpty(imagePath) && !isEmpty(user)) {
             return <PostImages
                 postImages={imagePath}
                 postId={_id}
@@ -208,6 +208,7 @@ const PostItem = ({
         }
     }
 
+    // render post content and adding style to hashtags
     const renderContent = () => {
         if (!postLoading && !isEmpty(content)) {
             let parsedContent = content.replace(/#(\w+)/g, '<a href="#">#$1</a>');
